@@ -105,7 +105,7 @@ function CityPage() {
             <div className="mt-6 pt-6 border-t border-white/10">
               <div className="text-xs uppercase tracking-wider text-ice/60">Popular areas</div>
               <ul className="mt-2 flex flex-wrap gap-2">
-                {c.neighborhoods.map((n) => (
+                {c.neighborhoods.map((n: string) => (
                   <li key={n} className="text-xs bg-white/10 border border-white/10 rounded-full px-3 py-1">{n}</li>
                 ))}
               </ul>
