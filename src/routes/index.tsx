@@ -13,8 +13,8 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "IQRAR Chiller Van Transport UAE | Refrigerated Truck Rental Dubai" },
       { name: "description", content: "Premium refrigerated chiller van & freezer truck rental across the UAE. 24/7 temperature-controlled cold-chain logistics for food, pharma, seafood & flowers. Call +971 50 598 6571." },
-      { property: "og:title", content: "IQRAR Chiller Van Transport UAE | Cold Trust. Safe Delivery." },
-      { property: "og:description", content: "Premium refrigerated van & freezer truck transport across all 7 emirates. 24/7 dispatch, ±0.5°C accuracy, HACCP-aligned." },
+      { property: "og:title", content: "IQRAR Chiller Van Transport UAE | Refrigerated Truck Rental Dubai" },
+      { property: "og:description", content: "Premium refrigerated chiller van & freezer truck rental across the UAE. 24/7 temperature-controlled cold-chain logistics for food, pharma, seafood & flowers. Call +971 50 598 6571." },
       { property: "og:url", content: "/" },
     ],
     links: [{ rel: "canonical", href: "/" }],
