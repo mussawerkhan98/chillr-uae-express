@@ -2,7 +2,6 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, Phone } from "lucide-react";
 import { NAV_LINKS, SITE } from "@/lib/site";
-import logoAsset from "@/assets/iqrar-logo.png.asset.json";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
@@ -26,7 +25,7 @@ export function SiteHeader() {
       <div className="container-page flex h-20 items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-3 shrink-0" aria-label={SITE.name}>
           <img
-            src={logoAsset.url}
+            src="/logo.png"
             alt="IQRAR Chiller Van Transport logo"
             width={48}
             height={48}

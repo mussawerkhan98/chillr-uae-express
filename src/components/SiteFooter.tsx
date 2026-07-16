@@ -1,7 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Mail, Phone, MapPin, MessageCircle, Snowflake } from "lucide-react";
 import { SITE, NAV_LINKS, CITIES } from "@/lib/site";
-import logoAsset from "@/assets/iqrar-logo.png.asset.json";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -10,7 +9,7 @@ export function SiteFooter() {
       <div className="container-page py-16 grid gap-12 lg:grid-cols-4">
         <div className="lg:col-span-2 max-w-md">
           <div className="flex items-center gap-3 mb-5">
-            <img src={logoAsset.url} alt="" width={48} height={48} className="h-12 w-12 rounded-full bg-white/95 p-1" />
+            <img src="/logo.png" alt="" width={48} height={48} className="h-12 w-12 object-contain" />
             <div>
               <div className="font-display font-bold text-lg">IQRAR</div>
               <div className="text-[10px] uppercase tracking-[0.18em] text-ice/60">Chiller Van Transport</div>
