@@ -107,7 +107,7 @@ export const adminUpdatePost = createServerFn({ method: "POST" })
       .select("published, published_at")
       .eq("id", id)
       .maybeSingle();
-    const patch: Record<string, unknown> = { ...update };
+    const patch = { ...update } as typeof update & { published_at?: string };
     if (update.published && (!existing?.published || !existing?.published_at)) {
       patch.published_at = new Date().toISOString();
     }

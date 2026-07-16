@@ -4,7 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-const NAV = [
+type NavItem = { to: string; label: string; icon: typeof LayoutDashboard; exact?: boolean };
+const NAV: NavItem[] = [
   { to: "/admin", label: "Overview", icon: LayoutDashboard, exact: true },
   { to: "/admin/blog", label: "Blog posts", icon: FileText },
   { to: "/admin/images", label: "Site photos", icon: Images },
@@ -12,7 +13,7 @@ const NAV = [
   { to: "/admin/services", label: "Services", icon: Wrench },
   { to: "/admin/faqs", label: "FAQs", icon: HelpCircle },
   { to: "/admin/settings", label: "Site settings", icon: Settings },
-] as const;
+];
 
 export function AdminSidebar() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
