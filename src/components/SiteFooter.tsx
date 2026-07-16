@@ -78,6 +78,17 @@ export function SiteFooter() {
         <div className="container-page py-5 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-ice/60">
           <p>© {year} {SITE.name} LLC. All rights reserved.</p>
           <p>{SITE.hours}</p>
+          <p>
+            Powered by{" "}
+            <a
+              href="https://www.byteflow.ae"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-secondary hover:text-white transition-colors"
+            >
+              www.byteflow.ae
+            </a>
+          </p>
         </div>
       </div>
     </footer>
