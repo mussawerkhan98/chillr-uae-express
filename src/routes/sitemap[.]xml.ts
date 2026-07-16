@@ -15,6 +15,13 @@ export const Route = createFileRoute("/sitemap.xml")({
   server: {
     handlers: {
       GET: async () => {
+        const { getPublicSupabase } = await import("@/lib/supabase-public.server");
+        const sb = getPublicSupabase();
+        const { data: posts } = await sb
+          .from("blog_posts")
+          .select("slug, updated_at")
+          .eq("published", true);
+
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
           { path: "/about", changefreq: "monthly", priority: "0.7" },
@@ -22,12 +29,18 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/services", changefreq: "monthly", priority: "0.8" },
           { path: "/industries", changefreq: "monthly", priority: "0.7" },
           { path: "/locations", changefreq: "monthly", priority: "0.8" },
+          { path: "/blog", changefreq: "weekly", priority: "0.8" },
           { path: "/faq", changefreq: "monthly", priority: "0.6" },
           { path: "/contact", changefreq: "monthly", priority: "0.7" },
           ...CITIES.map((c) => ({
             path: `/locations/${c.slug}`,
             changefreq: "monthly" as const,
             priority: "0.9",
+          })),
+          ...(posts ?? []).map((p) => ({
+            path: `/blog/${p.slug}`,
+            changefreq: "monthly" as const,
+            priority: "0.7",
           })),
         ];
 
