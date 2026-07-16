@@ -18,7 +18,12 @@ export const Route = createFileRoute("/_authenticated/admin/blog/new")({
 });
 
 function slugify(s: string) {
-  return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 100);
+  return s
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 100);
 }
 
 function NewPost() {
@@ -58,7 +63,10 @@ function NewPost() {
 
   return (
     <div className="p-8 max-w-4xl space-y-6">
-      <Link to="/admin/blog" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+      <Link
+        to="/admin/blog"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeft className="h-4 w-4" /> Back to posts
       </Link>
       <h1 className="font-display text-3xl font-bold text-navy">New blog post</h1>
@@ -66,9 +74,15 @@ function NewPost() {
       <PostForm form={form} setForm={setForm} />
 
       <div className="flex items-center justify-end gap-3 pt-4 border-t">
-        <Button variant="outline" onClick={() => navigate({ to: "/admin/blog" })}>Cancel</Button>
+        <Button variant="outline" onClick={() => navigate({ to: "/admin/blog" })}>
+          Cancel
+        </Button>
         <Button onClick={() => save.mutate()} disabled={save.isPending || !form.title.trim()}>
-          {save.isPending ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}
+          {save.isPending ? (
+            <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+          ) : (
+            <Save className="h-4 w-4 mr-1" />
+          )}
           Save post
         </Button>
       </div>
@@ -77,8 +91,14 @@ function NewPost() {
 }
 
 type FormState = {
-  title: string; slug: string; excerpt: string; cover_image_url: string | null;
-  content_html: string; meta_title: string; meta_description: string; published: boolean;
+  title: string;
+  slug: string;
+  excerpt: string;
+  cover_image_url: string | null;
+  content_html: string;
+  meta_title: string;
+  meta_description: string;
+  published: boolean;
 };
 
 export function PostForm({ form, setForm }: { form: FormState; setForm: (f: FormState) => void }) {
@@ -89,7 +109,9 @@ export function PostForm({ form, setForm }: { form: FormState; setForm: (f: Form
         <Input
           id="title"
           value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value, slug: form.slug || slugify(e.target.value) })}
+          onChange={(e) =>
+            setForm({ ...form, title: e.target.value, slug: form.slug || slugify(e.target.value) })
+          }
           placeholder="How to keep pharma cold in Dubai summer"
         />
       </div>
@@ -97,7 +119,11 @@ export function PostForm({ form, setForm }: { form: FormState; setForm: (f: Form
         <Label htmlFor="slug">Slug</Label>
         <div className="flex items-center gap-2">
           <span className="text-sm text-muted-foreground">/blog/</span>
-          <Input id="slug" value={form.slug} onChange={(e) => setForm({ ...form, slug: slugify(e.target.value) })} />
+          <Input
+            id="slug"
+            value={form.slug}
+            onChange={(e) => setForm({ ...form, slug: slugify(e.target.value) })}
+          />
         </div>
       </div>
       <ImageUploader
@@ -108,24 +134,46 @@ export function PostForm({ form, setForm }: { form: FormState; setForm: (f: Form
       />
       <div className="space-y-2">
         <Label htmlFor="excerpt">Excerpt (short summary shown in the blog list)</Label>
-        <Textarea id="excerpt" rows={3} value={form.excerpt} onChange={(e) => setForm({ ...form, excerpt: e.target.value })} />
+        <Textarea
+          id="excerpt"
+          rows={3}
+          value={form.excerpt}
+          onChange={(e) => setForm({ ...form, excerpt: e.target.value })}
+        />
       </div>
       <div className="space-y-2">
         <Label>Content</Label>
-        <RichTextEditor value={form.content_html} onChange={(html) => setForm({ ...form, content_html: html })} />
+        <RichTextEditor
+          value={form.content_html}
+          onChange={(html) => setForm({ ...form, content_html: html })}
+        />
       </div>
       <div className="grid gap-6 sm:grid-cols-2 pt-4 border-t">
         <div className="space-y-2">
           <Label htmlFor="meta_title">SEO title</Label>
-          <Input id="meta_title" value={form.meta_title} onChange={(e) => setForm({ ...form, meta_title: e.target.value })} placeholder="Defaults to post title" />
+          <Input
+            id="meta_title"
+            value={form.meta_title}
+            onChange={(e) => setForm({ ...form, meta_title: e.target.value })}
+            placeholder="Defaults to post title"
+          />
         </div>
         <div className="space-y-2">
           <Label htmlFor="meta_description">SEO description</Label>
-          <Input id="meta_description" value={form.meta_description} onChange={(e) => setForm({ ...form, meta_description: e.target.value })} placeholder="Defaults to excerpt" />
+          <Input
+            id="meta_description"
+            value={form.meta_description}
+            onChange={(e) => setForm({ ...form, meta_description: e.target.value })}
+            placeholder="Defaults to excerpt"
+          />
         </div>
       </div>
       <div className="flex items-center gap-3 pt-2">
-        <Switch id="published" checked={form.published} onCheckedChange={(v) => setForm({ ...form, published: v })} />
+        <Switch
+          id="published"
+          checked={form.published}
+          onCheckedChange={(v) => setForm({ ...form, published: v })}
+        />
         <Label htmlFor="published" className="cursor-pointer">
           {form.published ? "Published (visible on the site)" : "Draft (hidden from visitors)"}
         </Label>

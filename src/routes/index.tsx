@@ -1,65 +1,136 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import {
-  Snowflake, Truck, Shield, Clock, ThermometerSnowflake,
-  MapPin, MessageCircle, Phone, ArrowRight, CheckCircle2, Star,
+  Snowflake,
+  Truck,
+  Shield,
+  Clock,
+  ThermometerSnowflake,
+  MapPin,
+  MessageCircle,
+  Phone,
+  ArrowRight,
+  CheckCircle2,
+  Star,
 } from "lucide-react";
-import { SITE, STATS, SERVICES, INDUSTRIES, FLEET, FAQS, CITIES } from "@/lib/site";
+import { SITE, STATS, INDUSTRIES, CITIES } from "@/lib/site";
+import { listFleetPublic } from "@/lib/fleet.functions";
+import { listServicesPublic } from "@/lib/services.functions";
+import { listFaqsPublic } from "@/lib/faqs.functions";
+import { siteImagesQuery, pickImage } from "@/lib/site-images.query";
+import { settingsQuery, getSetting } from "@/lib/settings.query";
 import heroImg from "@/assets/hero-chiller-van.jpg";
 import interiorImg from "@/assets/cold-chain-interior.jpg";
 import fleetImg from "@/assets/fleet-lineup.jpg";
 
+const fleetQuery = () =>
+  queryOptions({ queryKey: ["fleet", "list"], queryFn: () => listFleetPublic() });
+const servicesQuery = () =>
+  queryOptions({ queryKey: ["services", "list"], queryFn: () => listServicesPublic() });
+const faqsQuery = () =>
+  queryOptions({ queryKey: ["faqs", "list"], queryFn: () => listFaqsPublic() });
+
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "IQRAR Chiller Van Transport UAE | Refrigerated Truck Rental Dubai" },
-      { name: "description", content: "Premium refrigerated chiller van & freezer truck rental across the UAE. 24/7 temperature-controlled cold-chain logistics for food, pharma, seafood & flowers. Call +971 50 598 6571." },
-      { property: "og:title", content: "IQRAR Chiller Van Transport UAE | Refrigerated Truck Rental Dubai" },
-      { property: "og:description", content: "Premium refrigerated chiller van & freezer truck rental across the UAE. 24/7 temperature-controlled cold-chain logistics for food, pharma, seafood & flowers. Call +971 50 598 6571." },
-      { property: "og:url", content: "/" },
-    ],
-    links: [{ rel: "canonical", href: "/" }],
-    scripts: [
-      {
-        type: "application/ld+json",
-        children: JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: FAQS.slice(0, 5).map((f) => ({
-            "@type": "Question",
-            name: f.q,
-            acceptedAnswer: { "@type": "Answer", text: f.a },
-          })),
-        }),
-      },
-    ],
-  }),
+  loader: async ({ context }) => {
+    const [fleet, services, faqs, images, settings] = await Promise.all([
+      context.queryClient.ensureQueryData(fleetQuery()),
+      context.queryClient.ensureQueryData(servicesQuery()),
+      context.queryClient.ensureQueryData(faqsQuery()),
+      context.queryClient.ensureQueryData(siteImagesQuery()),
+      context.queryClient.ensureQueryData(settingsQuery()),
+    ]);
+    return { fleet, services, faqs, images, settings };
+  },
+  head: ({ loaderData }) => {
+    const settings = loaderData?.settings;
+    const faqs = loaderData?.faqs ?? [];
+    const title = getSetting(
+      settings,
+      "meta_home_title",
+      "IQRAR Chiller Van Transport UAE | Refrigerated Truck Rental Dubai",
+    );
+    const description = getSetting(
+      settings,
+      "meta_home_description",
+      "Premium refrigerated chiller van & freezer truck rental across the UAE. 24/7 temperature-controlled cold-chain logistics for food, pharma, seafood & flowers. Call +971 50 598 6571.",
+    );
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:url", content: "/" },
+      ],
+      links: [{ rel: "canonical", href: "/" }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faqs.slice(0, 5).map((f) => ({
+              "@type": "Question",
+              name: f.question,
+              acceptedAnswer: { "@type": "Answer", text: f.answer },
+            })),
+          }),
+        },
+      ],
+    };
+  },
   component: Home,
 });
 
 function Home() {
+  const { data: fleet } = useSuspenseQuery(fleetQuery());
+  const { data: services } = useSuspenseQuery(servicesQuery());
+  const { data: faqs } = useSuspenseQuery(faqsQuery());
+  const { data: images } = useSuspenseQuery(siteImagesQuery());
+  const { data: settings } = useSuspenseQuery(settingsQuery());
+
   return (
     <>
-      <Hero />
+      <Hero images={images} settings={settings} />
       <StatsBar />
-      <ServicesSection />
-      <FleetSection />
-      <WhyUs />
+      <ServicesSection services={services} />
+      <FleetSection fleet={fleet} images={images} />
+      <WhyUs images={images} />
       <IndustriesStrip />
       <CoverageSection />
       <TestimonialsSection />
-      <FaqSection />
-      <CTASection />
+      <FaqSection faqs={faqs} />
+      <CTASection settings={settings} />
     </>
   );
 }
 
-function Hero() {
+type Images = ReturnType<
+  typeof useSuspenseQuery<Awaited<ReturnType<typeof listFleetPublic>>>
+>["data"];
+
+function Hero({
+  images,
+  settings,
+}: {
+  images: Awaited<ReturnType<typeof import("@/lib/images.functions").listSiteImagesPublic>>;
+  settings: Record<string, string | null>;
+}) {
+  const hero = pickImage(images, "home_hero", {
+    src: heroImg,
+    alt: "Refrigerated chiller van on Dubai highway at golden hour",
+  });
+  const phone = getSetting(settings, "site_phone", SITE.phone);
+  const phoneHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
+  const whatsapp = getSetting(settings, "site_whatsapp", SITE.whatsapp);
+  const whatsappHref = `https://wa.me/${whatsapp}?text=Hello%20IQRAR%2C%20I%20need%20a%20chiller%20van%20quote.`;
+
   return (
     <section className="relative isolate overflow-hidden">
       <div className="absolute inset-0 -z-10">
         <img
-          src={heroImg}
-          alt="Refrigerated chiller van on Dubai highway at golden hour"
+          src={hero.src}
+          alt={hero.alt}
           width={1920}
           height={1080}
           fetchPriority="high"
@@ -74,12 +145,15 @@ function Hero() {
             UAE-wide cold-chain logistics
           </div>
           <h1 className="mt-6 font-display text-4xl sm:text-5xl lg:text-7xl font-bold leading-[1.05] text-white tracking-tight">
-            Refrigerated transport <span className="block">you can <span className="text-secondary">trust</span>, city to city.</span>
+            Refrigerated transport{" "}
+            <span className="block">
+              you can <span className="text-secondary">trust</span>, city to city.
+            </span>
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-white/85 leading-relaxed">
-            {SITE.name} delivers premium chiller and freezer vehicles across all seven
-            emirates. Temperature-controlled, HACCP-aligned, 24/7 dispatched — for food,
-            pharma, seafood, floral and specialty cold cargo.
+            {SITE.name} delivers premium chiller and freezer vehicles across all seven emirates.
+            Temperature-controlled, HACCP-aligned, 24/7 dispatched — for food, pharma, seafood,
+            floral and specialty cold cargo.
           </p>
 
           <div className="mt-9 flex flex-wrap gap-3">
@@ -90,7 +164,7 @@ function Hero() {
               Get Instant Quote <ArrowRight className="h-4 w-4" />
             </Link>
             <a
-              href={SITE.whatsappHref}
+              href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md border border-white/30 text-white px-6 py-3.5 text-sm font-semibold hover:bg-white/20 transition-colors"
@@ -98,10 +172,10 @@ function Hero() {
               <MessageCircle className="h-4 w-4" /> WhatsApp
             </a>
             <a
-              href={SITE.phoneHref}
+              href={phoneHref}
               className="inline-flex items-center gap-2 rounded-full bg-white text-navy px-6 py-3.5 text-sm font-semibold hover:bg-ice transition-colors"
             >
-              <Phone className="h-4 w-4" /> {SITE.phone}
+              <Phone className="h-4 w-4" /> {phone}
             </a>
           </div>
 
@@ -127,8 +201,12 @@ function StatsBar() {
             key={s.label}
             className={`p-6 sm:p-8 text-center ${i > 0 ? "md:border-l" : ""} ${i >= 2 ? "border-t md:border-t-0" : ""} ${i === 1 ? "border-l md:border-l" : ""} border-border`}
           >
-            <div className="font-display text-3xl sm:text-4xl font-bold gradient-text">{s.value}</div>
-            <div className="mt-2 text-xs sm:text-sm text-muted-foreground uppercase tracking-wider">{s.label}</div>
+            <div className="font-display text-3xl sm:text-4xl font-bold gradient-text">
+              {s.value}
+            </div>
+            <div className="mt-2 text-xs sm:text-sm text-muted-foreground uppercase tracking-wider">
+              {s.label}
+            </div>
           </div>
         ))}
       </div>
@@ -136,19 +214,35 @@ function StatsBar() {
   );
 }
 
-function SectionHeader({ eyebrow, title, desc }: { eyebrow: string; title: string; desc?: string }) {
+function SectionHeader({
+  eyebrow,
+  title,
+  desc,
+}: {
+  eyebrow: string;
+  title: string;
+  desc?: string;
+}) {
   return (
     <div className="max-w-2xl">
       <div className="inline-flex items-center gap-2 rounded-full bg-accent text-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-widest">
         {eyebrow}
       </div>
-      <h2 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-navy tracking-tight">{title}</h2>
-      {desc && <p className="mt-4 text-muted-foreground text-base sm:text-lg leading-relaxed">{desc}</p>}
+      <h2 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-navy tracking-tight">
+        {title}
+      </h2>
+      {desc && (
+        <p className="mt-4 text-muted-foreground text-base sm:text-lg leading-relaxed">{desc}</p>
+      )}
     </div>
   );
 }
 
-function ServicesSection() {
+function ServicesSection({
+  services,
+}: {
+  services: Awaited<ReturnType<typeof listServicesPublic>>;
+}) {
   return (
     <section id="services" className="container-page py-24">
       <SectionHeader
@@ -157,15 +251,19 @@ function ServicesSection() {
         desc="Purpose-built vehicles, trained drivers and continuous temperature monitoring — for every industry that depends on the cold chain."
       />
       <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {SERVICES.map((s) => (
+        {services.map((s) => (
           <article
-            key={s.title}
+            key={s.id}
             className="group relative rounded-2xl bg-card p-6 border border-border shadow-card hover-lift overflow-hidden"
           >
             <div className="absolute -top-8 -right-8 h-28 w-28 rounded-full bg-accent opacity-60 group-hover:scale-125 transition-transform duration-500" />
             <ThermometerSnowflake className="relative h-9 w-9 text-primary" />
-            <h3 className="relative mt-4 font-display text-lg font-semibold text-navy">{s.title}</h3>
-            <p className="relative mt-2 text-sm text-muted-foreground leading-relaxed">{s.desc}</p>
+            <h3 className="relative mt-4 font-display text-lg font-semibold text-navy">
+              {s.title}
+            </h3>
+            <p className="relative mt-2 text-sm text-muted-foreground leading-relaxed">
+              {s.description}
+            </p>
           </article>
         ))}
       </div>
@@ -173,7 +271,17 @@ function ServicesSection() {
   );
 }
 
-function FleetSection() {
+function FleetSection({
+  fleet,
+  images,
+}: {
+  fleet: Awaited<ReturnType<typeof listFleetPublic>>;
+  images: Awaited<ReturnType<typeof import("@/lib/images.functions").listSiteImagesPublic>>;
+}) {
+  const lineup = pickImage(images, "fleet_lineup", {
+    src: fleetImg,
+    alt: "IQRAR refrigerated fleet lineup",
+  });
   return (
     <section id="fleet" className="bg-gradient-to-b from-accent/60 to-background py-24">
       <div className="container-page">
@@ -183,7 +291,10 @@ function FleetSection() {
             title="From compact chiller vans to 5-ton freezer trucks."
             desc="A modern, meticulously maintained fleet — matched to your cargo, route and temperature profile."
           />
-          <Link to="/fleet" className="text-primary font-semibold text-sm inline-flex items-center gap-1 hover:gap-2 transition-all">
+          <Link
+            to="/fleet"
+            className="text-primary font-semibold text-sm inline-flex items-center gap-1 hover:gap-2 transition-all"
+          >
             View full fleet <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
@@ -191,8 +302,8 @@ function FleetSection() {
         <div className="mt-12 grid gap-8 lg:grid-cols-5">
           <div className="lg:col-span-2 rounded-3xl overflow-hidden shadow-card">
             <img
-              src={fleetImg}
-              alt="IQRAR refrigerated fleet lineup"
+              src={lineup.src}
+              alt={lineup.alt}
               width={1600}
               height={900}
               loading="lazy"
@@ -200,17 +311,31 @@ function FleetSection() {
             />
           </div>
           <div className="lg:col-span-3 grid gap-4 sm:grid-cols-2">
-            {FLEET.slice(0, 4).map((v) => (
-              <div key={v.slug} className="rounded-2xl bg-card p-5 border border-border shadow-card hover-lift">
+            {fleet.slice(0, 4).map((v) => (
+              <div
+                key={v.id}
+                className="rounded-2xl bg-card p-5 border border-border shadow-card hover-lift"
+              >
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-widest text-primary">{v.category}</span>
+                  <span className="text-[10px] font-bold uppercase tracking-widest text-primary">
+                    {v.category}
+                  </span>
                   <Truck className="h-5 w-5 text-muted-foreground" />
                 </div>
                 <h3 className="mt-3 font-display text-lg font-semibold text-navy">{v.name}</h3>
                 <dl className="mt-4 grid grid-cols-2 gap-3 text-xs">
-                  <div><dt className="text-muted-foreground">Capacity</dt><dd className="font-semibold text-navy">{v.capacity}</dd></div>
-                  <div><dt className="text-muted-foreground">Volume</dt><dd className="font-semibold text-navy">{v.volume}</dd></div>
-                  <div className="col-span-2"><dt className="text-muted-foreground">Temperature</dt><dd className="font-semibold text-primary">{v.tempRange}</dd></div>
+                  <div>
+                    <dt className="text-muted-foreground">Capacity</dt>
+                    <dd className="font-semibold text-navy">{v.capacity}</dd>
+                  </div>
+                  <div>
+                    <dt className="text-muted-foreground">Volume</dt>
+                    <dd className="font-semibold text-navy">{v.volume}</dd>
+                  </div>
+                  <div className="col-span-2">
+                    <dt className="text-muted-foreground">Temperature</dt>
+                    <dd className="font-semibold text-primary">{v.temp_range}</dd>
+                  </div>
                 </dl>
               </div>
             ))}
@@ -221,20 +346,44 @@ function FleetSection() {
   );
 }
 
-function WhyUs() {
+function WhyUs({
+  images,
+}: {
+  images: Awaited<ReturnType<typeof import("@/lib/images.functions").listSiteImagesPublic>>;
+}) {
+  const interior = pickImage(images, "cold_chain_interior", {
+    src: interiorImg,
+    alt: "Interior of a refrigerated van maintaining sub-zero temperature",
+  });
   const items = [
-    { icon: ThermometerSnowflake, title: "Precision temperature control", desc: "Continuous monitoring with calibrated loggers. Every delivery, fully traceable." },
-    { icon: Clock, title: "24/7 dispatch", desc: "Round-the-clock availability with emergency response across all seven emirates." },
-    { icon: Shield, title: "Compliance-first", desc: "Dubai Municipality permits, HACCP-aligned handling, GDP-aware pharma routes." },
-    { icon: Truck, title: "Modern maintained fleet", desc: "Regularly serviced chiller vans, freezer trucks and pickups — always road-ready." },
+    {
+      icon: ThermometerSnowflake,
+      title: "Precision temperature control",
+      desc: "Continuous monitoring with calibrated loggers. Every delivery, fully traceable.",
+    },
+    {
+      icon: Clock,
+      title: "24/7 dispatch",
+      desc: "Round-the-clock availability with emergency response across all seven emirates.",
+    },
+    {
+      icon: Shield,
+      title: "Compliance-first",
+      desc: "Dubai Municipality permits, HACCP-aligned handling, GDP-aware pharma routes.",
+    },
+    {
+      icon: Truck,
+      title: "Modern maintained fleet",
+      desc: "Regularly serviced chiller vans, freezer trucks and pickups — always road-ready.",
+    },
   ];
   return (
     <section className="container-page py-24">
       <div className="grid gap-14 lg:grid-cols-2 lg:items-center">
         <div className="relative">
           <img
-            src={interiorImg}
-            alt="Interior of a refrigerated van maintaining sub-zero temperature"
+            src={interior.src}
+            alt={interior.alt}
             width={1280}
             height={960}
             loading="lazy"
@@ -244,7 +393,9 @@ function WhyUs() {
             <div className="flex items-center gap-2 text-primary font-bold">
               <ThermometerSnowflake className="h-5 w-5" /> −18.2°C
             </div>
-            <div className="mt-1 text-xs text-muted-foreground">Live cargo temperature during last frozen-goods run.</div>
+            <div className="mt-1 text-xs text-muted-foreground">
+              Live cargo temperature during last frozen-goods run.
+            </div>
           </div>
         </div>
         <div>
@@ -273,7 +424,10 @@ function IndustriesStrip() {
     <section className="border-y border-border bg-navy overflow-hidden py-8">
       <div className="flex items-center animate-marquee whitespace-nowrap">
         {list.map((i, idx) => (
-          <span key={idx} className="mx-8 text-white/70 font-display text-xl sm:text-2xl font-semibold flex items-center gap-8">
+          <span
+            key={idx}
+            className="mx-8 text-white/70 font-display text-xl sm:text-2xl font-semibold flex items-center gap-8"
+          >
             {i}
             <Snowflake className="h-4 w-4 text-secondary/60" aria-hidden />
           </span>
@@ -320,21 +474,29 @@ function CoverageSection() {
 
 // Inline lazy wrapper: static import is fine here, kept as component boundary.
 import { UAEMap } from "@/components/UAEMap";
-function UAEMapLazy() { return <UAEMap />; }
+function UAEMapLazy() {
+  return <UAEMap />;
+}
 
 function TestimonialsSection() {
   const testimonials = [
     {
-      quote: "IQRAR has become our default chiller partner for daily hotel supply runs. Their drivers understand cold-chain — not just delivery.",
-      name: "Operations Manager", role: "5-Star Hotel, Dubai Marina",
+      quote:
+        "IQRAR has become our default chiller partner for daily hotel supply runs. Their drivers understand cold-chain — not just delivery.",
+      name: "Operations Manager",
+      role: "5-Star Hotel, Dubai Marina",
     },
     {
-      quote: "Temperature logs on every trip, on-time pickups, and a team that answers WhatsApp at 3am. That's rare in this industry.",
-      name: "Logistics Lead", role: "Pharma Distributor, Abu Dhabi",
+      quote:
+        "Temperature logs on every trip, on-time pickups, and a team that answers WhatsApp at 3am. That's rare in this industry.",
+      name: "Logistics Lead",
+      role: "Pharma Distributor, Abu Dhabi",
     },
     {
-      quote: "We moved 4 tons of frozen seafood from Fujairah to Sharjah with zero temperature deviation. Highly recommended.",
-      name: "Procurement Head", role: "Seafood Wholesaler",
+      quote:
+        "We moved 4 tons of frozen seafood from Fujairah to Sharjah with zero temperature deviation. Highly recommended.",
+      name: "Procurement Head",
+      role: "Seafood Wholesaler",
     },
   ];
   return (
@@ -343,7 +505,10 @@ function TestimonialsSection() {
         <SectionHeader eyebrow="Testimonials" title="Trusted by UAE's cold-chain operators." />
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {testimonials.map((t) => (
-            <figure key={t.name} className="rounded-2xl bg-white p-7 border border-border shadow-card flex flex-col">
+            <figure
+              key={t.name}
+              className="rounded-2xl bg-white p-7 border border-border shadow-card flex flex-col"
+            >
               <div className="flex gap-0.5 text-primary" aria-label="5 star rating">
                 {Array.from({ length: 5 }).map((_, i) => (
                   <Star key={i} className="h-4 w-4 fill-current" />
@@ -362,7 +527,7 @@ function TestimonialsSection() {
   );
 }
 
-function FaqSection() {
+function FaqSection({ faqs }: { faqs: Awaited<ReturnType<typeof listFaqsPublic>> }) {
   return (
     <section className="container-page py-24">
       <div className="grid gap-12 lg:grid-cols-3">
@@ -372,18 +537,23 @@ function FaqSection() {
             title="Answers, before you ask."
             desc="Everything you need to know about our chiller and freezer transport services."
           />
-          <Link to="/faq" className="mt-6 inline-flex items-center gap-1 text-primary font-semibold text-sm hover:gap-2 transition-all">
+          <Link
+            to="/faq"
+            className="mt-6 inline-flex items-center gap-1 text-primary font-semibold text-sm hover:gap-2 transition-all"
+          >
             See all FAQs <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
         <div className="lg:col-span-2 divide-y divide-border rounded-2xl border border-border bg-card overflow-hidden">
-          {FAQS.slice(0, 5).map((f) => (
-            <details key={f.q} className="group p-6">
+          {faqs.slice(0, 5).map((f) => (
+            <details key={f.id} className="group p-6">
               <summary className="flex cursor-pointer items-center justify-between gap-4 font-display font-semibold text-navy list-none">
-                {f.q}
-                <span className="h-8 w-8 rounded-full bg-accent text-primary flex items-center justify-center transition-transform group-open:rotate-45">+</span>
+                {f.question}
+                <span className="h-8 w-8 rounded-full bg-accent text-primary flex items-center justify-center transition-transform group-open:rotate-45">
+                  +
+                </span>
               </summary>
-              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{f.a}</p>
+              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{f.answer}</p>
             </details>
           ))}
         </div>
@@ -392,7 +562,11 @@ function FaqSection() {
   );
 }
 
-function CTASection() {
+function CTASection({ settings }: { settings: Record<string, string | null> }) {
+  const phone = getSetting(settings, "site_phone", SITE.phone);
+  const phoneHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
+  const whatsapp = getSetting(settings, "site_whatsapp", SITE.whatsapp);
+  const whatsappHref = `https://wa.me/${whatsapp}?text=Hello%20IQRAR%2C%20I%20need%20a%20chiller%20van%20quote.`;
   return (
     <section className="container-page pb-24">
       <div className="relative overflow-hidden rounded-3xl gradient-brand text-white p-10 sm:p-14 shadow-elegant">
@@ -400,15 +574,17 @@ function CTASection() {
         <div className="absolute -left-10 -top-10 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
         <div className="relative grid gap-8 lg:grid-cols-2 lg:items-center">
           <div>
-            <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">Need a chiller van today?</h2>
+            <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
+              Need a chiller van today?
+            </h2>
             <p className="mt-3 text-white/85 max-w-lg">
-              Message us on WhatsApp for an instant quote, or call our 24/7 dispatch line.
-              We usually reply within minutes.
+              Message us on WhatsApp for an instant quote, or call our 24/7 dispatch line. We
+              usually reply within minutes.
             </p>
           </div>
           <div className="flex flex-wrap gap-3 lg:justify-end">
             <a
-              href={SITE.whatsappHref}
+              href={whatsappHref}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-white text-primary px-6 py-3.5 text-sm font-semibold hover:bg-ice"
@@ -416,10 +592,10 @@ function CTASection() {
               <MessageCircle className="h-4 w-4" /> WhatsApp Us
             </a>
             <a
-              href={SITE.phoneHref}
+              href={phoneHref}
               className="inline-flex items-center gap-2 rounded-full bg-navy/40 backdrop-blur border border-white/30 text-white px-6 py-3.5 text-sm font-semibold hover:bg-navy/60"
             >
-              <Phone className="h-4 w-4" /> {SITE.phone}
+              <Phone className="h-4 w-4" /> {phone}
             </a>
           </div>
         </div>

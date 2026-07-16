@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Mail, Phone, MapPin, MessageCircle, Send, CheckCircle2 } from "lucide-react";
 import { z } from "zod";
 import { SITE } from "@/lib/site";
+import { useSiteSettings, getSetting } from "@/lib/settings.query";
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Please enter your name").max(100),
@@ -21,9 +22,16 @@ export const Route = createFileRoute("/contact")({
   head: () => ({
     meta: [
       { title: "Contact IQRAR Chiller Van Transport | Get a Quote — UAE" },
-      { name: "description", content: "Contact IQRAR for chiller van and freezer truck rental across the UAE. WhatsApp +971 50 598 6571, 24/7 dispatch and instant quotes." },
+      {
+        name: "description",
+        content:
+          "Contact IQRAR for chiller van and freezer truck rental across the UAE. WhatsApp +971 50 598 6571, 24/7 dispatch and instant quotes.",
+      },
       { property: "og:title", content: "Contact IQRAR Chiller Van Transport" },
-      { property: "og:description", content: "Get an instant quote for refrigerated transport across all seven emirates." },
+      {
+        property: "og:description",
+        content: "Get an instant quote for refrigerated transport across all seven emirates.",
+      },
       { property: "og:url", content: "/contact" },
     ],
     links: [{ rel: "canonical", href: "/contact" }],
@@ -34,6 +42,13 @@ export const Route = createFileRoute("/contact")({
 function ContactPage() {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const { data: settings } = useSiteSettings();
+  const phone = getSetting(settings, "site_phone", SITE.phone);
+  const phoneHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
+  const whatsapp = getSetting(settings, "site_whatsapp", SITE.whatsapp);
+  const whatsappHref = `https://wa.me/${whatsapp}?text=Hello%20IQRAR%2C%20I%20need%20a%20chiller%20van%20quote.`;
+  const email = getSetting(settings, "site_email", SITE.email);
+  const address = getSetting(settings, "site_address", SITE.address);
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -64,14 +79,17 @@ function ContactPage() {
       `Temperature: ${d.temperature}`,
       `Duration: ${d.duration}`,
       d.message ? `Notes: ${d.message}` : null,
-    ].filter(Boolean).join("\n");
-    const url = `https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(msg)}`;
+    ]
+      .filter(Boolean)
+      .join("\n");
+    const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`;
     window.open(url, "_blank", "noopener");
     setStatus("success");
     form.reset();
   }
 
-  const inputCls = "mt-1 block w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary transition";
+  const inputCls =
+    "mt-1 block w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary transition";
 
   return (
     <section className="container-page py-16">
@@ -84,46 +102,78 @@ function ContactPage() {
             Get an instant chiller van quote.
           </h1>
           <p className="mt-4 text-muted-foreground">
-            Send the form and we'll open WhatsApp with your details filled in — reply usually within minutes, 24/7.
+            Send the form and we'll open WhatsApp with your details filled in — reply usually within
+            minutes, 24/7.
           </p>
 
           <div className="mt-8 space-y-4">
-            <a href={SITE.phoneHref} className="flex items-center gap-4 rounded-2xl border border-border bg-card p-4 hover:border-primary hover:bg-accent transition-colors">
-              <div className="h-11 w-11 rounded-xl gradient-brand text-white flex items-center justify-center"><Phone className="h-5 w-5" /></div>
+            <a
+              href={phoneHref}
+              className="flex items-center gap-4 rounded-2xl border border-border bg-card p-4 hover:border-primary hover:bg-accent transition-colors"
+            >
+              <div className="h-11 w-11 rounded-xl gradient-brand text-white flex items-center justify-center">
+                <Phone className="h-5 w-5" />
+              </div>
               <div>
-                <div className="text-xs uppercase tracking-wider text-muted-foreground">Call 24/7</div>
-                <div className="font-semibold text-navy">{SITE.phone}</div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Call 24/7
+                </div>
+                <div className="font-semibold text-navy">{phone}</div>
               </div>
             </a>
-            <a href={SITE.whatsappHref} target="_blank" rel="noopener noreferrer" className="flex items-center gap-4 rounded-2xl border border-border bg-card p-4 hover:border-primary hover:bg-accent transition-colors">
-              <div className="h-11 w-11 rounded-xl bg-[#25D366] text-white flex items-center justify-center"><MessageCircle className="h-5 w-5" /></div>
+            <a
+              href={whatsappHref}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-4 rounded-2xl border border-border bg-card p-4 hover:border-primary hover:bg-accent transition-colors"
+            >
+              <div className="h-11 w-11 rounded-xl bg-[#25D366] text-white flex items-center justify-center">
+                <MessageCircle className="h-5 w-5" />
+              </div>
               <div>
-                <div className="text-xs uppercase tracking-wider text-muted-foreground">WhatsApp</div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground">
+                  WhatsApp
+                </div>
                 <div className="font-semibold text-navy">Chat with dispatch</div>
               </div>
             </a>
-            <a href={`mailto:${SITE.email}`} className="flex items-center gap-4 rounded-2xl border border-border bg-card p-4 hover:border-primary hover:bg-accent transition-colors">
-              <div className="h-11 w-11 rounded-xl bg-navy text-white flex items-center justify-center"><Mail className="h-5 w-5" /></div>
+            <a
+              href={`mailto:${email}`}
+              className="flex items-center gap-4 rounded-2xl border border-border bg-card p-4 hover:border-primary hover:bg-accent transition-colors"
+            >
+              <div className="h-11 w-11 rounded-xl bg-navy text-white flex items-center justify-center">
+                <Mail className="h-5 w-5" />
+              </div>
               <div className="min-w-0">
                 <div className="text-xs uppercase tracking-wider text-muted-foreground">Email</div>
-                <div className="font-semibold text-navy truncate">{SITE.email}</div>
+                <div className="font-semibold text-navy truncate">{email}</div>
               </div>
             </a>
             <div className="flex items-center gap-4 rounded-2xl border border-border bg-card p-4">
-              <div className="h-11 w-11 rounded-xl bg-accent text-primary flex items-center justify-center"><MapPin className="h-5 w-5" /></div>
+              <div className="h-11 w-11 rounded-xl bg-accent text-primary flex items-center justify-center">
+                <MapPin className="h-5 w-5" />
+              </div>
               <div>
-                <div className="text-xs uppercase tracking-wider text-muted-foreground">Based in</div>
-                <div className="font-semibold text-navy">{SITE.address}</div>
+                <div className="text-xs uppercase tracking-wider text-muted-foreground">
+                  Based in
+                </div>
+                <div className="font-semibold text-navy">{address}</div>
               </div>
             </div>
           </div>
         </aside>
 
-        <form onSubmit={onSubmit} noValidate className="lg:col-span-3 rounded-3xl border border-border bg-card shadow-card p-6 sm:p-8">
+        <form
+          onSubmit={onSubmit}
+          noValidate
+          className="lg:col-span-3 rounded-3xl border border-border bg-card shadow-card p-6 sm:p-8"
+        >
           {status === "success" && (
             <div className="mb-6 rounded-xl bg-green-50 border border-green-200 text-green-800 p-4 flex items-start gap-3">
               <CheckCircle2 className="h-5 w-5 mt-0.5 shrink-0" />
-              <div className="text-sm">Your quote request opened in WhatsApp. If it didn't, message us directly at {SITE.phone}.</div>
+              <div className="text-sm">
+                Your quote request opened in WhatsApp. If it didn't, message us directly at {phone}.
+              </div>
             </div>
           )}
 
@@ -135,20 +185,38 @@ function ContactPage() {
               <input name="company" className={inputCls} placeholder="Optional" />
             </Field>
             <Field label="Phone / WhatsApp*" name="phone" error={errors.phone}>
-              <input name="phone" required inputMode="tel" className={inputCls} placeholder="+971 5x xxx xxxx" />
+              <input
+                name="phone"
+                required
+                inputMode="tel"
+                className={inputCls}
+                placeholder="+971 5x xxx xxxx"
+              />
             </Field>
             <Field label="Email" name="email" error={errors.email}>
               <input name="email" type="email" className={inputCls} placeholder="you@company.ae" />
             </Field>
             <Field label="Pickup location*" name="pickup" error={errors.pickup}>
-              <input name="pickup" required className={inputCls} placeholder="e.g. Al Quoz, Dubai" />
+              <input
+                name="pickup"
+                required
+                className={inputCls}
+                placeholder="e.g. Al Quoz, Dubai"
+              />
             </Field>
             <Field label="Drop-off location*" name="dropoff" error={errors.dropoff}>
-              <input name="dropoff" required className={inputCls} placeholder="e.g. Yas Island, Abu Dhabi" />
+              <input
+                name="dropoff"
+                required
+                className={inputCls}
+                placeholder="e.g. Yas Island, Abu Dhabi"
+              />
             </Field>
             <Field label="Vehicle*" name="vehicle" error={errors.vehicle}>
               <select name="vehicle" required defaultValue="" className={inputCls}>
-                <option value="" disabled>Select a vehicle</option>
+                <option value="" disabled>
+                  Select a vehicle
+                </option>
                 <option>Toyota Hiace Chiller Van</option>
                 <option>Nissan Urvan Chiller Van</option>
                 <option>1 Ton Pickup Chiller</option>
@@ -159,16 +227,25 @@ function ContactPage() {
             </Field>
             <Field label="Temperature*" name="temperature" error={errors.temperature}>
               <select name="temperature" required defaultValue="" className={inputCls}>
-                <option value="" disabled>Select range</option>
+                <option value="" disabled>
+                  Select range
+                </option>
                 <option>+2°C to +8°C (Chill)</option>
                 <option>0°C to +2°C (Fresh)</option>
                 <option>−18°C to −25°C (Freeze)</option>
                 <option>Ambient / Not sure</option>
               </select>
             </Field>
-            <Field label="Rental duration*" name="duration" error={errors.duration} className="sm:col-span-2">
+            <Field
+              label="Rental duration*"
+              name="duration"
+              error={errors.duration}
+              className="sm:col-span-2"
+            >
               <select name="duration" required defaultValue="" className={inputCls}>
-                <option value="" disabled>Select duration</option>
+                <option value="" disabled>
+                  Select duration
+                </option>
                 <option>One-time trip</option>
                 <option>Hourly</option>
                 <option>Daily</option>
@@ -177,8 +254,18 @@ function ContactPage() {
                 <option>Long-term contract</option>
               </select>
             </Field>
-            <Field label="Notes / special instructions" name="message" error={errors.message} className="sm:col-span-2">
-              <textarea name="message" rows={4} className={inputCls} placeholder="Cargo type, dates, dimensions, anything else." />
+            <Field
+              label="Notes / special instructions"
+              name="message"
+              error={errors.message}
+              className="sm:col-span-2"
+            >
+              <textarea
+                name="message"
+                rows={4}
+                className={inputCls}
+                placeholder="Cargo type, dates, dimensions, anything else."
+              />
             </Field>
           </div>
 
@@ -189,7 +276,8 @@ function ContactPage() {
             <Send className="h-4 w-4" /> Send Quote Request
           </button>
           <p className="mt-3 text-xs text-muted-foreground">
-            By submitting, you agree to be contacted about your request. We never share your details.
+            By submitting, you agree to be contacted about your request. We never share your
+            details.
           </p>
         </form>
       </div>
@@ -198,8 +286,18 @@ function ContactPage() {
 }
 
 function Field({
-  label, name, error, children, className = "",
-}: { label: string; name: string; error?: string; children: React.ReactNode; className?: string }) {
+  label,
+  name,
+  error,
+  children,
+  className = "",
+}: {
+  label: string;
+  name: string;
+  error?: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
   return (
     <label htmlFor={name} className={`block ${className}`}>
       <span className="text-xs font-semibold uppercase tracking-wider text-navy">{label}</span>

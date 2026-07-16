@@ -2,10 +2,14 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, Phone } from "lucide-react";
 import { NAV_LINKS, SITE } from "@/lib/site";
+import { useSiteSettings, getSetting } from "@/lib/settings.query";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const { data: settings } = useSiteSettings();
+  const phone = getSetting(settings, "site_phone", SITE.phone);
+  const phoneHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
 
   useEffect(() => {
     const on = () => setScrolled(window.scrollY > 12);
@@ -55,11 +59,11 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2">
           <a
-            href={SITE.phoneHref}
+            href={phoneHref}
             className="hidden md:inline-flex items-center gap-2 text-sm font-semibold text-navy hover:text-primary transition-colors"
           >
             <Phone className="h-4 w-4" aria-hidden />
-            {SITE.phone}
+            {phone}
           </a>
           <Link
             to="/contact"

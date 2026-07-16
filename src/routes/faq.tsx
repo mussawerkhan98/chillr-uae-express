@@ -1,13 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { FAQS } from "@/lib/site";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { listFaqsPublic } from "@/lib/faqs.functions";
+
+const faqsQuery = () =>
+  queryOptions({ queryKey: ["faqs", "list"], queryFn: () => listFaqsPublic() });
 
 export const Route = createFileRoute("/faq")({
-  head: () => ({
+  loader: ({ context }) => context.queryClient.ensureQueryData(faqsQuery()),
+  head: ({ loaderData }) => ({
     meta: [
       { title: "FAQ — Chiller Van Rental UAE | IQRAR Chiller Van Transport" },
-      { name: "description", content: "Frequently asked questions about IQRAR's refrigerated van and chiller truck transport across the UAE — temperature ranges, coverage, dispatch, compliance and quotes." },
+      {
+        name: "description",
+        content:
+          "Frequently asked questions about IQRAR's refrigerated van and chiller truck transport across the UAE — temperature ranges, coverage, dispatch, compliance and quotes.",
+      },
       { property: "og:title", content: "FAQ — IQRAR Chiller Van Transport UAE" },
-      { property: "og:description", content: "Answers about our refrigerated transport across the UAE." },
+      {
+        property: "og:description",
+        content: "Answers about our refrigerated transport across the UAE.",
+      },
       { property: "og:url", content: "/faq" },
     ],
     links: [{ rel: "canonical", href: "/faq" }],
@@ -17,10 +29,10 @@ export const Route = createFileRoute("/faq")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "FAQPage",
-          mainEntity: FAQS.map((f) => ({
+          mainEntity: (loaderData ?? []).map((f) => ({
             "@type": "Question",
-            name: f.q,
-            acceptedAnswer: { "@type": "Answer", text: f.a },
+            name: f.question,
+            acceptedAnswer: { "@type": "Answer", text: f.answer },
           })),
         }),
       },
@@ -30,6 +42,8 @@ export const Route = createFileRoute("/faq")({
 });
 
 function FaqPage() {
+  const { data: faqs } = useSuspenseQuery(faqsQuery());
+
   return (
     <section className="container-page py-16">
       <div className="max-w-3xl">
@@ -44,17 +58,25 @@ function FaqPage() {
         </p>
       </div>
 
-      <div className="mt-10 max-w-3xl divide-y divide-border rounded-2xl border border-border bg-card overflow-hidden shadow-card">
-        {FAQS.map((f) => (
-          <details key={f.q} className="group p-6">
-            <summary className="flex cursor-pointer items-center justify-between gap-4 font-display text-lg font-semibold text-navy list-none">
-              {f.q}
-              <span className="h-8 w-8 shrink-0 rounded-full bg-accent text-primary flex items-center justify-center transition-transform group-open:rotate-45 text-xl leading-none">+</span>
-            </summary>
-            <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{f.a}</p>
-          </details>
-        ))}
-      </div>
+      {faqs.length === 0 ? (
+        <div className="mt-10 max-w-3xl rounded-2xl border border-dashed border-border p-16 text-center">
+          <p className="text-muted-foreground">FAQs coming soon.</p>
+        </div>
+      ) : (
+        <div className="mt-10 max-w-3xl divide-y divide-border rounded-2xl border border-border bg-card overflow-hidden shadow-card">
+          {faqs.map((f) => (
+            <details key={f.id} className="group p-6">
+              <summary className="flex cursor-pointer items-center justify-between gap-4 font-display text-lg font-semibold text-navy list-none">
+                {f.question}
+                <span className="h-8 w-8 shrink-0 rounded-full bg-accent text-primary flex items-center justify-center transition-transform group-open:rotate-45 text-xl leading-none">
+                  +
+                </span>
+              </summary>
+              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{f.answer}</p>
+            </details>
+          ))}
+        </div>
+      )}
     </section>
   );
 }

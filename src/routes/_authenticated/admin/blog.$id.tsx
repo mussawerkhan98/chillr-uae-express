@@ -25,8 +25,14 @@ function EditPost() {
   });
 
   const [form, setForm] = useState({
-    title: "", slug: "", excerpt: "", cover_image_url: null as string | null,
-    content_html: "", meta_title: "", meta_description: "", published: false,
+    title: "",
+    slug: "",
+    excerpt: "",
+    cover_image_url: null as string | null,
+    content_html: "",
+    meta_title: "",
+    meta_description: "",
+    published: false,
   });
 
   useEffect(() => {
@@ -68,17 +74,29 @@ function EditPost() {
   });
 
   if (isLoading) {
-    return <div className="p-12 flex items-center justify-center"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>;
+    return (
+      <div className="p-12 flex items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+      </div>
+    );
   }
 
   return (
     <div className="p-8 max-w-4xl space-y-6">
       <div className="flex items-center justify-between">
-        <Link to="/admin/blog" className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+        <Link
+          to="/admin/blog"
+          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+        >
           <ArrowLeft className="h-4 w-4" /> Back to posts
         </Link>
         {form.published && (
-          <a href={`/blog/${form.slug}`} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 text-sm text-primary hover:underline">
+          <a
+            href={`/blog/${form.slug}`}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+          >
             View live <ExternalLink className="h-3 w-3" />
           </a>
         )}
@@ -88,9 +106,15 @@ function EditPost() {
       <PostForm form={form} setForm={setForm} />
 
       <div className="flex items-center justify-end gap-3 pt-4 border-t">
-        <Button variant="outline" onClick={() => navigate({ to: "/admin/blog" })}>Cancel</Button>
+        <Button variant="outline" onClick={() => navigate({ to: "/admin/blog" })}>
+          Cancel
+        </Button>
         <Button onClick={() => save.mutate()} disabled={save.isPending || !form.title.trim()}>
-          {save.isPending ? <Loader2 className="h-4 w-4 mr-1 animate-spin" /> : <Save className="h-4 w-4 mr-1" />}
+          {save.isPending ? (
+            <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+          ) : (
+            <Save className="h-4 w-4 mr-1" />
+          )}
           Save changes
         </Button>
       </div>

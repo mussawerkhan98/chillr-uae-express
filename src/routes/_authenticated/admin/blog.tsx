@@ -44,7 +44,9 @@ function BlogList() {
       </header>
 
       {isLoading ? (
-        <div className="flex items-center justify-center py-16"><Loader2 className="h-6 w-6 animate-spin text-muted-foreground" /></div>
+        <div className="flex items-center justify-center py-16">
+          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        </div>
       ) : posts.length === 0 ? (
         <div className="rounded-2xl border border-dashed border-border p-16 text-center">
           <p className="text-muted-foreground">No posts yet. Create your first article.</p>
@@ -92,7 +94,8 @@ function BlogList() {
                     </Link>
                     <button
                       onClick={() => {
-                        if (confirm(`Delete "${p.title}"? This cannot be undone.`)) del.mutate(p.id);
+                        if (confirm(`Delete "${p.title}"? This cannot be undone.`))
+                          del.mutate(p.id);
                       }}
                       className="h-8 w-8 rounded-md hover:bg-destructive/10 text-destructive flex items-center justify-center"
                       title="Delete"

@@ -7,11 +7,21 @@ export const Route = createFileRoute("/_authenticated/admin/")({
 
 const CARDS = [
   { to: "/admin/blog", label: "Blog posts", desc: "Write and publish articles", icon: FileText },
-  { to: "/admin/images", label: "Site photos", desc: "Swap hero and marketing images", icon: Images },
+  {
+    to: "/admin/images",
+    label: "Site photos",
+    desc: "Swap hero and marketing images",
+    icon: Images,
+  },
   { to: "/admin/fleet", label: "Fleet vehicles", desc: "Manage vans and trucks", icon: Truck },
   { to: "/admin/services", label: "Services", desc: "Edit service offerings", icon: Wrench },
   { to: "/admin/faqs", label: "FAQs", desc: "Update Q&A", icon: HelpCircle },
-  { to: "/admin/settings", label: "Site settings", desc: "Meta titles, contact info", icon: Settings },
+  {
+    to: "/admin/settings",
+    label: "Site settings",
+    desc: "Meta titles, contact info",
+    icon: Settings,
+  },
 ] as const;
 
 function AdminHome() {

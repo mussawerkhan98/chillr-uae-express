@@ -1,0 +1,94 @@
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { useMutation } from "@tanstack/react-query";
+import { useServerFn } from "@tanstack/react-start";
+import { useState } from "react";
+import { ArrowLeft, Save, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { adminCreateFaq } from "@/lib/faqs.functions";
+import { toast } from "sonner";
+
+export const Route = createFileRoute("/_authenticated/admin/faqs/new")({
+  component: NewFaq,
+});
+
+type FormState = { question: string; answer: string; sort_order: number };
+
+function NewFaq() {
+  const navigate = useNavigate();
+  const createFn = useServerFn(adminCreateFaq);
+  const [form, setForm] = useState<FormState>({ question: "", answer: "", sort_order: 0 });
+
+  const save = useMutation({
+    mutationFn: () => createFn({ data: form }),
+    onSuccess: ({ id }) => {
+      toast.success("FAQ created");
+      navigate({ to: "/admin/faqs/$id", params: { id } });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Save failed"),
+  });
+
+  return (
+    <div className="p-8 max-w-2xl space-y-6">
+      <Link
+        to="/admin/faqs"
+        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+      >
+        <ArrowLeft className="h-4 w-4" /> Back to FAQs
+      </Link>
+      <h1 className="font-display text-3xl font-bold text-navy">New FAQ</h1>
+
+      <FaqForm form={form} setForm={setForm} />
+
+      <div className="flex items-center justify-end gap-3 pt-4 border-t">
+        <Button variant="outline" onClick={() => navigate({ to: "/admin/faqs" })}>
+          Cancel
+        </Button>
+        <Button onClick={() => save.mutate()} disabled={save.isPending || !form.question.trim()}>
+          {save.isPending ? (
+            <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+          ) : (
+            <Save className="h-4 w-4 mr-1" />
+          )}
+          Save FAQ
+        </Button>
+      </div>
+    </div>
+  );
+}
+
+export function FaqForm({ form, setForm }: { form: FormState; setForm: (f: FormState) => void }) {
+  return (
+    <div className="space-y-6">
+      <div className="space-y-2">
+        <Label htmlFor="question">Question</Label>
+        <Input
+          id="question"
+          value={form.question}
+          onChange={(e) => setForm({ ...form, question: e.target.value })}
+          placeholder="What temperature ranges do you handle?"
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="answer">Answer</Label>
+        <Textarea
+          id="answer"
+          rows={4}
+          value={form.answer}
+          onChange={(e) => setForm({ ...form, answer: e.target.value })}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="sort_order">Sort order</Label>
+        <Input
+          id="sort_order"
+          type="number"
+          value={form.sort_order}
+          onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) || 0 })}
+        />
+      </div>
+    </div>
+  );
+}

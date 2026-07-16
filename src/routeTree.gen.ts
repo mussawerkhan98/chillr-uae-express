@@ -25,7 +25,18 @@ import { Route as LocationsCityRouteImport } from './routes/locations.$city'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
+import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
+import { Route as AuthenticatedAdminServicesRouteImport } from './routes/_authenticated/admin/services'
+import { Route as AuthenticatedAdminImagesRouteImport } from './routes/_authenticated/admin/images'
+import { Route as AuthenticatedAdminFleetRouteImport } from './routes/_authenticated/admin/fleet'
+import { Route as AuthenticatedAdminFaqsRouteImport } from './routes/_authenticated/admin/faqs'
 import { Route as AuthenticatedAdminBlogRouteImport } from './routes/_authenticated/admin/blog'
+import { Route as AuthenticatedAdminServicesNewRouteImport } from './routes/_authenticated/admin/services.new'
+import { Route as AuthenticatedAdminServicesIdRouteImport } from './routes/_authenticated/admin/services.$id'
+import { Route as AuthenticatedAdminFleetNewRouteImport } from './routes/_authenticated/admin/fleet.new'
+import { Route as AuthenticatedAdminFleetIdRouteImport } from './routes/_authenticated/admin/fleet.$id'
+import { Route as AuthenticatedAdminFaqsNewRouteImport } from './routes/_authenticated/admin/faqs.new'
+import { Route as AuthenticatedAdminFaqsIdRouteImport } from './routes/_authenticated/admin/faqs.$id'
 import { Route as AuthenticatedAdminBlogNewRouteImport } from './routes/_authenticated/admin/blog.new'
 import { Route as AuthenticatedAdminBlogIdRouteImport } from './routes/_authenticated/admin/blog.$id'
 
@@ -108,11 +119,75 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRouteRoute,
 } as any)
+const AuthenticatedAdminSettingsRoute =
+  AuthenticatedAdminSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminServicesRoute =
+  AuthenticatedAdminServicesRouteImport.update({
+    id: '/services',
+    path: '/services',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminImagesRoute =
+  AuthenticatedAdminImagesRouteImport.update({
+    id: '/images',
+    path: '/images',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminFleetRoute = AuthenticatedAdminFleetRouteImport.update({
+  id: '/fleet',
+  path: '/fleet',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
+const AuthenticatedAdminFaqsRoute = AuthenticatedAdminFaqsRouteImport.update({
+  id: '/faqs',
+  path: '/faqs',
+  getParentRoute: () => AuthenticatedAdminRouteRoute,
+} as any)
 const AuthenticatedAdminBlogRoute = AuthenticatedAdminBlogRouteImport.update({
   id: '/blog',
   path: '/blog',
   getParentRoute: () => AuthenticatedAdminRouteRoute,
 } as any)
+const AuthenticatedAdminServicesNewRoute =
+  AuthenticatedAdminServicesNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthenticatedAdminServicesRoute,
+  } as any)
+const AuthenticatedAdminServicesIdRoute =
+  AuthenticatedAdminServicesIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminServicesRoute,
+  } as any)
+const AuthenticatedAdminFleetNewRoute =
+  AuthenticatedAdminFleetNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthenticatedAdminFleetRoute,
+  } as any)
+const AuthenticatedAdminFleetIdRoute =
+  AuthenticatedAdminFleetIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminFleetRoute,
+  } as any)
+const AuthenticatedAdminFaqsNewRoute =
+  AuthenticatedAdminFaqsNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthenticatedAdminFaqsRoute,
+  } as any)
+const AuthenticatedAdminFaqsIdRoute =
+  AuthenticatedAdminFaqsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminFaqsRoute,
+  } as any)
 const AuthenticatedAdminBlogNewRoute =
   AuthenticatedAdminBlogNewRouteImport.update({
     id: '/new',
@@ -142,9 +217,20 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/locations/$city': typeof LocationsCityRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRouteWithChildren
+  '/admin/faqs': typeof AuthenticatedAdminFaqsRouteWithChildren
+  '/admin/fleet': typeof AuthenticatedAdminFleetRouteWithChildren
+  '/admin/images': typeof AuthenticatedAdminImagesRoute
+  '/admin/services': typeof AuthenticatedAdminServicesRouteWithChildren
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/blog/$id': typeof AuthenticatedAdminBlogIdRoute
   '/admin/blog/new': typeof AuthenticatedAdminBlogNewRoute
+  '/admin/faqs/$id': typeof AuthenticatedAdminFaqsIdRoute
+  '/admin/faqs/new': typeof AuthenticatedAdminFaqsNewRoute
+  '/admin/fleet/$id': typeof AuthenticatedAdminFleetIdRoute
+  '/admin/fleet/new': typeof AuthenticatedAdminFleetNewRoute
+  '/admin/services/$id': typeof AuthenticatedAdminServicesIdRoute
+  '/admin/services/new': typeof AuthenticatedAdminServicesNewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -161,9 +247,20 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/locations/$city': typeof LocationsCityRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRouteWithChildren
+  '/admin/faqs': typeof AuthenticatedAdminFaqsRouteWithChildren
+  '/admin/fleet': typeof AuthenticatedAdminFleetRouteWithChildren
+  '/admin/images': typeof AuthenticatedAdminImagesRoute
+  '/admin/services': typeof AuthenticatedAdminServicesRouteWithChildren
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/blog/$id': typeof AuthenticatedAdminBlogIdRoute
   '/admin/blog/new': typeof AuthenticatedAdminBlogNewRoute
+  '/admin/faqs/$id': typeof AuthenticatedAdminFaqsIdRoute
+  '/admin/faqs/new': typeof AuthenticatedAdminFaqsNewRoute
+  '/admin/fleet/$id': typeof AuthenticatedAdminFleetIdRoute
+  '/admin/fleet/new': typeof AuthenticatedAdminFleetNewRoute
+  '/admin/services/$id': typeof AuthenticatedAdminServicesIdRoute
+  '/admin/services/new': typeof AuthenticatedAdminServicesNewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -183,9 +280,20 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/locations/$city': typeof LocationsCityRoute
   '/_authenticated/admin/blog': typeof AuthenticatedAdminBlogRouteWithChildren
+  '/_authenticated/admin/faqs': typeof AuthenticatedAdminFaqsRouteWithChildren
+  '/_authenticated/admin/fleet': typeof AuthenticatedAdminFleetRouteWithChildren
+  '/_authenticated/admin/images': typeof AuthenticatedAdminImagesRoute
+  '/_authenticated/admin/services': typeof AuthenticatedAdminServicesRouteWithChildren
+  '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/blog/$id': typeof AuthenticatedAdminBlogIdRoute
   '/_authenticated/admin/blog/new': typeof AuthenticatedAdminBlogNewRoute
+  '/_authenticated/admin/faqs/$id': typeof AuthenticatedAdminFaqsIdRoute
+  '/_authenticated/admin/faqs/new': typeof AuthenticatedAdminFaqsNewRoute
+  '/_authenticated/admin/fleet/$id': typeof AuthenticatedAdminFleetIdRoute
+  '/_authenticated/admin/fleet/new': typeof AuthenticatedAdminFleetNewRoute
+  '/_authenticated/admin/services/$id': typeof AuthenticatedAdminServicesIdRoute
+  '/_authenticated/admin/services/new': typeof AuthenticatedAdminServicesNewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -205,9 +313,20 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/locations/$city'
     | '/admin/blog'
+    | '/admin/faqs'
+    | '/admin/fleet'
+    | '/admin/images'
+    | '/admin/services'
+    | '/admin/settings'
     | '/admin/'
     | '/admin/blog/$id'
     | '/admin/blog/new'
+    | '/admin/faqs/$id'
+    | '/admin/faqs/new'
+    | '/admin/fleet/$id'
+    | '/admin/fleet/new'
+    | '/admin/services/$id'
+    | '/admin/services/new'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -224,9 +343,20 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/locations/$city'
     | '/admin/blog'
+    | '/admin/faqs'
+    | '/admin/fleet'
+    | '/admin/images'
+    | '/admin/services'
+    | '/admin/settings'
     | '/admin'
     | '/admin/blog/$id'
     | '/admin/blog/new'
+    | '/admin/faqs/$id'
+    | '/admin/faqs/new'
+    | '/admin/fleet/$id'
+    | '/admin/fleet/new'
+    | '/admin/services/$id'
+    | '/admin/services/new'
   id:
     | '__root__'
     | '/'
@@ -245,9 +375,20 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/locations/$city'
     | '/_authenticated/admin/blog'
+    | '/_authenticated/admin/faqs'
+    | '/_authenticated/admin/fleet'
+    | '/_authenticated/admin/images'
+    | '/_authenticated/admin/services'
+    | '/_authenticated/admin/settings'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/blog/$id'
     | '/_authenticated/admin/blog/new'
+    | '/_authenticated/admin/faqs/$id'
+    | '/_authenticated/admin/faqs/new'
+    | '/_authenticated/admin/fleet/$id'
+    | '/_authenticated/admin/fleet/new'
+    | '/_authenticated/admin/services/$id'
+    | '/_authenticated/admin/services/new'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -379,12 +520,89 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/settings': {
+      id: '/_authenticated/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/services': {
+      id: '/_authenticated/admin/services'
+      path: '/services'
+      fullPath: '/admin/services'
+      preLoaderRoute: typeof AuthenticatedAdminServicesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/images': {
+      id: '/_authenticated/admin/images'
+      path: '/images'
+      fullPath: '/admin/images'
+      preLoaderRoute: typeof AuthenticatedAdminImagesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/fleet': {
+      id: '/_authenticated/admin/fleet'
+      path: '/fleet'
+      fullPath: '/admin/fleet'
+      preLoaderRoute: typeof AuthenticatedAdminFleetRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/faqs': {
+      id: '/_authenticated/admin/faqs'
+      path: '/faqs'
+      fullPath: '/admin/faqs'
+      preLoaderRoute: typeof AuthenticatedAdminFaqsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/blog': {
       id: '/_authenticated/admin/blog'
       path: '/blog'
       fullPath: '/admin/blog'
       preLoaderRoute: typeof AuthenticatedAdminBlogRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/services/new': {
+      id: '/_authenticated/admin/services/new'
+      path: '/new'
+      fullPath: '/admin/services/new'
+      preLoaderRoute: typeof AuthenticatedAdminServicesNewRouteImport
+      parentRoute: typeof AuthenticatedAdminServicesRoute
+    }
+    '/_authenticated/admin/services/$id': {
+      id: '/_authenticated/admin/services/$id'
+      path: '/$id'
+      fullPath: '/admin/services/$id'
+      preLoaderRoute: typeof AuthenticatedAdminServicesIdRouteImport
+      parentRoute: typeof AuthenticatedAdminServicesRoute
+    }
+    '/_authenticated/admin/fleet/new': {
+      id: '/_authenticated/admin/fleet/new'
+      path: '/new'
+      fullPath: '/admin/fleet/new'
+      preLoaderRoute: typeof AuthenticatedAdminFleetNewRouteImport
+      parentRoute: typeof AuthenticatedAdminFleetRoute
+    }
+    '/_authenticated/admin/fleet/$id': {
+      id: '/_authenticated/admin/fleet/$id'
+      path: '/$id'
+      fullPath: '/admin/fleet/$id'
+      preLoaderRoute: typeof AuthenticatedAdminFleetIdRouteImport
+      parentRoute: typeof AuthenticatedAdminFleetRoute
+    }
+    '/_authenticated/admin/faqs/new': {
+      id: '/_authenticated/admin/faqs/new'
+      path: '/new'
+      fullPath: '/admin/faqs/new'
+      preLoaderRoute: typeof AuthenticatedAdminFaqsNewRouteImport
+      parentRoute: typeof AuthenticatedAdminFaqsRoute
+    }
+    '/_authenticated/admin/faqs/$id': {
+      id: '/_authenticated/admin/faqs/$id'
+      path: '/$id'
+      fullPath: '/admin/faqs/$id'
+      preLoaderRoute: typeof AuthenticatedAdminFaqsIdRouteImport
+      parentRoute: typeof AuthenticatedAdminFaqsRoute
     }
     '/_authenticated/admin/blog/new': {
       id: '/_authenticated/admin/blog/new'
@@ -419,14 +637,73 @@ const AuthenticatedAdminBlogRouteWithChildren =
     AuthenticatedAdminBlogRouteChildren,
   )
 
+interface AuthenticatedAdminFaqsRouteChildren {
+  AuthenticatedAdminFaqsIdRoute: typeof AuthenticatedAdminFaqsIdRoute
+  AuthenticatedAdminFaqsNewRoute: typeof AuthenticatedAdminFaqsNewRoute
+}
+
+const AuthenticatedAdminFaqsRouteChildren: AuthenticatedAdminFaqsRouteChildren =
+  {
+    AuthenticatedAdminFaqsIdRoute: AuthenticatedAdminFaqsIdRoute,
+    AuthenticatedAdminFaqsNewRoute: AuthenticatedAdminFaqsNewRoute,
+  }
+
+const AuthenticatedAdminFaqsRouteWithChildren =
+  AuthenticatedAdminFaqsRoute._addFileChildren(
+    AuthenticatedAdminFaqsRouteChildren,
+  )
+
+interface AuthenticatedAdminFleetRouteChildren {
+  AuthenticatedAdminFleetIdRoute: typeof AuthenticatedAdminFleetIdRoute
+  AuthenticatedAdminFleetNewRoute: typeof AuthenticatedAdminFleetNewRoute
+}
+
+const AuthenticatedAdminFleetRouteChildren: AuthenticatedAdminFleetRouteChildren =
+  {
+    AuthenticatedAdminFleetIdRoute: AuthenticatedAdminFleetIdRoute,
+    AuthenticatedAdminFleetNewRoute: AuthenticatedAdminFleetNewRoute,
+  }
+
+const AuthenticatedAdminFleetRouteWithChildren =
+  AuthenticatedAdminFleetRoute._addFileChildren(
+    AuthenticatedAdminFleetRouteChildren,
+  )
+
+interface AuthenticatedAdminServicesRouteChildren {
+  AuthenticatedAdminServicesIdRoute: typeof AuthenticatedAdminServicesIdRoute
+  AuthenticatedAdminServicesNewRoute: typeof AuthenticatedAdminServicesNewRoute
+}
+
+const AuthenticatedAdminServicesRouteChildren: AuthenticatedAdminServicesRouteChildren =
+  {
+    AuthenticatedAdminServicesIdRoute: AuthenticatedAdminServicesIdRoute,
+    AuthenticatedAdminServicesNewRoute: AuthenticatedAdminServicesNewRoute,
+  }
+
+const AuthenticatedAdminServicesRouteWithChildren =
+  AuthenticatedAdminServicesRoute._addFileChildren(
+    AuthenticatedAdminServicesRouteChildren,
+  )
+
 interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminBlogRoute: typeof AuthenticatedAdminBlogRouteWithChildren
+  AuthenticatedAdminFaqsRoute: typeof AuthenticatedAdminFaqsRouteWithChildren
+  AuthenticatedAdminFleetRoute: typeof AuthenticatedAdminFleetRouteWithChildren
+  AuthenticatedAdminImagesRoute: typeof AuthenticatedAdminImagesRoute
+  AuthenticatedAdminServicesRoute: typeof AuthenticatedAdminServicesRouteWithChildren
+  AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
 const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren =
   {
     AuthenticatedAdminBlogRoute: AuthenticatedAdminBlogRouteWithChildren,
+    AuthenticatedAdminFaqsRoute: AuthenticatedAdminFaqsRouteWithChildren,
+    AuthenticatedAdminFleetRoute: AuthenticatedAdminFleetRouteWithChildren,
+    AuthenticatedAdminImagesRoute: AuthenticatedAdminImagesRoute,
+    AuthenticatedAdminServicesRoute:
+      AuthenticatedAdminServicesRouteWithChildren,
+    AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
     AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   }
 
@@ -485,3 +762,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
