@@ -89,20 +89,23 @@ export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server
       }
     );
 
-    const { data, error } = await supabase.auth.getClaims(token);
-    if (error || !data?.claims) {
+    // NOTE: manually patched (not regenerated). getClaims() does fast local
+    // JWT verification against a cached JWKS and can hard-fail with
+    // "invalid token" on brand-new/just-rotated Supabase projects before the
+    // signing keys have fully propagated, instead of falling back cleanly.
+    // getUser() does a live round-trip to the Auth server and is what the
+    // rest of the app already relies on successfully (e.g. the admin route
+    // guard), so it's used here for reliability.
+    const { data, error } = await supabase.auth.getUser(token);
+    if (error || !data?.user) {
       throw new Error('Unauthorized: Invalid token');
-    }
-
-    if (!data.claims.sub) {
-      throw new Error('Unauthorized: No user ID found in token');
     }
 
     return next({
       context: {
         supabase,
-        userId: data.claims.sub,
-        claims: data.claims,
+        userId: data.user.id,
+        claims: data.user,
       },
     });
   },
