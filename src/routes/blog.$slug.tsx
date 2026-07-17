@@ -15,6 +15,7 @@ const postQuery = (slug: string) =>
     },
   });
 
+
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ context, params }) => context.queryClient.ensureQueryData(postQuery(params.slug)),
   head: ({ loaderData }) => {
