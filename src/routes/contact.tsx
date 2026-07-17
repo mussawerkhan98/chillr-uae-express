@@ -3,7 +3,8 @@ import { useState } from "react";
 import { Mail, Phone, MapPin, MessageCircle, Send, CheckCircle2 } from "lucide-react";
 import { z } from "zod";
 import { SITE } from "@/lib/site";
-import { useSiteSettings, getSetting } from "@/lib/settings.query";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { settingsQuery, getSetting } from "@/lib/settings.query";
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Please enter your name").max(100),
@@ -42,7 +43,7 @@ export const Route = createFileRoute("/contact")({
 function ContactPage() {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const { data: settings } = useSiteSettings();
+  const { data: settings } = useSuspenseQuery(settingsQuery());
   const phone = getSetting(settings, "site_phone", SITE.phone);
   const phoneHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
   const whatsapp = getSetting(settings, "site_whatsapp", SITE.whatsapp);

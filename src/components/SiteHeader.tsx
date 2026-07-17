@@ -2,12 +2,13 @@ import { Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Menu, X, Phone } from "lucide-react";
 import { NAV_LINKS, SITE } from "@/lib/site";
-import { useSiteSettings, getSetting } from "@/lib/settings.query";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { settingsQuery, getSetting } from "@/lib/settings.query";
 
 export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { data: settings } = useSiteSettings();
+  const { data: settings } = useSuspenseQuery(settingsQuery());
   const phone = getSetting(settings, "site_phone", SITE.phone);
   const phoneHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
 

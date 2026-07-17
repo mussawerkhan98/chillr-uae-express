@@ -1,11 +1,12 @@
 import { Link } from "@tanstack/react-router";
 import { Mail, Phone, MapPin, MessageCircle, Snowflake } from "lucide-react";
 import { SITE, NAV_LINKS, CITIES } from "@/lib/site";
-import { useSiteSettings, getSetting } from "@/lib/settings.query";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { settingsQuery, getSetting } from "@/lib/settings.query";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
-  const { data: settings } = useSiteSettings();
+  const { data: settings } = useSuspenseQuery(settingsQuery());
   const phone = getSetting(settings, "site_phone", SITE.phone);
   const phoneHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
   const whatsapp = getSetting(settings, "site_whatsapp", SITE.whatsapp);
