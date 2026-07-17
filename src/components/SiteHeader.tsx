@@ -27,14 +27,14 @@ export function SiteHeader() {
           : "bg-transparent"
       }`}
     >
-      <div className="container-page flex h-20 items-center justify-between gap-4">
+      <div className="container-page flex h-24 items-center justify-between gap-4">
         <Link to="/" className="flex items-center gap-3 shrink-0" aria-label={SITE.name}>
           <img
             src="/logo.png"
             alt="IQRAR Chiller Van Transport logo"
-            width={56}
-            height={56}
-            className="h-14 w-14 object-contain"
+            width={72}
+            height={72}
+            className="h-[68px] w-[68px] object-contain shrink-0"
           />
         </Link>
 
