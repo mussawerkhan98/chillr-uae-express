@@ -22,6 +22,8 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LocationsIndexRouteImport } from './routes/locations.index'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as LocationsCityRouteImport } from './routes/locations.$city'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
@@ -108,6 +110,16 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const LocationsIndexRoute = LocationsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => LocationsRoute,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BlogRoute,
 } as any)
 const LocationsCityRoute = LocationsCityRouteImport.update({
   id: '/$city',
@@ -251,6 +263,8 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/locations/$city': typeof LocationsCityRoute
+  '/blog/': typeof BlogIndexRoute
+  '/locations/': typeof LocationsIndexRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRouteWithChildren
   '/admin/faqs': typeof AuthenticatedAdminFaqsRouteWithChildren
   '/admin/fleet': typeof AuthenticatedAdminFleetRouteWithChildren
@@ -275,17 +289,17 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
-  '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/debug-auth': typeof DebugAuthRoute
   '/faq': typeof FaqRoute
   '/fleet': typeof FleetRoute
   '/industries': typeof IndustriesRoute
-  '/locations': typeof LocationsRouteWithChildren
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/locations/$city': typeof LocationsCityRoute
+  '/blog': typeof BlogIndexRoute
+  '/locations': typeof LocationsIndexRoute
   '/admin/images': typeof AuthenticatedAdminImagesRoute
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
@@ -320,6 +334,8 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/locations/$city': typeof LocationsCityRoute
+  '/blog/': typeof BlogIndexRoute
+  '/locations/': typeof LocationsIndexRoute
   '/_authenticated/admin/blog': typeof AuthenticatedAdminBlogRouteWithChildren
   '/_authenticated/admin/faqs': typeof AuthenticatedAdminFaqsRouteWithChildren
   '/_authenticated/admin/fleet': typeof AuthenticatedAdminFleetRouteWithChildren
@@ -358,6 +374,8 @@ export interface FileRouteTypes {
     | '/admin'
     | '/blog/$slug'
     | '/locations/$city'
+    | '/blog/'
+    | '/locations/'
     | '/admin/blog'
     | '/admin/faqs'
     | '/admin/fleet'
@@ -382,17 +400,17 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/auth'
-    | '/blog'
     | '/contact'
     | '/debug-auth'
     | '/faq'
     | '/fleet'
     | '/industries'
-    | '/locations'
     | '/services'
     | '/sitemap.xml'
     | '/blog/$slug'
     | '/locations/$city'
+    | '/blog'
+    | '/locations'
     | '/admin/images'
     | '/admin/settings'
     | '/admin'
@@ -426,6 +444,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/blog/$slug'
     | '/locations/$city'
+    | '/blog/'
+    | '/locations/'
     | '/_authenticated/admin/blog'
     | '/_authenticated/admin/faqs'
     | '/_authenticated/admin/fleet'
@@ -555,6 +575,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/locations/': {
+      id: '/locations/'
+      path: '/'
+      fullPath: '/locations/'
+      preLoaderRoute: typeof LocationsIndexRouteImport
+      parentRoute: typeof LocationsRoute
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof BlogRoute
     }
     '/locations/$city': {
       id: '/locations/$city'
@@ -825,20 +859,24 @@ const AuthenticatedRouteRouteWithChildren =
 
 interface BlogRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
 }
 
 const BlogRouteChildren: BlogRouteChildren = {
   BlogSlugRoute: BlogSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
 }
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
 interface LocationsRouteChildren {
   LocationsCityRoute: typeof LocationsCityRoute
+  LocationsIndexRoute: typeof LocationsIndexRoute
 }
 
 const LocationsRouteChildren: LocationsRouteChildren = {
   LocationsCityRoute: LocationsCityRoute,
+  LocationsIndexRoute: LocationsIndexRoute,
 }
 
 const LocationsRouteWithChildren = LocationsRoute._addFileChildren(

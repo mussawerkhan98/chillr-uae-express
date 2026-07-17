@@ -1,0 +1,95 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { listPublishedPosts } from "@/lib/blog.functions";
+import { format } from "date-fns";
+import { ArrowRight } from "lucide-react";
+
+const postsQuery = () =>
+  queryOptions({ queryKey: ["blog", "list"], queryFn: () => listPublishedPosts() });
+
+export const Route = createFileRoute("/blog/")({
+  head: () => ({
+    meta: [
+      { title: "Cold-chain insights & news | IQRAR Chiller Van Transport" },
+      { name: "description", content: "Guides, tips and updates from IQRAR on refrigerated logistics, cold-chain compliance and safe delivery across the UAE." },
+      { property: "og:title", content: "IQRAR Blog — Cold-chain insights" },
+      { property: "og:description", content: "Guides, tips and updates on refrigerated logistics across the UAE." },
+      { property: "og:url", content: "/blog" },
+    ],
+    links: [{ rel: "canonical", href: "/blog" }],
+  }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(postsQuery()),
+  component: BlogIndex,
+  errorComponent: ({ error }) => <div className="container-page py-16 text-center text-muted-foreground">{error.message}</div>,
+  notFoundComponent: () => <div className="container-page py-16 text-center">No posts.</div>,
+});
+
+function BlogIndex() {
+  const { data: posts } = useSuspenseQuery(postsQuery());
+
+  return (
+    <>
+      <section className="container-page pt-16">
+        <div className="max-w-3xl">
+          <div className="inline-flex items-center gap-2 rounded-full bg-accent text-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-widest">
+            Insights
+          </div>
+          <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-navy tracking-tight">
+            Cold-chain insights & news
+          </h1>
+          <p className="mt-5 text-lg text-muted-foreground">
+            Practical guides, industry updates and behind-the-scenes stories from the IQRAR team.
+          </p>
+        </div>
+      </section>
+
+      <section className="container-page py-12">
+        {posts.length === 0 ? (
+          <div className="rounded-3xl border border-dashed border-border p-16 text-center">
+            <p className="text-muted-foreground">No articles published yet. Check back soon.</p>
+          </div>
+        ) : (
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {posts.map((p) => (
+              <Link
+                key={p.id}
+                to="/blog/$slug"
+                params={{ slug: p.slug }}
+                className="group rounded-3xl border border-border bg-card overflow-hidden shadow-card hover-lift flex flex-col"
+              >
+                {p.cover_image_url ? (
+                  <div className="aspect-[16/10] overflow-hidden bg-muted">
+                    <img
+                      src={p.cover_image_url}
+                      alt={p.title}
+                      loading="lazy"
+                      className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                  </div>
+                ) : (
+                  <div className="aspect-[16/10] gradient-brand" />
+                )}
+                <div className="p-6 flex flex-col flex-1">
+                  {p.published_at && (
+                    <time className="text-xs text-muted-foreground uppercase tracking-wider font-medium">
+                      {format(new Date(p.published_at), "PP")}
+                    </time>
+                  )}
+                  <h2 className="mt-2 font-display text-xl font-semibold text-navy group-hover:text-primary transition-colors">
+                    {p.title}
+                  </h2>
+                  {p.excerpt && (
+                    <p className="mt-2 text-sm text-muted-foreground line-clamp-3 flex-1">{p.excerpt}</p>
+                  )}
+                  <span className="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary group-hover:gap-2 transition-all">
+                    Read article <ArrowRight className="h-4 w-4" />
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
+      </section>
+    </>
+  );
+}
