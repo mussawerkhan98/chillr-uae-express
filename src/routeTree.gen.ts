@@ -15,6 +15,7 @@ import { Route as LocationsRouteImport } from './routes/locations'
 import { Route as IndustriesRouteImport } from './routes/industries'
 import { Route as FleetRouteImport } from './routes/fleet'
 import { Route as FaqRouteImport } from './routes/faq'
+import { Route as DebugAuthRouteImport } from './routes/debug-auth'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -68,6 +69,11 @@ const FleetRoute = FleetRouteImport.update({
 const FaqRoute = FaqRouteImport.update({
   id: '/faq',
   path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DebugAuthRoute = DebugAuthRouteImport.update({
+  id: '/debug-auth',
+  path: '/debug-auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -207,6 +213,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
+  '/debug-auth': typeof DebugAuthRoute
   '/faq': typeof FaqRoute
   '/fleet': typeof FleetRoute
   '/industries': typeof IndustriesRoute
@@ -238,6 +245,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
+  '/debug-auth': typeof DebugAuthRoute
   '/faq': typeof FaqRoute
   '/fleet': typeof FleetRoute
   '/industries': typeof IndustriesRoute
@@ -270,6 +278,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
+  '/debug-auth': typeof DebugAuthRoute
   '/faq': typeof FaqRoute
   '/fleet': typeof FleetRoute
   '/industries': typeof IndustriesRoute
@@ -303,6 +312,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/blog'
     | '/contact'
+    | '/debug-auth'
     | '/faq'
     | '/fleet'
     | '/industries'
@@ -334,6 +344,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/blog'
     | '/contact'
+    | '/debug-auth'
     | '/faq'
     | '/fleet'
     | '/industries'
@@ -365,6 +376,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/blog'
     | '/contact'
+    | '/debug-auth'
     | '/faq'
     | '/fleet'
     | '/industries'
@@ -398,6 +410,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BlogRoute: typeof BlogRouteWithChildren
   ContactRoute: typeof ContactRoute
+  DebugAuthRoute: typeof DebugAuthRoute
   FaqRoute: typeof FaqRoute
   FleetRoute: typeof FleetRoute
   IndustriesRoute: typeof IndustriesRoute
@@ -448,6 +461,13 @@ declare module '@tanstack/react-router' {
       path: '/faq'
       fullPath: '/faq'
       preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/debug-auth': {
+      id: '/debug-auth'
+      path: '/debug-auth'
+      fullPath: '/debug-auth'
+      preLoaderRoute: typeof DebugAuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -752,6 +772,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BlogRoute: BlogRouteWithChildren,
   ContactRoute: ContactRoute,
+  DebugAuthRoute: DebugAuthRoute,
   FaqRoute: FaqRoute,
   FleetRoute: FleetRoute,
   IndustriesRoute: IndustriesRoute,
