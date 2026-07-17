@@ -132,6 +132,22 @@ function Hero({
   const whatsapp = getSetting(settings, "site_whatsapp", SITE.whatsapp);
   const whatsappHref = `https://wa.me/${whatsapp}?text=Hello%20IQRAR%2C%20I%20need%20a%20chiller%20van%20quote.`;
 
+  const isDark = getSetting(settings, "hero_text_theme", "light") === "dark";
+  const badgeText = getSetting(settings, "hero_badge_text", "UAE-wide cold-chain logistics");
+  const title = getSetting(settings, "hero_title", "Refrigerated transport you can trust, city to city.");
+  const subtitle = getSetting(
+    settings,
+    "hero_subtitle",
+    `${SITE.name} delivers premium chiller and freezer vehicles across all seven emirates. Temperature-controlled, HACCP-aligned, 24/7 dispatched — for food, pharma, seafood, floral and specialty cold cargo.`,
+  );
+
+  const textCls = isDark ? "text-navy" : "text-white";
+  const subtitleCls = isDark ? "text-navy/80" : "text-white/85";
+  const badgeCls = isDark
+    ? "bg-navy/5 backdrop-blur-md border border-navy/15 text-navy"
+    : "bg-white/10 backdrop-blur-md border border-white/20 text-white";
+  const checklistCls = isDark ? "text-navy/80" : "text-white/85";
+
   return (
     <section className="relative isolate overflow-hidden">
       <div className="absolute inset-0 -z-10">
@@ -143,24 +159,20 @@ function Hero({
           fetchPriority="high"
           className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-[var(--gradient-hero)]" />
+        {!isDark && <div className="absolute inset-0 bg-[var(--gradient-hero)]" />}
+        {isDark && <div className="absolute inset-0 bg-white/50" />}
       </div>
       <div className="container-page relative pt-20 pb-28 lg:pt-32 lg:pb-40">
         <div className="max-w-3xl animate-fade-up">
-          <div className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20 px-4 py-1.5 text-xs font-medium uppercase tracking-wider text-white">
+          <div className={`inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium uppercase tracking-wider ${badgeCls}`}>
             <Snowflake className="h-3.5 w-3.5 text-secondary" />
-            UAE-wide cold-chain logistics
+            {badgeText}
           </div>
-          <h1 className="mt-6 font-display text-4xl sm:text-5xl lg:text-7xl font-bold leading-[1.05] text-white tracking-tight">
-            Refrigerated transport{" "}
-            <span className="block">
-              you can <span className="text-secondary">trust</span>, city to city.
-            </span>
+          <h1 className={`mt-6 font-display text-4xl sm:text-5xl lg:text-7xl font-bold leading-[1.05] tracking-tight ${textCls}`}>
+            {title}
           </h1>
-          <p className="mt-6 max-w-2xl text-lg text-white/85 leading-relaxed">
-            {SITE.name} delivers premium chiller and freezer vehicles across all seven emirates.
-            Temperature-controlled, HACCP-aligned, 24/7 dispatched — for food, pharma, seafood,
-            floral and specialty cold cargo.
+          <p className={`mt-6 max-w-2xl text-lg leading-relaxed ${subtitleCls}`}>
+            {subtitle}
           </p>
 
           <div className="mt-9 flex flex-wrap gap-3">
@@ -186,7 +198,7 @@ function Hero({
             </a>
           </div>
 
-          <ul className="mt-10 grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-3 max-w-2xl text-sm text-white/85">
+          <ul className={`mt-10 grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-3 max-w-2xl text-sm ${checklistCls}`}>
             {["+2°C to −25°C", "±0.5°C accuracy", "HACCP aligned", "24/7 dispatch"].map((f) => (
               <li key={f} className="flex items-center gap-2">
                 <CheckCircle2 className="h-4 w-4 text-secondary shrink-0" /> {f}

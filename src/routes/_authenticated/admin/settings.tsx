@@ -14,7 +14,16 @@ export const Route = createFileRoute("/_authenticated/admin/settings")({
   component: SettingsPage,
 });
 
-const FIELDS: { key: string; label: string; multiline?: boolean; group?: string }[] = [
+type Field = {
+  key: string;
+  label: string;
+  multiline?: boolean;
+  group?: string;
+  type?: "select";
+  options?: { value: string; label: string }[];
+};
+
+const FIELDS: Field[] = [
   { key: "site_tagline", label: "Tagline" },
   { key: "site_phone", label: "Phone" },
   { key: "site_whatsapp", label: "WhatsApp number (digits only, e.g. 971501234567)" },
@@ -22,6 +31,21 @@ const FIELDS: { key: string; label: string; multiline?: boolean; group?: string 
   { key: "site_address", label: "Address" },
   { key: "meta_home_title", label: "Homepage SEO title" },
   { key: "meta_home_description", label: "Homepage SEO description", multiline: true },
+
+  { key: "hero_badge_text", label: "Small badge text (above the headline)", group: "Homepage hero section" },
+  { key: "hero_title", label: "Headline", multiline: true, group: "Homepage hero section" },
+  { key: "hero_subtitle", label: "Subtitle paragraph", multiline: true, group: "Homepage hero section" },
+  {
+    key: "hero_text_theme",
+    label: "Text color (choose based on your hero photo)",
+    group: "Homepage hero section",
+    type: "select",
+    options: [
+      { value: "light", label: "Light text — for dark/busy photos (default)" },
+      { value: "dark", label: "Dark text — for bright/light photos" },
+    ],
+  },
+
   { key: "about_hero_title", label: "About page: headline", multiline: true, group: "About page" },
   { key: "about_hero_subtitle", label: "About page: intro paragraph", multiline: true, group: "About page" },
   { key: "about_story_p1", label: "About page: our story — paragraph 1", multiline: true, group: "About page" },
@@ -36,6 +60,8 @@ const FIELDS: { key: string; label: string; multiline?: boolean; group?: string 
   { key: "stat_4_value", label: "About page: stat 4 value", group: "About page" },
   { key: "stat_4_label", label: "About page: stat 4 label", group: "About page" },
 ];
+
+const GROUPS = ["Homepage hero section", "About page"];
 
 function SettingsPage() {
   const listFn = useServerFn(adminListSettings);
@@ -74,6 +100,41 @@ function SettingsPage() {
     );
   }
 
+  function renderField(f: Field) {
+    return (
+      <div key={f.key} className="space-y-2">
+        <Label htmlFor={f.key}>{f.label}</Label>
+        {f.type === "select" ? (
+          <select
+            id={f.key}
+            value={form[f.key] || f.options?.[0]?.value || ""}
+            onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+            className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+          >
+            {f.options?.map((o) => (
+              <option key={o.value} value={o.value}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+        ) : f.multiline ? (
+          <Textarea
+            id={f.key}
+            rows={3}
+            value={form[f.key] ?? ""}
+            onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+          />
+        ) : (
+          <Input
+            id={f.key}
+            value={form[f.key] ?? ""}
+            onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+          />
+        )}
+      </div>
+    );
+  }
+
   return (
     <div className="p-8 max-w-2xl space-y-6">
       <header>
@@ -84,49 +145,15 @@ function SettingsPage() {
       </header>
 
       <div className="space-y-5">
-        {FIELDS.filter((f) => !f.group).map((f) => (
-          <div key={f.key} className="space-y-2">
-            <Label htmlFor={f.key}>{f.label}</Label>
-            {f.multiline ? (
-              <Textarea
-                id={f.key}
-                rows={3}
-                value={form[f.key] ?? ""}
-                onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-              />
-            ) : (
-              <Input
-                id={f.key}
-                value={form[f.key] ?? ""}
-                onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-              />
-            )}
-          </div>
-        ))}
+        {FIELDS.filter((f) => !f.group).map(renderField)}
       </div>
 
-      <div className="space-y-5 pt-6 border-t">
-        <h2 className="font-display text-xl font-bold text-navy">About page content</h2>
-        {FIELDS.filter((f) => f.group === "About page").map((f) => (
-          <div key={f.key} className="space-y-2">
-            <Label htmlFor={f.key}>{f.label}</Label>
-            {f.multiline ? (
-              <Textarea
-                id={f.key}
-                rows={3}
-                value={form[f.key] ?? ""}
-                onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-              />
-            ) : (
-              <Input
-                id={f.key}
-                value={form[f.key] ?? ""}
-                onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
-              />
-            )}
-          </div>
-        ))}
-      </div>
+      {GROUPS.map((group) => (
+        <div key={group} className="space-y-5 pt-6 border-t">
+          <h2 className="font-display text-xl font-bold text-navy">{group}</h2>
+          {FIELDS.filter((f) => f.group === group).map(renderField)}
+        </div>
+      ))}
 
       <div className="flex justify-end pt-4 border-t">
         <Button onClick={() => save.mutate()} disabled={save.isPending}>
