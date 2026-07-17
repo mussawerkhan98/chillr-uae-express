@@ -7,6 +7,7 @@ export const Route = createFileRoute("/debug-auth")({
   component: DebugAuthPage,
 });
 
+
 function DebugAuthPage() {
   const [log, setLog] = useState<string[]>([]);
   const [running, setRunning] = useState(false);
