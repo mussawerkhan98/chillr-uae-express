@@ -11,7 +11,12 @@ export const listIndustriesPublic = createServerFn({ method: "GET" }).handler(as
     .from("industries")
     .select("id, slug, name, description, image_url")
     .order("sort_order", { ascending: true });
-  if (error) throw new Error(error.message);
+  // Fail soft: never let a missing table or read error take down pages
+  // that show this list (homepage marquee, industries page).
+  if (error) {
+    console.error("[industries] listIndustriesPublic error:", error.message);
+    return [];
+  }
   return data ?? [];
 });
 

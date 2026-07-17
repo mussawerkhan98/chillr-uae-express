@@ -11,7 +11,14 @@ export const listLocationsPublic = createServerFn({ method: "GET" }).handler(asy
     .from("locations")
     .select("*")
     .order("sort_order", { ascending: true });
-  if (error) throw new Error(error.message);
+  // Fail soft: if the table isn't set up yet (or any other read error),
+  // return an empty list instead of throwing — this query runs on every
+  // page via the root layout (footer/map), so an error here must never
+  // take down the whole site.
+  if (error) {
+    console.error("[locations] listLocationsPublic error:", error.message);
+    return [];
+  }
   return data ?? [];
 });
 
