@@ -32,6 +32,10 @@ import { Route as AuthenticatedAdminImagesRouteImport } from './routes/_authenti
 import { Route as AuthenticatedAdminFleetRouteImport } from './routes/_authenticated/admin/fleet'
 import { Route as AuthenticatedAdminFaqsRouteImport } from './routes/_authenticated/admin/faqs'
 import { Route as AuthenticatedAdminBlogRouteImport } from './routes/_authenticated/admin/blog'
+import { Route as AuthenticatedAdminServicesIndexRouteImport } from './routes/_authenticated/admin/services.index'
+import { Route as AuthenticatedAdminFleetIndexRouteImport } from './routes/_authenticated/admin/fleet.index'
+import { Route as AuthenticatedAdminFaqsIndexRouteImport } from './routes/_authenticated/admin/faqs.index'
+import { Route as AuthenticatedAdminBlogIndexRouteImport } from './routes/_authenticated/admin/blog.index'
 import { Route as AuthenticatedAdminServicesNewRouteImport } from './routes/_authenticated/admin/services.new'
 import { Route as AuthenticatedAdminServicesIdRouteImport } from './routes/_authenticated/admin/services.$id'
 import { Route as AuthenticatedAdminFleetNewRouteImport } from './routes/_authenticated/admin/fleet.new'
@@ -158,6 +162,30 @@ const AuthenticatedAdminBlogRoute = AuthenticatedAdminBlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => AuthenticatedAdminRouteRoute,
 } as any)
+const AuthenticatedAdminServicesIndexRoute =
+  AuthenticatedAdminServicesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminServicesRoute,
+  } as any)
+const AuthenticatedAdminFleetIndexRoute =
+  AuthenticatedAdminFleetIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminFleetRoute,
+  } as any)
+const AuthenticatedAdminFaqsIndexRoute =
+  AuthenticatedAdminFaqsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminFaqsRoute,
+  } as any)
+const AuthenticatedAdminBlogIndexRoute =
+  AuthenticatedAdminBlogIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminBlogRoute,
+  } as any)
 const AuthenticatedAdminServicesNewRoute =
   AuthenticatedAdminServicesNewRouteImport.update({
     id: '/new',
@@ -238,6 +266,10 @@ export interface FileRoutesByFullPath {
   '/admin/fleet/new': typeof AuthenticatedAdminFleetNewRoute
   '/admin/services/$id': typeof AuthenticatedAdminServicesIdRoute
   '/admin/services/new': typeof AuthenticatedAdminServicesNewRoute
+  '/admin/blog/': typeof AuthenticatedAdminBlogIndexRoute
+  '/admin/faqs/': typeof AuthenticatedAdminFaqsIndexRoute
+  '/admin/fleet/': typeof AuthenticatedAdminFleetIndexRoute
+  '/admin/services/': typeof AuthenticatedAdminServicesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -254,11 +286,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/locations/$city': typeof LocationsCityRoute
-  '/admin/blog': typeof AuthenticatedAdminBlogRouteWithChildren
-  '/admin/faqs': typeof AuthenticatedAdminFaqsRouteWithChildren
-  '/admin/fleet': typeof AuthenticatedAdminFleetRouteWithChildren
   '/admin/images': typeof AuthenticatedAdminImagesRoute
-  '/admin/services': typeof AuthenticatedAdminServicesRouteWithChildren
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/blog/$id': typeof AuthenticatedAdminBlogIdRoute
@@ -269,6 +297,10 @@ export interface FileRoutesByTo {
   '/admin/fleet/new': typeof AuthenticatedAdminFleetNewRoute
   '/admin/services/$id': typeof AuthenticatedAdminServicesIdRoute
   '/admin/services/new': typeof AuthenticatedAdminServicesNewRoute
+  '/admin/blog': typeof AuthenticatedAdminBlogIndexRoute
+  '/admin/faqs': typeof AuthenticatedAdminFaqsIndexRoute
+  '/admin/fleet': typeof AuthenticatedAdminFleetIndexRoute
+  '/admin/services': typeof AuthenticatedAdminServicesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -303,6 +335,10 @@ export interface FileRoutesById {
   '/_authenticated/admin/fleet/new': typeof AuthenticatedAdminFleetNewRoute
   '/_authenticated/admin/services/$id': typeof AuthenticatedAdminServicesIdRoute
   '/_authenticated/admin/services/new': typeof AuthenticatedAdminServicesNewRoute
+  '/_authenticated/admin/blog/': typeof AuthenticatedAdminBlogIndexRoute
+  '/_authenticated/admin/faqs/': typeof AuthenticatedAdminFaqsIndexRoute
+  '/_authenticated/admin/fleet/': typeof AuthenticatedAdminFleetIndexRoute
+  '/_authenticated/admin/services/': typeof AuthenticatedAdminServicesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -337,6 +373,10 @@ export interface FileRouteTypes {
     | '/admin/fleet/new'
     | '/admin/services/$id'
     | '/admin/services/new'
+    | '/admin/blog/'
+    | '/admin/faqs/'
+    | '/admin/fleet/'
+    | '/admin/services/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -353,11 +393,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/blog/$slug'
     | '/locations/$city'
-    | '/admin/blog'
-    | '/admin/faqs'
-    | '/admin/fleet'
     | '/admin/images'
-    | '/admin/services'
     | '/admin/settings'
     | '/admin'
     | '/admin/blog/$id'
@@ -368,6 +404,10 @@ export interface FileRouteTypes {
     | '/admin/fleet/new'
     | '/admin/services/$id'
     | '/admin/services/new'
+    | '/admin/blog'
+    | '/admin/faqs'
+    | '/admin/fleet'
+    | '/admin/services'
   id:
     | '__root__'
     | '/'
@@ -401,6 +441,10 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/fleet/new'
     | '/_authenticated/admin/services/$id'
     | '/_authenticated/admin/services/new'
+    | '/_authenticated/admin/blog/'
+    | '/_authenticated/admin/faqs/'
+    | '/_authenticated/admin/fleet/'
+    | '/_authenticated/admin/services/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -582,6 +626,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminBlogRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/services/': {
+      id: '/_authenticated/admin/services/'
+      path: '/'
+      fullPath: '/admin/services/'
+      preLoaderRoute: typeof AuthenticatedAdminServicesIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminServicesRoute
+    }
+    '/_authenticated/admin/fleet/': {
+      id: '/_authenticated/admin/fleet/'
+      path: '/'
+      fullPath: '/admin/fleet/'
+      preLoaderRoute: typeof AuthenticatedAdminFleetIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminFleetRoute
+    }
+    '/_authenticated/admin/faqs/': {
+      id: '/_authenticated/admin/faqs/'
+      path: '/'
+      fullPath: '/admin/faqs/'
+      preLoaderRoute: typeof AuthenticatedAdminFaqsIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminFaqsRoute
+    }
+    '/_authenticated/admin/blog/': {
+      id: '/_authenticated/admin/blog/'
+      path: '/'
+      fullPath: '/admin/blog/'
+      preLoaderRoute: typeof AuthenticatedAdminBlogIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminBlogRoute
+    }
     '/_authenticated/admin/services/new': {
       id: '/_authenticated/admin/services/new'
       path: '/new'
@@ -644,12 +716,14 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAdminBlogRouteChildren {
   AuthenticatedAdminBlogIdRoute: typeof AuthenticatedAdminBlogIdRoute
   AuthenticatedAdminBlogNewRoute: typeof AuthenticatedAdminBlogNewRoute
+  AuthenticatedAdminBlogIndexRoute: typeof AuthenticatedAdminBlogIndexRoute
 }
 
 const AuthenticatedAdminBlogRouteChildren: AuthenticatedAdminBlogRouteChildren =
   {
     AuthenticatedAdminBlogIdRoute: AuthenticatedAdminBlogIdRoute,
     AuthenticatedAdminBlogNewRoute: AuthenticatedAdminBlogNewRoute,
+    AuthenticatedAdminBlogIndexRoute: AuthenticatedAdminBlogIndexRoute,
   }
 
 const AuthenticatedAdminBlogRouteWithChildren =
@@ -660,12 +734,14 @@ const AuthenticatedAdminBlogRouteWithChildren =
 interface AuthenticatedAdminFaqsRouteChildren {
   AuthenticatedAdminFaqsIdRoute: typeof AuthenticatedAdminFaqsIdRoute
   AuthenticatedAdminFaqsNewRoute: typeof AuthenticatedAdminFaqsNewRoute
+  AuthenticatedAdminFaqsIndexRoute: typeof AuthenticatedAdminFaqsIndexRoute
 }
 
 const AuthenticatedAdminFaqsRouteChildren: AuthenticatedAdminFaqsRouteChildren =
   {
     AuthenticatedAdminFaqsIdRoute: AuthenticatedAdminFaqsIdRoute,
     AuthenticatedAdminFaqsNewRoute: AuthenticatedAdminFaqsNewRoute,
+    AuthenticatedAdminFaqsIndexRoute: AuthenticatedAdminFaqsIndexRoute,
   }
 
 const AuthenticatedAdminFaqsRouteWithChildren =
@@ -676,12 +752,14 @@ const AuthenticatedAdminFaqsRouteWithChildren =
 interface AuthenticatedAdminFleetRouteChildren {
   AuthenticatedAdminFleetIdRoute: typeof AuthenticatedAdminFleetIdRoute
   AuthenticatedAdminFleetNewRoute: typeof AuthenticatedAdminFleetNewRoute
+  AuthenticatedAdminFleetIndexRoute: typeof AuthenticatedAdminFleetIndexRoute
 }
 
 const AuthenticatedAdminFleetRouteChildren: AuthenticatedAdminFleetRouteChildren =
   {
     AuthenticatedAdminFleetIdRoute: AuthenticatedAdminFleetIdRoute,
     AuthenticatedAdminFleetNewRoute: AuthenticatedAdminFleetNewRoute,
+    AuthenticatedAdminFleetIndexRoute: AuthenticatedAdminFleetIndexRoute,
   }
 
 const AuthenticatedAdminFleetRouteWithChildren =
@@ -692,12 +770,14 @@ const AuthenticatedAdminFleetRouteWithChildren =
 interface AuthenticatedAdminServicesRouteChildren {
   AuthenticatedAdminServicesIdRoute: typeof AuthenticatedAdminServicesIdRoute
   AuthenticatedAdminServicesNewRoute: typeof AuthenticatedAdminServicesNewRoute
+  AuthenticatedAdminServicesIndexRoute: typeof AuthenticatedAdminServicesIndexRoute
 }
 
 const AuthenticatedAdminServicesRouteChildren: AuthenticatedAdminServicesRouteChildren =
   {
     AuthenticatedAdminServicesIdRoute: AuthenticatedAdminServicesIdRoute,
     AuthenticatedAdminServicesNewRoute: AuthenticatedAdminServicesNewRoute,
+    AuthenticatedAdminServicesIndexRoute: AuthenticatedAdminServicesIndexRoute,
   }
 
 const AuthenticatedAdminServicesRouteWithChildren =
