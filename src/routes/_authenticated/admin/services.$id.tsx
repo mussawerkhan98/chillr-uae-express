@@ -24,13 +24,24 @@ function EditService() {
     queryFn: () => getFn({ data: { id } }),
   });
 
-  const [form, setForm] = useState({ title: "", description: "", icon: "", sort_order: 0 });
+  const [form, setForm] = useState({
+    title: "",
+    slug: "",
+    description: "",
+    content_html: "",
+    image_url: null as string | null,
+    icon: "",
+    sort_order: 0,
+  });
 
   useEffect(() => {
     if (data) {
       setForm({
         title: data.title,
+        slug: data.slug ?? "",
         description: data.description,
+        content_html: data.content_html ?? "",
+        image_url: data.image_url ?? null,
         icon: data.icon ?? "",
         sort_order: data.sort_order,
       });
@@ -43,7 +54,10 @@ function EditService() {
         data: {
           id,
           title: form.title,
+          slug: form.slug,
           description: form.description,
+          content_html: form.content_html,
+          image_url: form.image_url,
           icon: form.icon || null,
           sort_order: form.sort_order,
         },
@@ -65,7 +79,7 @@ function EditService() {
   }
 
   return (
-    <div className="p-8 max-w-2xl space-y-6">
+    <div className="p-8 max-w-3xl space-y-6">
       <div className="flex items-center justify-between">
         <Link
           to="/admin/services"
@@ -73,14 +87,16 @@ function EditService() {
         >
           <ArrowLeft className="h-4 w-4" /> Back to services
         </Link>
-        <a
-          href="/services"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
-        >
-          View live <ExternalLink className="h-3 w-3" />
-        </a>
+        {form.slug && (
+          <a
+            href={`/services/${form.slug}`}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+          >
+            View live <ExternalLink className="h-3 w-3" />
+          </a>
+        )}
       </div>
       <h1 className="font-display text-3xl font-bold text-navy">Edit service</h1>
 

@@ -1,8 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { getPublishedPostBySlug } from "@/lib/blog.functions";
+import { queryOptions, useSuspenseQuery, useQuery } from "@tanstack/react-query";
+import { getPublishedPostBySlug, listPublishedPosts } from "@/lib/blog.functions";
 import { format } from "date-fns";
-import { ArrowLeft, Snowflake } from "lucide-react";
+import { ArrowLeft, ArrowRight, Snowflake } from "lucide-react";
 
 
 const postQuery = (slug: string) =>
@@ -48,9 +48,14 @@ export const Route = createFileRoute("/blog/$slug")({
   ),
 });
 
+const relatedQuery = () =>
+  queryOptions({ queryKey: ["blog", "list"], queryFn: () => listPublishedPosts() });
+
 function BlogPost() {
   const { slug } = Route.useParams();
   const { data: post } = useSuspenseQuery(postQuery(slug));
+  const { data: allPosts = [] } = useQuery(relatedQuery());
+  const related = allPosts.filter((p) => p.slug !== slug).slice(0, 3);
 
   return (
     <article className="pb-20">
@@ -134,6 +139,43 @@ function BlogPost() {
             Get a Quote
           </Link>
         </div>
+
+        {related.length > 0 && (
+          <div className="max-w-5xl mx-auto mt-20">
+            <h2 className="font-display text-2xl font-bold text-navy mb-6">More cold-chain insights</h2>
+            <div className="grid gap-6 sm:grid-cols-3">
+              {related.map((p) => (
+                <Link
+                  key={p.id}
+                  to="/blog/$slug"
+                  params={{ slug: p.slug }}
+                  className="group rounded-2xl border border-border bg-card overflow-hidden shadow-card hover-lift flex flex-col"
+                >
+                  {p.cover_image_url ? (
+                    <div className="aspect-[16/10] overflow-hidden bg-muted">
+                      <img
+                        src={p.cover_image_url}
+                        alt={p.title}
+                        loading="lazy"
+                        className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      />
+                    </div>
+                  ) : (
+                    <div className="aspect-[16/10] gradient-brand" />
+                  )}
+                  <div className="p-5 flex flex-col flex-1">
+                    <h3 className="font-display text-base font-semibold text-navy group-hover:text-primary transition-colors line-clamp-2">
+                      {p.title}
+                    </h3>
+                    <span className="mt-3 inline-flex items-center gap-1 text-xs font-semibold text-primary group-hover:gap-2 transition-all">
+                      Read article <ArrowRight className="h-3 w-3" />
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </article>
   );

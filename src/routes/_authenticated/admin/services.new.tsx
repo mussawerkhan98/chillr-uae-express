@@ -7,6 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { ImageUploader } from "@/components/admin/ImageUploader";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { adminCreateService } from "@/lib/services.functions";
 import { toast } from "sonner";
 
@@ -14,14 +16,34 @@ export const Route = createFileRoute("/_authenticated/admin/services/new")({
   component: NewService,
 });
 
-type FormState = { title: string; description: string; icon: string; sort_order: number };
+function slugify(s: string) {
+  return s
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 100);
+}
+
+type FormState = {
+  title: string;
+  slug: string;
+  description: string;
+  content_html: string;
+  image_url: string | null;
+  icon: string;
+  sort_order: number;
+};
 
 function NewService() {
   const navigate = useNavigate();
   const createFn = useServerFn(adminCreateService);
   const [form, setForm] = useState<FormState>({
     title: "",
+    slug: "",
     description: "",
+    content_html: "",
+    image_url: null,
     icon: "",
     sort_order: 0,
   });
@@ -31,7 +53,10 @@ function NewService() {
       createFn({
         data: {
           title: form.title,
+          slug: form.slug || slugify(form.title),
           description: form.description,
+          content_html: form.content_html,
+          image_url: form.image_url,
           icon: form.icon || null,
           sort_order: form.sort_order,
         },
@@ -44,7 +69,7 @@ function NewService() {
   });
 
   return (
-    <div className="p-8 max-w-2xl space-y-6">
+    <div className="p-8 max-w-3xl space-y-6">
       <Link
         to="/admin/services"
         className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
@@ -86,17 +111,43 @@ export function ServiceForm({
         <Input
           id="title"
           value={form.title}
-          onChange={(e) => setForm({ ...form, title: e.target.value })}
+          onChange={(e) =>
+            setForm({ ...form, title: e.target.value, slug: form.slug || slugify(e.target.value) })
+          }
           placeholder="Food & Beverage Transport"
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="description">Description</Label>
+        <Label htmlFor="slug">Slug (page URL)</Label>
+        <div className="flex items-center gap-2">
+          <span className="text-sm text-muted-foreground">/services/</span>
+          <Input
+            id="slug"
+            value={form.slug}
+            onChange={(e) => setForm({ ...form, slug: slugify(e.target.value) })}
+          />
+        </div>
+      </div>
+      <ImageUploader
+        value={form.image_url}
+        onChange={(url) => setForm({ ...form, image_url: url })}
+        folder="services"
+        label="Service image"
+      />
+      <div className="space-y-2">
+        <Label htmlFor="description">Short description (shown on the Services list)</Label>
         <Textarea
           id="description"
           rows={3}
           value={form.description}
           onChange={(e) => setForm({ ...form, description: e.target.value })}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label>Full page content (shown on this service's own page)</Label>
+        <RichTextEditor
+          value={form.content_html}
+          onChange={(html) => setForm({ ...form, content_html: html })}
         />
       </div>
       <div className="space-y-2">

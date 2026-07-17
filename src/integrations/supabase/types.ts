@@ -136,28 +136,37 @@ export type Database = {
       }
       services: {
         Row: {
+          content_html: string
           created_at: string
           description: string
           icon: string | null
           id: string
+          image_url: string | null
+          slug: string
           sort_order: number
           title: string
           updated_at: string
         }
         Insert: {
+          content_html?: string
           created_at?: string
           description: string
           icon?: string | null
           id?: string
+          image_url?: string | null
+          slug: string
           sort_order?: number
           title: string
           updated_at?: string
         }
         Update: {
+          content_html?: string
           created_at?: string
           description?: string
           icon?: string | null
           id?: string
+          image_url?: string | null
+          slug?: string
           sort_order?: number
           title?: string
           updated_at?: string

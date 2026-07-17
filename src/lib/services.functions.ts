@@ -9,11 +9,25 @@ export const listServicesPublic = createServerFn({ method: "GET" }).handler(asyn
   const sb = getPublicSupabase();
   const { data, error } = await sb
     .from("services")
-    .select("id, title, description, icon")
+    .select("id, title, slug, description, icon, image_url")
     .order("sort_order", { ascending: true });
   if (error) throw new Error(error.message);
   return data ?? [];
 });
+
+export const getServiceBySlug = createServerFn({ method: "GET" })
+  .inputValidator((input: { slug: string }) => z.object({ slug: z.string().min(1) }).parse(input))
+  .handler(async ({ data }) => {
+    const { getPublicSupabase } = await import("./supabase-public.server");
+    const sb = getPublicSupabase();
+    const { data: row, error } = await sb
+      .from("services")
+      .select("*")
+      .eq("slug", data.slug)
+      .maybeSingle();
+    if (error) throw new Error(error.message);
+    return row ?? null;
+  });
 
 // ---------- Admin CRUD ----------
 
@@ -48,7 +62,10 @@ export const adminGetService = createServerFn({ method: "GET" })
 
 const serviceInputSchema = z.object({
   title: z.string().min(1).max(200),
+  slug: z.string().min(1).max(150),
   description: z.string().min(1).max(1000),
+  content_html: z.string().max(50000).optional().default(""),
+  image_url: z.string().max(1000).optional().nullable(),
   icon: z.string().max(100).optional().nullable(),
   sort_order: z.number().int().default(0),
 });

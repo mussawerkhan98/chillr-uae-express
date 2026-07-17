@@ -32,16 +32,10 @@ export function SiteHeader() {
           <img
             src="/logo.png"
             alt="IQRAR Chiller Van Transport logo"
-            width={48}
-            height={48}
-            className="h-11 w-11 object-contain"
+            width={56}
+            height={56}
+            className="h-14 w-14 object-contain"
           />
-          <div className="hidden sm:block leading-tight">
-            <div className="font-display font-bold text-navy text-lg tracking-tight">IQRAR</div>
-            <div className="text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
-              Chiller Van Transport
-            </div>
-          </div>
         </Link>
 
         <nav className="hidden lg:flex items-center gap-1" aria-label="Primary">

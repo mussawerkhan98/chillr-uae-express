@@ -264,6 +264,15 @@ function ServicesSection({
             <p className="relative mt-2 text-sm text-muted-foreground leading-relaxed">
               {s.description}
             </p>
+            {"slug" in s && s.slug && (
+              <Link
+                to="/services/$slug"
+                params={{ slug: s.slug }}
+                className="relative mt-4 inline-flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all"
+              >
+                Learn more →
+              </Link>
+            )}
           </article>
         ))}
       </div>

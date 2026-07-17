@@ -1,0 +1,117 @@
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { ThermometerSnowflake, ArrowRight, MessageSquareText } from "lucide-react";
+import { listServicesPublic } from "@/lib/services.functions";
+
+const servicesQuery = () =>
+  queryOptions({ queryKey: ["services", "list"], queryFn: () => listServicesPublic() });
+
+export const Route = createFileRoute("/services/")({
+  head: () => ({
+    meta: [
+      { title: "Refrigerated Transport Services UAE | Food, Pharma, Seafood — IQRAR" },
+      {
+        name: "description",
+        content:
+          "Cold-chain transport services in the UAE: fresh food, frozen goods, seafood, meat, pharmaceuticals, chocolate, flowers, hospitality supply and airport cargo.",
+      },
+      { property: "og:title", content: "Cold-Chain Transport Services — IQRAR UAE" },
+      {
+        property: "og:description",
+        content:
+          "Nine specialised refrigerated transport services across the UAE — from pharma to seafood, catered to your cargo profile.",
+      },
+      { property: "og:url", content: "/services" },
+    ],
+    links: [{ rel: "canonical", href: "/services" }],
+  }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(servicesQuery()),
+  component: ServicesPage,
+});
+
+function ServicesPage() {
+  const { data: services } = useSuspenseQuery(servicesQuery());
+
+  return (
+    <>
+      <section className="container-page pt-16 pb-8">
+        <div className="max-w-3xl">
+          <div className="inline-flex items-center gap-2 rounded-full bg-accent text-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-widest">
+            Services
+          </div>
+          <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-navy tracking-tight">
+            Purpose-built cold-chain services for every UAE industry.
+          </h1>
+          <p className="mt-5 text-lg text-muted-foreground">
+            From pharma-grade GDP routes to floral humidity control, our fleet and crew are trained
+            around your cargo — not the other way around.
+          </p>
+        </div>
+      </section>
+
+      <section className="container-page py-12">
+        {services.length === 0 ? (
+          <div className="rounded-3xl border border-dashed border-border p-16 text-center">
+            <p className="text-muted-foreground">Service list coming soon.</p>
+          </div>
+        ) : (
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            {services.map((s) => (
+              <article
+                key={s.id}
+                className="group flex flex-col rounded-2xl bg-card border border-border overflow-hidden shadow-card hover-lift"
+              >
+                {s.image_url ? (
+                  <Link
+                    to="/services/$slug"
+                    params={{ slug: s.slug }}
+                    className="block aspect-[16/10] overflow-hidden bg-muted"
+                  >
+                    <img
+                      src={s.image_url}
+                      alt={s.title}
+                      loading="lazy"
+                      className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                  </Link>
+                ) : (
+                  <div className="p-6 pb-0">
+                    <div className="h-12 w-12 rounded-xl gradient-brand text-white flex items-center justify-center">
+                      <ThermometerSnowflake className="h-6 w-6" />
+                    </div>
+                  </div>
+                )}
+                <div className="p-6 flex flex-col flex-1">
+                  <h2 className="font-display text-lg font-semibold text-navy">
+                    <Link to="/services/$slug" params={{ slug: s.slug }} className="hover:text-primary transition-colors">
+                      {s.title}
+                    </Link>
+                  </h2>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed flex-1">
+                    {s.description}
+                  </p>
+                  <div className="mt-5 flex items-center gap-3">
+                    <Link
+                      to="/services/$slug"
+                      params={{ slug: s.slug }}
+                      className="inline-flex items-center gap-1 text-sm font-semibold text-navy hover:text-primary hover:gap-2 transition-all"
+                    >
+                      Learn more <ArrowRight className="h-4 w-4" />
+                    </Link>
+                    <span className="text-border">·</span>
+                    <Link
+                      to="/contact"
+                      className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all"
+                    >
+                      Get a quote <MessageSquareText className="h-4 w-4" />
+                    </Link>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        )}
+      </section>
+    </>
+  );
+}
