@@ -13,12 +13,15 @@ import {
   CheckCircle2,
   Star,
 } from "lucide-react";
-import { SITE, STATS, INDUSTRIES, CITIES } from "@/lib/site";
+import { SITE, STATS } from "@/lib/site";
 import { listFleetPublic } from "@/lib/fleet.functions";
 import { listServicesPublic } from "@/lib/services.functions";
 import { listFaqsPublic } from "@/lib/faqs.functions";
+import { listIndustriesPublic } from "@/lib/industries.functions";
 import { siteImagesQuery, pickImage } from "@/lib/site-images.query";
 import { settingsQuery, getSetting } from "@/lib/settings.query";
+import { locationsQuery } from "@/lib/locations.query";
+import { useQuery } from "@tanstack/react-query";
 import heroImg from "@/assets/hero-chiller-van.jpg";
 import interiorImg from "@/assets/cold-chain-interior.jpg";
 import fleetImg from "@/assets/fleet-lineup.jpg";
@@ -29,6 +32,8 @@ const servicesQuery = () =>
   queryOptions({ queryKey: ["services", "list"], queryFn: () => listServicesPublic() });
 const faqsQuery = () =>
   queryOptions({ queryKey: ["faqs", "list"], queryFn: () => listFaqsPublic() });
+const industriesQuery = () =>
+  queryOptions({ queryKey: ["industries", "list"], queryFn: () => listIndustriesPublic() });
 
 export const Route = createFileRoute("/")({
   loader: async ({ context }) => {
@@ -38,6 +43,8 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData(faqsQuery()),
       context.queryClient.ensureQueryData(siteImagesQuery()),
       context.queryClient.ensureQueryData(settingsQuery()),
+      context.queryClient.ensureQueryData(industriesQuery()),
+      context.queryClient.ensureQueryData(locationsQuery()),
     ]);
     return { fleet, services, faqs, images, settings };
   },
@@ -428,18 +435,21 @@ function WhyUs({
 }
 
 function IndustriesStrip() {
-  const list = [...INDUSTRIES, ...INDUSTRIES];
+  const { data: industries = [] } = useQuery(industriesQuery());
+  const names = industries.map((i) => i.name);
+  const list = [...names, ...names];
   return (
     <section className="border-y border-border bg-navy overflow-hidden py-8">
       <div className="flex items-center animate-marquee whitespace-nowrap">
         {list.map((i, idx) => (
-          <span
+          <Link
             key={idx}
-            className="mx-8 text-white/70 font-display text-xl sm:text-2xl font-semibold flex items-center gap-8"
+            to="/industries"
+            className="mx-8 text-white/70 hover:text-white font-display text-xl sm:text-2xl font-semibold flex items-center gap-8 transition-colors"
           >
             {i}
             <Snowflake className="h-4 w-4 text-secondary/60" aria-hidden />
-          </span>
+          </Link>
         ))}
       </div>
     </section>
@@ -447,6 +457,7 @@ function IndustriesStrip() {
 }
 
 function CoverageSection() {
+  const { data: locations = [] } = useQuery(locationsQuery());
   return (
     <section className="container-page py-24">
       <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
@@ -457,7 +468,7 @@ function CoverageSection() {
             desc="From Deira to Fujairah, we run scheduled and on-demand chiller routes across the UAE — with local response teams in every emirate."
           />
           <ul className="mt-8 grid grid-cols-2 gap-3">
-            {CITIES.map((c) => (
+            {locations.map((c) => (
               <li key={c.slug}>
                 <Link
                   to="/locations/$city"
@@ -484,7 +495,8 @@ function CoverageSection() {
 // Inline lazy wrapper: static import is fine here, kept as component boundary.
 import { UAEMap } from "@/components/UAEMap";
 function UAEMapLazy() {
-  return <UAEMap />;
+  const { data: locations = [] } = useQuery(locationsQuery());
+  return <UAEMap cities={locations} />;
 }
 
 function TestimonialsSection() {

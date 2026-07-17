@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
-import { CITIES } from "@/lib/site";
 
 // TODO: replace with your project URL once a project name or custom domain is set.
 const BASE_URL = "";
@@ -21,6 +20,9 @@ export const Route = createFileRoute("/sitemap.xml")({
           .from("blog_posts")
           .select("slug, updated_at")
           .eq("published", true);
+        const { data: cities } = await sb.from("locations").select("slug");
+        const { data: services } = await sb.from("services").select("slug");
+        const { data: industries } = await sb.from("industries").select("slug");
 
         const entries: SitemapEntry[] = [
           { path: "/", changefreq: "weekly", priority: "1.0" },
@@ -32,10 +34,20 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/blog", changefreq: "weekly", priority: "0.8" },
           { path: "/faq", changefreq: "monthly", priority: "0.6" },
           { path: "/contact", changefreq: "monthly", priority: "0.7" },
-          ...CITIES.map((c) => ({
+          ...(cities ?? []).map((c) => ({
             path: `/locations/${c.slug}`,
             changefreq: "monthly" as const,
             priority: "0.9",
+          })),
+          ...(services ?? []).map((sv) => ({
+            path: `/services/${sv.slug}`,
+            changefreq: "monthly" as const,
+            priority: "0.8",
+          })),
+          ...(industries ?? []).map((i) => ({
+            path: `/industries/${i.slug}`,
+            changefreq: "monthly" as const,
+            priority: "0.7",
           })),
           ...(posts ?? []).map((p) => ({
             path: `/blog/${p.slug}`,

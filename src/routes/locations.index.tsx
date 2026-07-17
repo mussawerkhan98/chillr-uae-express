@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MapPin, ArrowRight, Clock } from "lucide-react";
-import { CITIES } from "@/lib/site";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { locationsQuery } from "@/lib/locations.query";
 import { UAEMap } from "@/components/UAEMap";
 
 export const Route = createFileRoute("/locations/")({
@@ -14,10 +15,13 @@ export const Route = createFileRoute("/locations/")({
     ],
     links: [{ rel: "canonical", href: "/locations" }],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(locationsQuery()),
   component: LocationsPage,
 });
 
 function LocationsPage() {
+  const { data: CITIES } = useSuspenseQuery(locationsQuery());
+
   return (
     <>
       <section className="container-page pt-16">
@@ -35,7 +39,7 @@ function LocationsPage() {
       </section>
 
       <section className="container-page py-12">
-        <UAEMap />
+        <UAEMap cities={CITIES} />
       </section>
 
       <section className="container-page pb-16">
@@ -57,7 +61,7 @@ function LocationsPage() {
               <p className="mt-2 text-sm text-muted-foreground line-clamp-3 flex-1">{c.blurb}</p>
               <div className="mt-5 flex items-center justify-between text-xs">
                 <span className="inline-flex items-center gap-1 text-primary font-semibold">
-                  <Clock className="h-3.5 w-3.5" /> {c.responseTime}
+                  <Clock className="h-3.5 w-3.5" /> {c.response_time}
                 </span>
                 <span className="inline-flex items-center gap-1 text-navy font-semibold group-hover:gap-2 transition-all">
                   View <ArrowRight className="h-4 w-4" />

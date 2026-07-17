@@ -14,6 +14,87 @@ export type Database = {
   }
   public: {
     Tables: {
+      industries: {
+        Row: {
+          content_html: string
+          created_at: string
+          description: string
+          id: string
+          image_url: string | null
+          name: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          content_html?: string
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          name: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          content_html?: string
+          created_at?: string
+          description?: string
+          id?: string
+          image_url?: string | null
+          name?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      locations: {
+        Row: {
+          arabic: string
+          blurb: string
+          created_at: string
+          id: string
+          map_x: number
+          map_y: number
+          name: string
+          neighborhoods: string
+          response_time: string
+          slug: string
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          arabic?: string
+          blurb?: string
+          created_at?: string
+          id?: string
+          map_x?: number
+          map_y?: number
+          name: string
+          neighborhoods?: string
+          response_time?: string
+          slug: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          arabic?: string
+          blurb?: string
+          created_at?: string
+          id?: string
+          map_x?: number
+          map_y?: number
+          name?: string
+          neighborhoods?: string
+          response_time?: string
+          slug?: string
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           author_id: string | null

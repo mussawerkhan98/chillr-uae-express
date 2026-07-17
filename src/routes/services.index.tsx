@@ -90,20 +90,19 @@ function ServicesPage() {
                   <p className="mt-2 text-sm text-muted-foreground leading-relaxed flex-1">
                     {s.description}
                   </p>
-                  <div className="mt-5 flex items-center gap-3">
+                  <div className="mt-5 flex flex-wrap items-center gap-2.5">
                     <Link
                       to="/services/$slug"
                       params={{ slug: s.slug }}
-                      className="inline-flex items-center gap-1 text-sm font-semibold text-navy hover:text-primary hover:gap-2 transition-all"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border px-4 py-2 text-sm font-semibold text-navy hover:border-primary hover:text-primary transition-colors"
                     >
-                      Learn more <ArrowRight className="h-4 w-4" />
+                      Learn more <ArrowRight className="h-3.5 w-3.5" />
                     </Link>
-                    <span className="text-border">·</span>
                     <Link
                       to="/contact"
-                      className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all"
+                      className="inline-flex items-center gap-1.5 rounded-full bg-accent px-4 py-2 text-sm font-semibold text-primary hover:bg-primary hover:text-white transition-colors"
                     >
-                      Get a quote <MessageSquareText className="h-4 w-4" />
+                      Get a quote <MessageSquareText className="h-3.5 w-3.5" />
                     </Link>
                   </div>
                 </div>

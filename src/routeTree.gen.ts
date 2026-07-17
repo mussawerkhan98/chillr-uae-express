@@ -24,24 +24,34 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ServicesIndexRouteImport } from './routes/services.index'
 import { Route as LocationsIndexRouteImport } from './routes/locations.index'
+import { Route as IndustriesIndexRouteImport } from './routes/industries.index'
 import { Route as BlogIndexRouteImport } from './routes/blog.index'
 import { Route as ServicesSlugRouteImport } from './routes/services.$slug'
 import { Route as LocationsCityRouteImport } from './routes/locations.$city'
+import { Route as IndustriesSlugRouteImport } from './routes/industries.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authenticated/admin/route'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
 import { Route as AuthenticatedAdminServicesRouteImport } from './routes/_authenticated/admin/services'
+import { Route as AuthenticatedAdminLocationsRouteImport } from './routes/_authenticated/admin/locations'
+import { Route as AuthenticatedAdminIndustriesRouteImport } from './routes/_authenticated/admin/industries'
 import { Route as AuthenticatedAdminImagesRouteImport } from './routes/_authenticated/admin/images'
 import { Route as AuthenticatedAdminFleetRouteImport } from './routes/_authenticated/admin/fleet'
 import { Route as AuthenticatedAdminFaqsRouteImport } from './routes/_authenticated/admin/faqs'
 import { Route as AuthenticatedAdminBlogRouteImport } from './routes/_authenticated/admin/blog'
 import { Route as AuthenticatedAdminServicesIndexRouteImport } from './routes/_authenticated/admin/services.index'
+import { Route as AuthenticatedAdminLocationsIndexRouteImport } from './routes/_authenticated/admin/locations.index'
+import { Route as AuthenticatedAdminIndustriesIndexRouteImport } from './routes/_authenticated/admin/industries.index'
 import { Route as AuthenticatedAdminFleetIndexRouteImport } from './routes/_authenticated/admin/fleet.index'
 import { Route as AuthenticatedAdminFaqsIndexRouteImport } from './routes/_authenticated/admin/faqs.index'
 import { Route as AuthenticatedAdminBlogIndexRouteImport } from './routes/_authenticated/admin/blog.index'
 import { Route as AuthenticatedAdminServicesNewRouteImport } from './routes/_authenticated/admin/services.new'
 import { Route as AuthenticatedAdminServicesIdRouteImport } from './routes/_authenticated/admin/services.$id'
+import { Route as AuthenticatedAdminLocationsNewRouteImport } from './routes/_authenticated/admin/locations.new'
+import { Route as AuthenticatedAdminLocationsIdRouteImport } from './routes/_authenticated/admin/locations.$id'
+import { Route as AuthenticatedAdminIndustriesNewRouteImport } from './routes/_authenticated/admin/industries.new'
+import { Route as AuthenticatedAdminIndustriesIdRouteImport } from './routes/_authenticated/admin/industries.$id'
 import { Route as AuthenticatedAdminFleetNewRouteImport } from './routes/_authenticated/admin/fleet.new'
 import { Route as AuthenticatedAdminFleetIdRouteImport } from './routes/_authenticated/admin/fleet.$id'
 import { Route as AuthenticatedAdminFaqsNewRouteImport } from './routes/_authenticated/admin/faqs.new'
@@ -123,6 +133,11 @@ const LocationsIndexRoute = LocationsIndexRouteImport.update({
   path: '/',
   getParentRoute: () => LocationsRoute,
 } as any)
+const IndustriesIndexRoute = IndustriesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => IndustriesRoute,
+} as any)
 const BlogIndexRoute = BlogIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -137,6 +152,11 @@ const LocationsCityRoute = LocationsCityRouteImport.update({
   id: '/$city',
   path: '/$city',
   getParentRoute: () => LocationsRoute,
+} as any)
+const IndustriesSlugRoute = IndustriesSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => IndustriesRoute,
 } as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/$slug',
@@ -165,6 +185,18 @@ const AuthenticatedAdminServicesRoute =
     path: '/services',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminLocationsRoute =
+  AuthenticatedAdminLocationsRouteImport.update({
+    id: '/locations',
+    path: '/locations',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
+const AuthenticatedAdminIndustriesRoute =
+  AuthenticatedAdminIndustriesRouteImport.update({
+    id: '/industries',
+    path: '/industries',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminImagesRoute =
   AuthenticatedAdminImagesRouteImport.update({
     id: '/images',
@@ -191,6 +223,18 @@ const AuthenticatedAdminServicesIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedAdminServicesRoute,
+  } as any)
+const AuthenticatedAdminLocationsIndexRoute =
+  AuthenticatedAdminLocationsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminLocationsRoute,
+  } as any)
+const AuthenticatedAdminIndustriesIndexRoute =
+  AuthenticatedAdminIndustriesIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminIndustriesRoute,
   } as any)
 const AuthenticatedAdminFleetIndexRoute =
   AuthenticatedAdminFleetIndexRouteImport.update({
@@ -221,6 +265,30 @@ const AuthenticatedAdminServicesIdRoute =
     id: '/$id',
     path: '/$id',
     getParentRoute: () => AuthenticatedAdminServicesRoute,
+  } as any)
+const AuthenticatedAdminLocationsNewRoute =
+  AuthenticatedAdminLocationsNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthenticatedAdminLocationsRoute,
+  } as any)
+const AuthenticatedAdminLocationsIdRoute =
+  AuthenticatedAdminLocationsIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminLocationsRoute,
+  } as any)
+const AuthenticatedAdminIndustriesNewRoute =
+  AuthenticatedAdminIndustriesNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthenticatedAdminIndustriesRoute,
+  } as any)
+const AuthenticatedAdminIndustriesIdRoute =
+  AuthenticatedAdminIndustriesIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminIndustriesRoute,
   } as any)
 const AuthenticatedAdminFleetNewRoute =
   AuthenticatedAdminFleetNewRouteImport.update({
@@ -268,21 +336,25 @@ export interface FileRoutesByFullPath {
   '/debug-auth': typeof DebugAuthRoute
   '/faq': typeof FaqRoute
   '/fleet': typeof FleetRoute
-  '/industries': typeof IndustriesRoute
+  '/industries': typeof IndustriesRouteWithChildren
   '/locations': typeof LocationsRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
+  '/industries/$slug': typeof IndustriesSlugRoute
   '/locations/$city': typeof LocationsCityRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/blog/': typeof BlogIndexRoute
+  '/industries/': typeof IndustriesIndexRoute
   '/locations/': typeof LocationsIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/admin/blog': typeof AuthenticatedAdminBlogRouteWithChildren
   '/admin/faqs': typeof AuthenticatedAdminFaqsRouteWithChildren
   '/admin/fleet': typeof AuthenticatedAdminFleetRouteWithChildren
   '/admin/images': typeof AuthenticatedAdminImagesRoute
+  '/admin/industries': typeof AuthenticatedAdminIndustriesRouteWithChildren
+  '/admin/locations': typeof AuthenticatedAdminLocationsRouteWithChildren
   '/admin/services': typeof AuthenticatedAdminServicesRouteWithChildren
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -292,11 +364,17 @@ export interface FileRoutesByFullPath {
   '/admin/faqs/new': typeof AuthenticatedAdminFaqsNewRoute
   '/admin/fleet/$id': typeof AuthenticatedAdminFleetIdRoute
   '/admin/fleet/new': typeof AuthenticatedAdminFleetNewRoute
+  '/admin/industries/$id': typeof AuthenticatedAdminIndustriesIdRoute
+  '/admin/industries/new': typeof AuthenticatedAdminIndustriesNewRoute
+  '/admin/locations/$id': typeof AuthenticatedAdminLocationsIdRoute
+  '/admin/locations/new': typeof AuthenticatedAdminLocationsNewRoute
   '/admin/services/$id': typeof AuthenticatedAdminServicesIdRoute
   '/admin/services/new': typeof AuthenticatedAdminServicesNewRoute
   '/admin/blog/': typeof AuthenticatedAdminBlogIndexRoute
   '/admin/faqs/': typeof AuthenticatedAdminFaqsIndexRoute
   '/admin/fleet/': typeof AuthenticatedAdminFleetIndexRoute
+  '/admin/industries/': typeof AuthenticatedAdminIndustriesIndexRoute
+  '/admin/locations/': typeof AuthenticatedAdminLocationsIndexRoute
   '/admin/services/': typeof AuthenticatedAdminServicesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -307,12 +385,13 @@ export interface FileRoutesByTo {
   '/debug-auth': typeof DebugAuthRoute
   '/faq': typeof FaqRoute
   '/fleet': typeof FleetRoute
-  '/industries': typeof IndustriesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/industries/$slug': typeof IndustriesSlugRoute
   '/locations/$city': typeof LocationsCityRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/blog': typeof BlogIndexRoute
+  '/industries': typeof IndustriesIndexRoute
   '/locations': typeof LocationsIndexRoute
   '/services': typeof ServicesIndexRoute
   '/admin/images': typeof AuthenticatedAdminImagesRoute
@@ -324,11 +403,17 @@ export interface FileRoutesByTo {
   '/admin/faqs/new': typeof AuthenticatedAdminFaqsNewRoute
   '/admin/fleet/$id': typeof AuthenticatedAdminFleetIdRoute
   '/admin/fleet/new': typeof AuthenticatedAdminFleetNewRoute
+  '/admin/industries/$id': typeof AuthenticatedAdminIndustriesIdRoute
+  '/admin/industries/new': typeof AuthenticatedAdminIndustriesNewRoute
+  '/admin/locations/$id': typeof AuthenticatedAdminLocationsIdRoute
+  '/admin/locations/new': typeof AuthenticatedAdminLocationsNewRoute
   '/admin/services/$id': typeof AuthenticatedAdminServicesIdRoute
   '/admin/services/new': typeof AuthenticatedAdminServicesNewRoute
   '/admin/blog': typeof AuthenticatedAdminBlogIndexRoute
   '/admin/faqs': typeof AuthenticatedAdminFaqsIndexRoute
   '/admin/fleet': typeof AuthenticatedAdminFleetIndexRoute
+  '/admin/industries': typeof AuthenticatedAdminIndustriesIndexRoute
+  '/admin/locations': typeof AuthenticatedAdminLocationsIndexRoute
   '/admin/services': typeof AuthenticatedAdminServicesIndexRoute
 }
 export interface FileRoutesById {
@@ -342,21 +427,25 @@ export interface FileRoutesById {
   '/debug-auth': typeof DebugAuthRoute
   '/faq': typeof FaqRoute
   '/fleet': typeof FleetRoute
-  '/industries': typeof IndustriesRoute
+  '/industries': typeof IndustriesRouteWithChildren
   '/locations': typeof LocationsRouteWithChildren
   '/services': typeof ServicesRouteWithChildren
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
+  '/industries/$slug': typeof IndustriesSlugRoute
   '/locations/$city': typeof LocationsCityRoute
   '/services/$slug': typeof ServicesSlugRoute
   '/blog/': typeof BlogIndexRoute
+  '/industries/': typeof IndustriesIndexRoute
   '/locations/': typeof LocationsIndexRoute
   '/services/': typeof ServicesIndexRoute
   '/_authenticated/admin/blog': typeof AuthenticatedAdminBlogRouteWithChildren
   '/_authenticated/admin/faqs': typeof AuthenticatedAdminFaqsRouteWithChildren
   '/_authenticated/admin/fleet': typeof AuthenticatedAdminFleetRouteWithChildren
   '/_authenticated/admin/images': typeof AuthenticatedAdminImagesRoute
+  '/_authenticated/admin/industries': typeof AuthenticatedAdminIndustriesRouteWithChildren
+  '/_authenticated/admin/locations': typeof AuthenticatedAdminLocationsRouteWithChildren
   '/_authenticated/admin/services': typeof AuthenticatedAdminServicesRouteWithChildren
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -366,11 +455,17 @@ export interface FileRoutesById {
   '/_authenticated/admin/faqs/new': typeof AuthenticatedAdminFaqsNewRoute
   '/_authenticated/admin/fleet/$id': typeof AuthenticatedAdminFleetIdRoute
   '/_authenticated/admin/fleet/new': typeof AuthenticatedAdminFleetNewRoute
+  '/_authenticated/admin/industries/$id': typeof AuthenticatedAdminIndustriesIdRoute
+  '/_authenticated/admin/industries/new': typeof AuthenticatedAdminIndustriesNewRoute
+  '/_authenticated/admin/locations/$id': typeof AuthenticatedAdminLocationsIdRoute
+  '/_authenticated/admin/locations/new': typeof AuthenticatedAdminLocationsNewRoute
   '/_authenticated/admin/services/$id': typeof AuthenticatedAdminServicesIdRoute
   '/_authenticated/admin/services/new': typeof AuthenticatedAdminServicesNewRoute
   '/_authenticated/admin/blog/': typeof AuthenticatedAdminBlogIndexRoute
   '/_authenticated/admin/faqs/': typeof AuthenticatedAdminFaqsIndexRoute
   '/_authenticated/admin/fleet/': typeof AuthenticatedAdminFleetIndexRoute
+  '/_authenticated/admin/industries/': typeof AuthenticatedAdminIndustriesIndexRoute
+  '/_authenticated/admin/locations/': typeof AuthenticatedAdminLocationsIndexRoute
   '/_authenticated/admin/services/': typeof AuthenticatedAdminServicesIndexRoute
 }
 export interface FileRouteTypes {
@@ -390,15 +485,19 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/admin'
     | '/blog/$slug'
+    | '/industries/$slug'
     | '/locations/$city'
     | '/services/$slug'
     | '/blog/'
+    | '/industries/'
     | '/locations/'
     | '/services/'
     | '/admin/blog'
     | '/admin/faqs'
     | '/admin/fleet'
     | '/admin/images'
+    | '/admin/industries'
+    | '/admin/locations'
     | '/admin/services'
     | '/admin/settings'
     | '/admin/'
@@ -408,11 +507,17 @@ export interface FileRouteTypes {
     | '/admin/faqs/new'
     | '/admin/fleet/$id'
     | '/admin/fleet/new'
+    | '/admin/industries/$id'
+    | '/admin/industries/new'
+    | '/admin/locations/$id'
+    | '/admin/locations/new'
     | '/admin/services/$id'
     | '/admin/services/new'
     | '/admin/blog/'
     | '/admin/faqs/'
     | '/admin/fleet/'
+    | '/admin/industries/'
+    | '/admin/locations/'
     | '/admin/services/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -423,12 +528,13 @@ export interface FileRouteTypes {
     | '/debug-auth'
     | '/faq'
     | '/fleet'
-    | '/industries'
     | '/sitemap.xml'
     | '/blog/$slug'
+    | '/industries/$slug'
     | '/locations/$city'
     | '/services/$slug'
     | '/blog'
+    | '/industries'
     | '/locations'
     | '/services'
     | '/admin/images'
@@ -440,11 +546,17 @@ export interface FileRouteTypes {
     | '/admin/faqs/new'
     | '/admin/fleet/$id'
     | '/admin/fleet/new'
+    | '/admin/industries/$id'
+    | '/admin/industries/new'
+    | '/admin/locations/$id'
+    | '/admin/locations/new'
     | '/admin/services/$id'
     | '/admin/services/new'
     | '/admin/blog'
     | '/admin/faqs'
     | '/admin/fleet'
+    | '/admin/industries'
+    | '/admin/locations'
     | '/admin/services'
   id:
     | '__root__'
@@ -463,15 +575,19 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/blog/$slug'
+    | '/industries/$slug'
     | '/locations/$city'
     | '/services/$slug'
     | '/blog/'
+    | '/industries/'
     | '/locations/'
     | '/services/'
     | '/_authenticated/admin/blog'
     | '/_authenticated/admin/faqs'
     | '/_authenticated/admin/fleet'
     | '/_authenticated/admin/images'
+    | '/_authenticated/admin/industries'
+    | '/_authenticated/admin/locations'
     | '/_authenticated/admin/services'
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/'
@@ -481,11 +597,17 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/faqs/new'
     | '/_authenticated/admin/fleet/$id'
     | '/_authenticated/admin/fleet/new'
+    | '/_authenticated/admin/industries/$id'
+    | '/_authenticated/admin/industries/new'
+    | '/_authenticated/admin/locations/$id'
+    | '/_authenticated/admin/locations/new'
     | '/_authenticated/admin/services/$id'
     | '/_authenticated/admin/services/new'
     | '/_authenticated/admin/blog/'
     | '/_authenticated/admin/faqs/'
     | '/_authenticated/admin/fleet/'
+    | '/_authenticated/admin/industries/'
+    | '/_authenticated/admin/locations/'
     | '/_authenticated/admin/services/'
   fileRoutesById: FileRoutesById
 }
@@ -499,7 +621,7 @@ export interface RootRouteChildren {
   DebugAuthRoute: typeof DebugAuthRoute
   FaqRoute: typeof FaqRoute
   FleetRoute: typeof FleetRoute
-  IndustriesRoute: typeof IndustriesRoute
+  IndustriesRoute: typeof IndustriesRouteWithChildren
   LocationsRoute: typeof LocationsRouteWithChildren
   ServicesRoute: typeof ServicesRouteWithChildren
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -612,6 +734,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LocationsIndexRouteImport
       parentRoute: typeof LocationsRoute
     }
+    '/industries/': {
+      id: '/industries/'
+      path: '/'
+      fullPath: '/industries/'
+      preLoaderRoute: typeof IndustriesIndexRouteImport
+      parentRoute: typeof IndustriesRoute
+    }
     '/blog/': {
       id: '/blog/'
       path: '/'
@@ -632,6 +761,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/locations/$city'
       preLoaderRoute: typeof LocationsCityRouteImport
       parentRoute: typeof LocationsRoute
+    }
+    '/industries/$slug': {
+      id: '/industries/$slug'
+      path: '/$slug'
+      fullPath: '/industries/$slug'
+      preLoaderRoute: typeof IndustriesSlugRouteImport
+      parentRoute: typeof IndustriesRoute
     }
     '/blog/$slug': {
       id: '/blog/$slug'
@@ -666,6 +802,20 @@ declare module '@tanstack/react-router' {
       path: '/services'
       fullPath: '/admin/services'
       preLoaderRoute: typeof AuthenticatedAdminServicesRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/locations': {
+      id: '/_authenticated/admin/locations'
+      path: '/locations'
+      fullPath: '/admin/locations'
+      preLoaderRoute: typeof AuthenticatedAdminLocationsRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
+    '/_authenticated/admin/industries': {
+      id: '/_authenticated/admin/industries'
+      path: '/industries'
+      fullPath: '/admin/industries'
+      preLoaderRoute: typeof AuthenticatedAdminIndustriesRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
     '/_authenticated/admin/images': {
@@ -703,6 +853,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminServicesIndexRouteImport
       parentRoute: typeof AuthenticatedAdminServicesRoute
     }
+    '/_authenticated/admin/locations/': {
+      id: '/_authenticated/admin/locations/'
+      path: '/'
+      fullPath: '/admin/locations/'
+      preLoaderRoute: typeof AuthenticatedAdminLocationsIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminLocationsRoute
+    }
+    '/_authenticated/admin/industries/': {
+      id: '/_authenticated/admin/industries/'
+      path: '/'
+      fullPath: '/admin/industries/'
+      preLoaderRoute: typeof AuthenticatedAdminIndustriesIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminIndustriesRoute
+    }
     '/_authenticated/admin/fleet/': {
       id: '/_authenticated/admin/fleet/'
       path: '/'
@@ -737,6 +901,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/services/$id'
       preLoaderRoute: typeof AuthenticatedAdminServicesIdRouteImport
       parentRoute: typeof AuthenticatedAdminServicesRoute
+    }
+    '/_authenticated/admin/locations/new': {
+      id: '/_authenticated/admin/locations/new'
+      path: '/new'
+      fullPath: '/admin/locations/new'
+      preLoaderRoute: typeof AuthenticatedAdminLocationsNewRouteImport
+      parentRoute: typeof AuthenticatedAdminLocationsRoute
+    }
+    '/_authenticated/admin/locations/$id': {
+      id: '/_authenticated/admin/locations/$id'
+      path: '/$id'
+      fullPath: '/admin/locations/$id'
+      preLoaderRoute: typeof AuthenticatedAdminLocationsIdRouteImport
+      parentRoute: typeof AuthenticatedAdminLocationsRoute
+    }
+    '/_authenticated/admin/industries/new': {
+      id: '/_authenticated/admin/industries/new'
+      path: '/new'
+      fullPath: '/admin/industries/new'
+      preLoaderRoute: typeof AuthenticatedAdminIndustriesNewRouteImport
+      parentRoute: typeof AuthenticatedAdminIndustriesRoute
+    }
+    '/_authenticated/admin/industries/$id': {
+      id: '/_authenticated/admin/industries/$id'
+      path: '/$id'
+      fullPath: '/admin/industries/$id'
+      preLoaderRoute: typeof AuthenticatedAdminIndustriesIdRouteImport
+      parentRoute: typeof AuthenticatedAdminIndustriesRoute
     }
     '/_authenticated/admin/fleet/new': {
       id: '/_authenticated/admin/fleet/new'
@@ -837,6 +1029,44 @@ const AuthenticatedAdminFleetRouteWithChildren =
     AuthenticatedAdminFleetRouteChildren,
   )
 
+interface AuthenticatedAdminIndustriesRouteChildren {
+  AuthenticatedAdminIndustriesIdRoute: typeof AuthenticatedAdminIndustriesIdRoute
+  AuthenticatedAdminIndustriesNewRoute: typeof AuthenticatedAdminIndustriesNewRoute
+  AuthenticatedAdminIndustriesIndexRoute: typeof AuthenticatedAdminIndustriesIndexRoute
+}
+
+const AuthenticatedAdminIndustriesRouteChildren: AuthenticatedAdminIndustriesRouteChildren =
+  {
+    AuthenticatedAdminIndustriesIdRoute: AuthenticatedAdminIndustriesIdRoute,
+    AuthenticatedAdminIndustriesNewRoute: AuthenticatedAdminIndustriesNewRoute,
+    AuthenticatedAdminIndustriesIndexRoute:
+      AuthenticatedAdminIndustriesIndexRoute,
+  }
+
+const AuthenticatedAdminIndustriesRouteWithChildren =
+  AuthenticatedAdminIndustriesRoute._addFileChildren(
+    AuthenticatedAdminIndustriesRouteChildren,
+  )
+
+interface AuthenticatedAdminLocationsRouteChildren {
+  AuthenticatedAdminLocationsIdRoute: typeof AuthenticatedAdminLocationsIdRoute
+  AuthenticatedAdminLocationsNewRoute: typeof AuthenticatedAdminLocationsNewRoute
+  AuthenticatedAdminLocationsIndexRoute: typeof AuthenticatedAdminLocationsIndexRoute
+}
+
+const AuthenticatedAdminLocationsRouteChildren: AuthenticatedAdminLocationsRouteChildren =
+  {
+    AuthenticatedAdminLocationsIdRoute: AuthenticatedAdminLocationsIdRoute,
+    AuthenticatedAdminLocationsNewRoute: AuthenticatedAdminLocationsNewRoute,
+    AuthenticatedAdminLocationsIndexRoute:
+      AuthenticatedAdminLocationsIndexRoute,
+  }
+
+const AuthenticatedAdminLocationsRouteWithChildren =
+  AuthenticatedAdminLocationsRoute._addFileChildren(
+    AuthenticatedAdminLocationsRouteChildren,
+  )
+
 interface AuthenticatedAdminServicesRouteChildren {
   AuthenticatedAdminServicesIdRoute: typeof AuthenticatedAdminServicesIdRoute
   AuthenticatedAdminServicesNewRoute: typeof AuthenticatedAdminServicesNewRoute
@@ -860,6 +1090,8 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminFaqsRoute: typeof AuthenticatedAdminFaqsRouteWithChildren
   AuthenticatedAdminFleetRoute: typeof AuthenticatedAdminFleetRouteWithChildren
   AuthenticatedAdminImagesRoute: typeof AuthenticatedAdminImagesRoute
+  AuthenticatedAdminIndustriesRoute: typeof AuthenticatedAdminIndustriesRouteWithChildren
+  AuthenticatedAdminLocationsRoute: typeof AuthenticatedAdminLocationsRouteWithChildren
   AuthenticatedAdminServicesRoute: typeof AuthenticatedAdminServicesRouteWithChildren
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -871,6 +1103,10 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminFaqsRoute: AuthenticatedAdminFaqsRouteWithChildren,
     AuthenticatedAdminFleetRoute: AuthenticatedAdminFleetRouteWithChildren,
     AuthenticatedAdminImagesRoute: AuthenticatedAdminImagesRoute,
+    AuthenticatedAdminIndustriesRoute:
+      AuthenticatedAdminIndustriesRouteWithChildren,
+    AuthenticatedAdminLocationsRoute:
+      AuthenticatedAdminLocationsRouteWithChildren,
     AuthenticatedAdminServicesRoute:
       AuthenticatedAdminServicesRouteWithChildren,
     AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
@@ -904,6 +1140,20 @@ const BlogRouteChildren: BlogRouteChildren = {
 }
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
+
+interface IndustriesRouteChildren {
+  IndustriesSlugRoute: typeof IndustriesSlugRoute
+  IndustriesIndexRoute: typeof IndustriesIndexRoute
+}
+
+const IndustriesRouteChildren: IndustriesRouteChildren = {
+  IndustriesSlugRoute: IndustriesSlugRoute,
+  IndustriesIndexRoute: IndustriesIndexRoute,
+}
+
+const IndustriesRouteWithChildren = IndustriesRoute._addFileChildren(
+  IndustriesRouteChildren,
+)
 
 interface LocationsRouteChildren {
   LocationsCityRoute: typeof LocationsCityRoute
@@ -943,7 +1193,7 @@ const rootRouteChildren: RootRouteChildren = {
   DebugAuthRoute: DebugAuthRoute,
   FaqRoute: FaqRoute,
   FleetRoute: FleetRoute,
-  IndustriesRoute: IndustriesRoute,
+  IndustriesRoute: IndustriesRouteWithChildren,
   LocationsRoute: LocationsRouteWithChildren,
   ServicesRoute: ServicesRouteWithChildren,
   SitemapDotxmlRoute: SitemapDotxmlRoute,

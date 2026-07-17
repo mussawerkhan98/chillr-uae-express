@@ -19,6 +19,7 @@ import { FloatingCTAs } from "@/components/FloatingCTAs";
 import { SITE } from "@/lib/site";
 import { supabase } from "@/integrations/supabase/client";
 import { settingsQuery } from "@/lib/settings.query";
+import { locationsQuery } from "@/lib/locations.query";
 
 function NotFoundComponent() {
   return (
@@ -110,7 +111,11 @@ const ORG_JSONLD = {
 };
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  loader: ({ context }) => context.queryClient.ensureQueryData(settingsQuery()),
+  loader: ({ context }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(settingsQuery()),
+      context.queryClient.ensureQueryData(locationsQuery()),
+    ]),
   head: () => ({
     meta: [
       { charSet: "utf-8" },

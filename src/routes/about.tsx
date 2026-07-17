@@ -4,6 +4,7 @@ import { Snowflake, Shield, Award, Target, Heart, Truck } from "lucide-react";
 import { SITE, STATS } from "@/lib/site";
 import interior from "@/assets/cold-chain-interior.jpg";
 import { siteImagesQuery, pickImage } from "@/lib/site-images.query";
+import { settingsQuery, getSetting } from "@/lib/settings.query";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -24,16 +25,51 @@ export const Route = createFileRoute("/about")({
     ],
     links: [{ rel: "canonical", href: "/about" }],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(siteImagesQuery()),
+  loader: ({ context }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(siteImagesQuery()),
+      context.queryClient.ensureQueryData(settingsQuery()),
+    ]),
   component: About,
 });
 
 function About() {
   const { data: images } = useSuspenseQuery(siteImagesQuery());
+  const { data: settings } = useSuspenseQuery(settingsQuery());
   const interiorImg = pickImage(images, "cold_chain_interior", {
     src: interior,
     alt: "Refrigerated cargo compartment interior",
   });
+
+  const heroTitle = getSetting(
+    settings,
+    "about_hero_title",
+    "The cold-chain partner behind the UAE's most demanding brands.",
+  );
+  const heroSubtitle = getSetting(
+    settings,
+    "about_hero_subtitle",
+    `${SITE.name} operates a modern refrigerated fleet across all seven emirates, moving food, pharma, seafood, floral and specialty cold cargo with precision and compliance.`,
+  );
+  const storyP1 = getSetting(
+    settings,
+    "about_story_p1",
+    `${SITE.name} was founded to solve a persistent problem for UAE businesses: cold-chain transport that's actually reliable. Too many promises, too many broken temperature logs, too many spoiled loads.`,
+  );
+  const storyP2 = getSetting(
+    settings,
+    "about_story_p2",
+    "Today we run a fleet of chiller vans, freezer trucks and pickup chillers — dispatched around the clock by a team that understands food safety, pharmaceutical handling and last-mile logistics as deeply as they understand vehicles.",
+  );
+  const storyP3 = getSetting(
+    settings,
+    "about_story_p3",
+    "We serve restaurants, hotels, hospitals, supermarkets, floral studios, catering companies and manufacturers from Abu Dhabi to Ras Al Khaimah — and everywhere in between.",
+  );
+  const stats = [1, 2, 3, 4].map((n) => ({
+    value: getSetting(settings, `stat_${n}_value`, STATS[n - 1]?.value ?? ""),
+    label: getSetting(settings, `stat_${n}_label`, STATS[n - 1]?.label ?? ""),
+  }));
   const values = [
     {
       icon: Snowflake,
@@ -65,18 +101,17 @@ function About() {
             About us
           </div>
           <h1 className="mt-6 font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-navy tracking-tight max-w-3xl mx-auto">
-            The cold-chain partner behind the UAE's most demanding brands.
+            {heroTitle}
           </h1>
           <p className="mt-6 max-w-2xl mx-auto text-lg text-muted-foreground">
-            {SITE.name} operates a modern refrigerated fleet across all seven emirates, moving food,
-            pharma, seafood, floral and specialty cold cargo with precision and compliance.
+            {heroSubtitle}
           </p>
         </div>
       </section>
 
       <section className="container-page py-16">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {STATS.map((s) => (
+          {stats.map((s) => (
             <div
               key={s.label}
               className="rounded-2xl bg-card border border-border p-6 text-center shadow-card"
@@ -103,21 +138,9 @@ function About() {
           <div>
             <h2 className="font-display text-3xl sm:text-4xl font-bold text-navy">Our story</h2>
             <div className="mt-5 space-y-4 text-muted-foreground leading-relaxed">
-              <p>
-                {SITE.name} was founded to solve a persistent problem for UAE businesses: cold-chain
-                transport that's actually reliable. Too many promises, too many broken temperature
-                logs, too many spoiled loads.
-              </p>
-              <p>
-                Today we run a fleet of chiller vans, freezer trucks and pickup chillers —
-                dispatched around the clock by a team that understands food safety, pharmaceutical
-                handling and last-mile logistics as deeply as they understand vehicles.
-              </p>
-              <p>
-                We serve restaurants, hotels, hospitals, supermarkets, floral studios, catering
-                companies and manufacturers from Abu Dhabi to Ras Al Khaimah — and everywhere in
-                between.
-              </p>
+              <p>{storyP1}</p>
+              <p>{storyP2}</p>
+              <p>{storyP3}</p>
             </div>
             <Link
               to="/contact"

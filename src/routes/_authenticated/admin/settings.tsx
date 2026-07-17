@@ -14,7 +14,7 @@ export const Route = createFileRoute("/_authenticated/admin/settings")({
   component: SettingsPage,
 });
 
-const FIELDS: { key: string; label: string; multiline?: boolean }[] = [
+const FIELDS: { key: string; label: string; multiline?: boolean; group?: string }[] = [
   { key: "site_tagline", label: "Tagline" },
   { key: "site_phone", label: "Phone" },
   { key: "site_whatsapp", label: "WhatsApp number (digits only, e.g. 971501234567)" },
@@ -22,6 +22,19 @@ const FIELDS: { key: string; label: string; multiline?: boolean }[] = [
   { key: "site_address", label: "Address" },
   { key: "meta_home_title", label: "Homepage SEO title" },
   { key: "meta_home_description", label: "Homepage SEO description", multiline: true },
+  { key: "about_hero_title", label: "About page: headline", multiline: true, group: "About page" },
+  { key: "about_hero_subtitle", label: "About page: intro paragraph", multiline: true, group: "About page" },
+  { key: "about_story_p1", label: "About page: our story — paragraph 1", multiline: true, group: "About page" },
+  { key: "about_story_p2", label: "About page: our story — paragraph 2", multiline: true, group: "About page" },
+  { key: "about_story_p3", label: "About page: our story — paragraph 3", multiline: true, group: "About page" },
+  { key: "stat_1_value", label: "About page: stat 1 value (e.g. 10+)", group: "About page" },
+  { key: "stat_1_label", label: "About page: stat 1 label", group: "About page" },
+  { key: "stat_2_value", label: "About page: stat 2 value", group: "About page" },
+  { key: "stat_2_label", label: "About page: stat 2 label", group: "About page" },
+  { key: "stat_3_value", label: "About page: stat 3 value", group: "About page" },
+  { key: "stat_3_label", label: "About page: stat 3 label", group: "About page" },
+  { key: "stat_4_value", label: "About page: stat 4 value", group: "About page" },
+  { key: "stat_4_label", label: "About page: stat 4 label", group: "About page" },
 ];
 
 function SettingsPage() {
@@ -71,7 +84,30 @@ function SettingsPage() {
       </header>
 
       <div className="space-y-5">
-        {FIELDS.map((f) => (
+        {FIELDS.filter((f) => !f.group).map((f) => (
+          <div key={f.key} className="space-y-2">
+            <Label htmlFor={f.key}>{f.label}</Label>
+            {f.multiline ? (
+              <Textarea
+                id={f.key}
+                rows={3}
+                value={form[f.key] ?? ""}
+                onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+              />
+            ) : (
+              <Input
+                id={f.key}
+                value={form[f.key] ?? ""}
+                onChange={(e) => setForm({ ...form, [f.key]: e.target.value })}
+              />
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="space-y-5 pt-6 border-t">
+        <h2 className="font-display text-xl font-bold text-navy">About page content</h2>
+        {FIELDS.filter((f) => f.group === "About page").map((f) => (
           <div key={f.key} className="space-y-2">
             <Label htmlFor={f.key}>{f.label}</Label>
             {f.multiline ? (

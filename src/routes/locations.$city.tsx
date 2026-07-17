@@ -1,12 +1,16 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { MapPin, Clock, ArrowRight, MessageCircle, Phone, CheckCircle2 } from "lucide-react";
-import { CITIES, SITE, FLEET, FAQS, type CitySlug } from "@/lib/site";
+import { SITE, FLEET, FAQS } from "@/lib/site";
+import { getLocationBySlug, listLocationsPublic } from "@/lib/locations.functions";
 
 export const Route = createFileRoute("/locations/$city")({
-  loader: ({ params }) => {
-    const city = CITIES.find((c) => c.slug === params.city);
+  loader: async ({ params }) => {
+    const [city, allCities] = await Promise.all([
+      getLocationBySlug({ data: { slug: params.city } }),
+      listLocationsPublic(),
+    ]);
     if (!city) throw notFound();
-    return { city };
+    return { city, allCities };
   },
   head: ({ loaderData, params }) => {
     if (!loaderData) {
@@ -19,7 +23,7 @@ export const Route = createFileRoute("/locations/$city")({
     }
     const c = loaderData.city;
     const title = `Chiller Van Transport in ${c.name} | Refrigerated Truck Rental — IQRAR`;
-    const desc = `Refrigerated chiller van and freezer truck rental in ${c.name}. 24/7 dispatch, ${c.responseTime} response, HACCP-aligned cold-chain transport across ${c.name} and neighbouring emirates.`;
+    const desc = `Refrigerated chiller van and freezer truck rental in ${c.name}. 24/7 dispatch, ${c.response_time} response, HACCP-aligned cold-chain transport across ${c.name} and neighbouring emirates.`;
     return {
       meta: [
         { title },
@@ -61,9 +65,12 @@ export const Route = createFileRoute("/locations/$city")({
 });
 
 function CityPage() {
-  const { city: c } = Route.useLoaderData();
-  const other = CITIES.filter((x) => x.slug !== c.slug).slice(0, 4);
+  const { city: c, allCities } = Route.useLoaderData();
+  const other = allCities.filter((x) => x.slug !== c.slug).slice(0, 4);
   const localFaqs = buildLocalFaqs(c.name);
+  const neighborhoods = c.neighborhoods
+    ? c.neighborhoods.split(",").map((n) => n.trim()).filter(Boolean)
+    : [];
 
   return (
     <>
@@ -100,12 +107,12 @@ function CityPage() {
             <div className="flex items-center gap-2 text-secondary text-sm font-semibold">
               <Clock className="h-4 w-4" /> Response time
             </div>
-            <div className="mt-1 font-display text-3xl font-bold">{c.responseTime}</div>
+            <div className="mt-1 font-display text-3xl font-bold">{c.response_time}</div>
             <p className="mt-2 text-sm text-ice/70">Typical dispatch window inside {c.name}.</p>
             <div className="mt-6 pt-6 border-t border-white/10">
               <div className="text-xs uppercase tracking-wider text-ice/60">Popular areas</div>
               <ul className="mt-2 flex flex-wrap gap-2">
-                {c.neighborhoods.map((n: string) => (
+                {neighborhoods.map((n) => (
                   <li key={n} className="text-xs bg-white/10 border border-white/10 rounded-full px-3 py-1">{n}</li>
                 ))}
               </ul>

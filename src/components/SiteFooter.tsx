@@ -1,12 +1,14 @@
 import { Link } from "@tanstack/react-router";
 import { Mail, Phone, MapPin, MessageCircle, Snowflake } from "lucide-react";
-import { SITE, NAV_LINKS, CITIES } from "@/lib/site";
+import { SITE, NAV_LINKS } from "@/lib/site";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { settingsQuery, getSetting } from "@/lib/settings.query";
+import { locationsQuery } from "@/lib/locations.query";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
   const { data: settings } = useSuspenseQuery(settingsQuery());
+  const { data: locations } = useSuspenseQuery(locationsQuery());
   const phone = getSetting(settings, "site_phone", SITE.phone);
   const phoneHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
   const whatsapp = getSetting(settings, "site_whatsapp", SITE.whatsapp);
@@ -61,7 +63,7 @@ export function SiteFooter() {
             Emirates We Serve
           </h3>
           <ul className="space-y-2.5 text-sm">
-            {CITIES.map((c) => (
+            {locations.map((c) => (
               <li key={c.slug}>
                 <Link
                   to="/locations/$city"

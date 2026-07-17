@@ -1,12 +1,16 @@
 import { Link } from "@tanstack/react-router";
-import { CITIES } from "@/lib/site";
+import type { listLocationsPublic } from "@/lib/locations.functions";
 
 /**
  * Stylised interactive map of the UAE.
  * Not geographically exact — a corporate schematic where each pin links to
  * a city landing page.
  */
-export function UAEMap() {
+export function UAEMap({
+  cities,
+}: {
+  cities: Awaited<ReturnType<typeof listLocationsPublic>>;
+}) {
   return (
     <div className="relative rounded-3xl overflow-hidden border border-border bg-gradient-to-br from-accent to-white shadow-card">
       <svg
@@ -34,9 +38,9 @@ export function UAEMap() {
           strokeWidth="1.5"
           strokeOpacity="0.4"
         />
-        {CITIES.map((c) => {
-          const cx = (c.x / 100) * 800;
-          const cy = (c.y / 100) * 500;
+        {cities.map((c) => {
+          const cx = (c.map_x / 100) * 800;
+          const cy = (c.map_y / 100) * 500;
           return (
             <g key={c.slug}>
               <circle cx={cx} cy={cy} r="22" fill="#0057D9" opacity="0.15">
@@ -51,13 +55,13 @@ export function UAEMap() {
 
       {/* City hotspots overlaid using absolute % positioning */}
       <div className="absolute inset-0">
-        {CITIES.map((c) => (
+        {cities.map((c) => (
           <Link
             key={c.slug}
             to="/locations/$city"
             params={{ city: c.slug }}
             className="group absolute -translate-x-1/2 -translate-y-1/2"
-            style={{ left: `${c.x}%`, top: `${c.y}%` }}
+            style={{ left: `${c.map_x}%`, top: `${c.map_y}%` }}
             aria-label={`View chiller van service in ${c.name}`}
           >
             <span className="block h-6 w-6 rounded-full" aria-hidden />
