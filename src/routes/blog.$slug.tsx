@@ -4,6 +4,7 @@ import { getPublishedPostBySlug } from "@/lib/blog.functions";
 import { format } from "date-fns";
 import { ArrowLeft, Snowflake } from "lucide-react";
 
+
 const postQuery = (slug: string) =>
   queryOptions({
     queryKey: ["blog", "post", slug],
