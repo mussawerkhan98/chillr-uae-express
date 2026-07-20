@@ -72,6 +72,7 @@ const locationInputSchema = z.object({
   slug: z.string().min(1).max(150),
   arabic: z.string().max(100).optional().default(""),
   blurb: z.string().max(2000).optional().default(""),
+  body_content: z.string().max(20000).optional().default(""),
   neighborhoods: z.string().max(2000).optional().default(""),
   response_time: z.string().max(100).optional().default(""),
   map_x: z.number().default(50),

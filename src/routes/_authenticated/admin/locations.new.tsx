@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { adminCreateLocation } from "@/lib/locations.functions";
 import { toast } from "sonner";
 
@@ -28,6 +29,7 @@ type FormState = {
   slug: string;
   arabic: string;
   blurb: string;
+  body_content: string;
   neighborhoods: string;
   response_time: string;
   map_x: number;
@@ -43,6 +45,7 @@ function NewLocation() {
     slug: "",
     arabic: "",
     blurb: "",
+    body_content: "",
     neighborhoods: "",
     response_time: "",
     map_x: 50,
@@ -133,12 +136,19 @@ export function LocationForm({
         />
       </div>
       <div className="space-y-2">
-        <Label htmlFor="blurb">Description</Label>
+        <Label htmlFor="blurb">Short description (shown on the Locations list and hero)</Label>
         <Textarea
           id="blurb"
           rows={4}
           value={form.blurb}
           onChange={(e) => setForm({ ...form, blurb: e.target.value })}
+        />
+      </div>
+      <div className="space-y-2">
+        <Label>Full page content (unique detail shown further down this emirate's page — response times, zones, landmarks served, etc.)</Label>
+        <RichTextEditor
+          value={form.body_content}
+          onChange={(html) => setForm({ ...form, body_content: html })}
         />
       </div>
       <div className="space-y-2">

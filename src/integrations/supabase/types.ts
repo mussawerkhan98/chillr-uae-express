@@ -54,6 +54,7 @@ export type Database = {
         Row: {
           arabic: string
           blurb: string
+          body_content: string
           created_at: string
           id: string
           map_x: number
@@ -68,6 +69,7 @@ export type Database = {
         Insert: {
           arabic?: string
           blurb?: string
+          body_content?: string
           created_at?: string
           id?: string
           map_x?: number
@@ -82,6 +84,7 @@ export type Database = {
         Update: {
           arabic?: string
           blurb?: string
+          body_content?: string
           created_at?: string
           id?: string
           map_x?: number

@@ -140,6 +140,24 @@ function CityPage() {
         </div>
       </section>
 
+      {c.body_content && (
+        <section className="container-page py-8">
+          <div
+            className="
+              max-w-3xl
+              text-[17px] leading-8 text-foreground/90
+              [&_h2]:font-display [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-navy [&_h2]:mt-8 [&_h2]:mb-4 [&_h2]:first:mt-0
+              [&_h3]:font-display [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-navy [&_h3]:mt-6 [&_h3]:mb-2
+              [&_p]:mb-4 [&_p]:text-foreground/85
+              [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ul]:space-y-1.5
+              [&_li]:leading-7
+              [&_strong]:text-navy [&_strong]:font-semibold
+            "
+            dangerouslySetInnerHTML={{ __html: c.body_content }}
+          />
+        </section>
+      )}
+
       <section className="container-page py-8">
         <div className="rounded-3xl overflow-hidden border border-border shadow-card">
           <iframe
