@@ -9,9 +9,14 @@ export const listServicesPublic = createServerFn({ method: "GET" }).handler(asyn
   const sb = getPublicSupabase();
   const { data, error } = await sb
     .from("services")
-    .select("id, title, slug, description, icon, image_url, image_alt, meta_title, meta_description, h1_override")
+    .select("id, title, slug, description, icon, image_url, image_alt")
     .order("sort_order", { ascending: true });
-  if (error) throw new Error(error.message);
+  // Fail soft: runs on the homepage and /services list, which must never
+  // go down over a read error.
+  if (error) {
+    console.error("[services] listServicesPublic error:", error.message);
+    return [];
+  }
   return data ?? [];
 });
 

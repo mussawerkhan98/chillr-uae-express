@@ -11,7 +11,14 @@ export const listFleetPublic = createServerFn({ method: "GET" }).handler(async (
     .from("fleet_vehicles")
     .select("id, slug, name, category, capacity, temp_range, volume, ideal, image_url, alt_text, starting_price, currency")
     .order("sort_order", { ascending: true });
-  if (error) throw new Error(error.message);
+  // Fail soft: this runs on the homepage and /fleet, and selects columns
+  // (starting_price, currency) that only exist once fleet_pricing_migration.sql
+  // has been run. Never let a pending migration take down every page that
+  // shows the fleet preview.
+  if (error) {
+    console.error("[fleet] listFleetPublic error:", error.message);
+    return [];
+  }
   return data ?? [];
 });
 

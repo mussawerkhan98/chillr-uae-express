@@ -12,7 +12,12 @@ export const listPublishedPosts = createServerFn({ method: "GET" }).handler(asyn
     .select("id, slug, title, excerpt, cover_image_url, cover_image_alt, published_at")
     .eq("published", true)
     .order("published_at", { ascending: false });
-  if (error) throw new Error(error.message);
+  // Fail soft: never let a read error (e.g. a column pending migration)
+  // take down the /blog list.
+  if (error) {
+    console.error("[blog] listPublishedPosts error:", error.message);
+    return [];
+  }
   return data ?? [];
 });
 
