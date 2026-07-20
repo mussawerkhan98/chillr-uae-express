@@ -89,7 +89,7 @@ function CityPage() {
               <MapPin className="h-3 w-3" /> {c.name}, UAE
             </div>
             <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-navy tracking-tight">
-              Chiller van transport in <span className="gradient-text">{c.name}</span>.
+              Chiller Van Rental in <span className="gradient-text">{c.name}</span>
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-2xl">{c.blurb}</p>
 

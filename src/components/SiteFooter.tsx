@@ -46,7 +46,7 @@ export function SiteFooter() {
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold uppercase tracking-wider text-ice mb-4">Explore</h3>
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-ice mb-4">Explore</h2>
           <ul className="space-y-2.5 text-sm">
             {NAV_LINKS.map((l) => (
               <li key={l.to}>
@@ -59,9 +59,9 @@ export function SiteFooter() {
         </div>
 
         <div>
-          <h3 className="text-sm font-semibold uppercase tracking-wider text-ice mb-4">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-ice mb-4">
             Emirates We Serve
-          </h3>
+          </h2>
           <ul className="space-y-2.5 text-sm">
             {locations.map((c) => (
               <li key={c.slug}>
