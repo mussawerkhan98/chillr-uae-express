@@ -34,6 +34,8 @@ type FormState = {
   ideal: string;
   image_url: string | null;
   alt_text: string;
+  starting_price: number | null;
+  currency: string;
   sort_order: number;
 };
 
@@ -50,6 +52,8 @@ function NewVehicle() {
     ideal: "",
     image_url: null,
     alt_text: "",
+    starting_price: null,
+    currency: "AED",
     sort_order: 0,
   });
 
@@ -188,6 +192,31 @@ export function VehicleForm({
           onChange={(e) => setForm({ ...form, ideal: e.target.value })}
           placeholder="City deliveries, catering, dairy, floral"
         />
+      </div>
+      <div className="grid gap-4 sm:grid-cols-3">
+        <div className="space-y-2 sm:col-span-2">
+          <Label htmlFor="starting_price">Starting price (leave blank to hide pricing on this vehicle)</Label>
+          <Input
+            id="starting_price"
+            type="number"
+            min="0"
+            step="1"
+            value={form.starting_price ?? ""}
+            onChange={(e) =>
+              setForm({ ...form, starting_price: e.target.value === "" ? null : Number(e.target.value) })
+            }
+            placeholder="e.g. 350"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="currency">Currency</Label>
+          <Input
+            id="currency"
+            value={form.currency}
+            onChange={(e) => setForm({ ...form, currency: e.target.value.toUpperCase() })}
+            placeholder="AED"
+          />
+        </div>
       </div>
       <div className="space-y-2">
         <Label htmlFor="sort_order">Sort order</Label>

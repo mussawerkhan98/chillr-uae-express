@@ -34,6 +34,8 @@ function EditVehicle() {
     ideal: "",
     image_url: null as string | null,
     alt_text: "",
+    starting_price: null as number | null,
+    currency: "AED",
     sort_order: 0,
   });
 
@@ -49,6 +51,8 @@ function EditVehicle() {
         ideal: data.ideal,
         image_url: data.image_url,
         alt_text: data.alt_text ?? "",
+        starting_price: (data as any).starting_price ?? null,
+        currency: (data as any).currency ?? "AED",
         sort_order: data.sort_order,
       });
     }

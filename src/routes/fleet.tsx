@@ -130,6 +130,15 @@ function FleetPage() {
                       <dd className="mt-1 text-navy text-xs leading-snug">{v.ideal}</dd>
                     </div>
                   </dl>
+                  {v.starting_price != null && (
+                    <p className="text-sm">
+                      <span className="text-muted-foreground">Starting from </span>
+                      <span className="font-bold text-primary">
+                        {v.currency ?? "AED"} {v.starting_price}
+                      </span>
+                      <span className="text-muted-foreground">/day</span>
+                    </p>
+                  )}
                   <Link
                     to="/contact"
                     className="mt-auto inline-flex items-center justify-between rounded-xl bg-navy text-white px-4 py-3 text-sm font-semibold hover:bg-primary transition-colors"

@@ -194,12 +194,14 @@ export type Database = {
           capacity: string
           category: string
           created_at: string
+          currency: string
           id: string
           ideal: string
           image_url: string | null
           name: string
           slug: string
           sort_order: number
+          starting_price: number | null
           temp_range: string
           updated_at: string
           volume: string
@@ -209,12 +211,14 @@ export type Database = {
           capacity: string
           category: string
           created_at?: string
+          currency?: string
           id?: string
           ideal: string
           image_url?: string | null
           name: string
           slug: string
           sort_order?: number
+          starting_price?: number | null
           temp_range: string
           updated_at?: string
           volume: string
@@ -224,12 +228,14 @@ export type Database = {
           capacity?: string
           category?: string
           created_at?: string
+          currency?: string
           id?: string
           ideal?: string
           image_url?: string | null
           name?: string
           slug?: string
           sort_order?: number
+          starting_price?: number | null
           temp_range?: string
           updated_at?: string
           volume?: string

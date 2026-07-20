@@ -365,6 +365,14 @@ function FleetSection({
                     <dd className="font-semibold text-primary">{v.temp_range}</dd>
                   </div>
                 </dl>
+                {v.starting_price != null && (
+                  <p className="mt-3 text-xs">
+                    <span className="text-muted-foreground">From </span>
+                    <span className="font-bold text-primary">
+                      {v.currency ?? "AED"} {v.starting_price}/day
+                    </span>
+                  </p>
+                )}
               </div>
             ))}
           </div>

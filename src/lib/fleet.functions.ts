@@ -9,7 +9,7 @@ export const listFleetPublic = createServerFn({ method: "GET" }).handler(async (
   const sb = getPublicSupabase();
   const { data, error } = await sb
     .from("fleet_vehicles")
-    .select("id, slug, name, category, capacity, temp_range, volume, ideal, image_url, alt_text")
+    .select("id, slug, name, category, capacity, temp_range, volume, ideal, image_url, alt_text, starting_price, currency")
     .order("sort_order", { ascending: true });
   if (error) throw new Error(error.message);
   return data ?? [];
@@ -60,6 +60,8 @@ const fleetInputSchema = z.object({
   ideal: z.string().min(1).max(500),
   image_url: z.string().url().optional().nullable(),
   alt_text: z.string().max(300).optional().nullable(),
+  starting_price: z.number().nonnegative().optional().nullable(),
+  currency: z.string().max(10).optional().default("AED"),
   sort_order: z.number().int().default(0),
 });
 
