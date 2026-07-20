@@ -135,8 +135,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Premium refrigerated chiller van & freezer truck rental across the UAE. 24/7 temperature-controlled cold-chain logistics for food, pharma, seafood & flowers. Call +971 50 598 6571." },
       { property: "og:description", content: "Premium refrigerated chiller van & freezer truck rental across the UAE. 24/7 temperature-controlled cold-chain logistics for food, pharma, seafood & flowers. Call +971 50 598 6571." },
       { name: "twitter:description", content: "Premium refrigerated chiller van & freezer truck rental across the UAE. 24/7 temperature-controlled cold-chain logistics for food, pharma, seafood & flowers. Call +971 50 598 6571." },
-      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0a7e52ff-c10a-4465-a8c9-585d0f7681a0/id-preview-24517698--b7c60f46-e280-4f38-a2be-80685c88fce2.lovable.app-1783945935451.png" },
-      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/0a7e52ff-c10a-4465-a8c9-585d0f7681a0/id-preview-24517698--b7c60f46-e280-4f38-a2be-80685c88fce2.lovable.app-1783945935451.png" },
+      { property: "og:image", content: "https://iqrarchillervanrental.ae/og-image.jpg" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:image:alt", content: "IQRAR Chiller Van Transport — refrigerated van and freezer truck rental across the UAE" },
+      { name: "twitter:image", content: "https://iqrarchillervanrental.ae/og-image.jpg" },
     ],
     links: [
       { rel: "stylesheet", href: appCss },
