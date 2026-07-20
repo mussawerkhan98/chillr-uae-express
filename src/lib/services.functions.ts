@@ -9,7 +9,7 @@ export const listServicesPublic = createServerFn({ method: "GET" }).handler(asyn
   const sb = getPublicSupabase();
   const { data, error } = await sb
     .from("services")
-    .select("id, title, slug, description, icon, image_url")
+    .select("id, title, slug, description, icon, image_url, image_alt")
     .order("sort_order", { ascending: true });
   if (error) throw new Error(error.message);
   return data ?? [];
@@ -66,6 +66,7 @@ const serviceInputSchema = z.object({
   description: z.string().min(1).max(1000),
   content_html: z.string().max(50000).optional().default(""),
   image_url: z.string().max(1000).optional().nullable(),
+  image_alt: z.string().max(300).optional().nullable(),
   icon: z.string().max(100).optional().nullable(),
   sort_order: z.number().int().default(0),
 });

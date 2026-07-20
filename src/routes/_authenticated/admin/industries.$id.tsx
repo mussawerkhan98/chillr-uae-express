@@ -30,6 +30,7 @@ function EditIndustry() {
     description: "",
     content_html: "",
     image_url: null as string | null,
+    image_alt: "",
     sort_order: 0,
   });
 
@@ -41,6 +42,7 @@ function EditIndustry() {
         description: data.description,
         content_html: data.content_html ?? "",
         image_url: data.image_url ?? null,
+        image_alt: (data as any).image_alt ?? "",
         sort_order: data.sort_order,
       });
     }
@@ -56,6 +58,7 @@ function EditIndustry() {
           description: form.description,
           content_html: form.content_html,
           image_url: form.image_url,
+          image_alt: form.image_alt || form.name,
           sort_order: form.sort_order,
         },
       }),

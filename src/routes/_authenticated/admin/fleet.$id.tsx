@@ -33,6 +33,7 @@ function EditVehicle() {
     volume: "",
     ideal: "",
     image_url: null as string | null,
+    alt_text: "",
     sort_order: 0,
   });
 
@@ -47,6 +48,7 @@ function EditVehicle() {
         volume: data.volume,
         ideal: data.ideal,
         image_url: data.image_url,
+        alt_text: data.alt_text ?? "",
         sort_order: data.sort_order,
       });
     }

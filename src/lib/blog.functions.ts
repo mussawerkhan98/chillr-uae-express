@@ -9,7 +9,7 @@ export const listPublishedPosts = createServerFn({ method: "GET" }).handler(asyn
   const sb = getPublicSupabase();
   const { data, error } = await sb
     .from("blog_posts")
-    .select("id, slug, title, excerpt, cover_image_url, published_at")
+    .select("id, slug, title, excerpt, cover_image_url, cover_image_alt, published_at")
     .eq("published", true)
     .order("published_at", { ascending: false });
   if (error) throw new Error(error.message);
@@ -23,7 +23,7 @@ export const getPublishedPostBySlug = createServerFn({ method: "GET" })
     const sb = getPublicSupabase();
     const { data: row, error } = await sb
       .from("blog_posts")
-      .select("id, slug, title, excerpt, cover_image_url, content_html, meta_title, meta_description, published_at")
+      .select("id, slug, title, excerpt, cover_image_url, cover_image_alt, content_html, meta_title, meta_description, published_at")
       .eq("slug", data.slug)
       .eq("published", true)
       .maybeSingle();
@@ -67,6 +67,7 @@ const postInputSchema = z.object({
   title: z.string().min(1).max(200),
   excerpt: z.string().max(500).optional().nullable(),
   cover_image_url: z.string().url().optional().nullable(),
+  cover_image_alt: z.string().max(300).optional().nullable(),
   content_html: z.string().default(""),
   meta_title: z.string().max(200).optional().nullable(),
   meta_description: z.string().max(500).optional().nullable(),

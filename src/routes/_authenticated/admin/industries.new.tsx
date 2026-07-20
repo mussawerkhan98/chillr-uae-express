@@ -31,6 +31,7 @@ type FormState = {
   description: string;
   content_html: string;
   image_url: string | null;
+  image_alt: string;
   sort_order: number;
 };
 
@@ -43,6 +44,7 @@ function NewIndustry() {
     description: "",
     content_html: "",
     image_url: null,
+    image_alt: "",
     sort_order: 0,
   });
 
@@ -55,6 +57,7 @@ function NewIndustry() {
           description: form.description,
           content_html: form.content_html,
           image_url: form.image_url,
+          image_alt: form.image_alt || form.name,
           sort_order: form.sort_order,
         },
       }),
@@ -131,6 +134,15 @@ export function IndustryForm({
         folder="industries"
         label="Industry image"
       />
+      <div className="space-y-2">
+        <Label htmlFor="image_alt">Image alt text (for accessibility &amp; SEO)</Label>
+        <Input
+          id="image_alt"
+          value={form.image_alt}
+          onChange={(e) => setForm({ ...form, image_alt: e.target.value })}
+          placeholder="e.g. Chiller van delivering to a restaurant kitchen, Dubai"
+        />
+      </div>
       <div className="space-y-2">
         <Label htmlFor="description">Short description (shown on the Industries list)</Label>
         <Textarea

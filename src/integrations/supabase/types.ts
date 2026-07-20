@@ -20,6 +20,7 @@ export type Database = {
           created_at: string
           description: string
           id: string
+          image_alt: string | null
           image_url: string | null
           name: string
           slug: string
@@ -31,6 +32,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          image_alt?: string | null
           image_url?: string | null
           name: string
           slug: string
@@ -42,6 +44,7 @@ export type Database = {
           created_at?: string
           description?: string
           id?: string
+          image_alt?: string | null
           image_url?: string | null
           name?: string
           slug?: string
@@ -102,6 +105,7 @@ export type Database = {
         Row: {
           author_id: string | null
           content_html: string
+          cover_image_alt: string | null
           cover_image_url: string | null
           created_at: string
           excerpt: string | null
@@ -117,6 +121,7 @@ export type Database = {
         Insert: {
           author_id?: string | null
           content_html?: string
+          cover_image_alt?: string | null
           cover_image_url?: string | null
           created_at?: string
           excerpt?: string | null
@@ -132,6 +137,7 @@ export type Database = {
         Update: {
           author_id?: string | null
           content_html?: string
+          cover_image_alt?: string | null
           cover_image_url?: string | null
           created_at?: string
           excerpt?: string | null
@@ -175,6 +181,7 @@ export type Database = {
       }
       fleet_vehicles: {
         Row: {
+          alt_text: string | null
           capacity: string
           category: string
           created_at: string
@@ -189,6 +196,7 @@ export type Database = {
           volume: string
         }
         Insert: {
+          alt_text?: string | null
           capacity: string
           category: string
           created_at?: string
@@ -203,6 +211,7 @@ export type Database = {
           volume: string
         }
         Update: {
+          alt_text?: string | null
           capacity?: string
           category?: string
           created_at?: string
@@ -225,6 +234,7 @@ export type Database = {
           description: string
           icon: string | null
           id: string
+          image_alt: string | null
           image_url: string | null
           slug: string
           sort_order: number
@@ -237,6 +247,7 @@ export type Database = {
           description: string
           icon?: string | null
           id?: string
+          image_alt?: string | null
           image_url?: string | null
           slug: string
           sort_order?: number
@@ -249,6 +260,7 @@ export type Database = {
           description?: string
           icon?: string | null
           id?: string
+          image_alt?: string | null
           image_url?: string | null
           slug?: string
           sort_order?: number

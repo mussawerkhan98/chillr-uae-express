@@ -83,6 +83,16 @@ function FleetPage() {
                 key={v.id}
                 className="group rounded-3xl bg-card border border-border shadow-card hover-lift overflow-hidden flex flex-col"
               >
+                {v.image_url ? (
+                  <div className="aspect-[16/10] overflow-hidden bg-muted">
+                    <img
+                      src={v.image_url}
+                      alt={v.alt_text || `${v.name} — ${v.category} refrigerated van`}
+                      loading="lazy"
+                      className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                  </div>
+                ) : null}
                 <div className="relative p-6 bg-gradient-to-br from-accent to-white">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] font-bold uppercase tracking-widest text-primary">

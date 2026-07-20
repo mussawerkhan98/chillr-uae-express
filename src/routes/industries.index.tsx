@@ -61,7 +61,7 @@ function IndustriesPage() {
                   >
                     <img
                       src={i.image_url}
-                      alt={i.name}
+                      alt={i.image_alt || i.name}
                       loading="lazy"
                       className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />

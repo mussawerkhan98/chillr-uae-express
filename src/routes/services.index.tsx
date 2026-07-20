@@ -69,7 +69,7 @@ function ServicesPage() {
                   >
                     <img
                       src={s.image_url}
-                      alt={s.title}
+                      alt={s.image_alt || s.title}
                       loading="lazy"
                       className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />

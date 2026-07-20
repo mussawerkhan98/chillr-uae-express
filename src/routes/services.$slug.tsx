@@ -103,7 +103,7 @@ function ServiceDetail() {
           <div className="max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-elegant">
             <img
               src={service.image_url}
-              alt={service.title}
+              alt={service.image_alt || service.title}
               className="w-full h-auto max-h-[480px] object-cover"
             />
           </div>

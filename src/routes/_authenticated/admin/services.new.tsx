@@ -31,6 +31,7 @@ type FormState = {
   description: string;
   content_html: string;
   image_url: string | null;
+  image_alt: string;
   icon: string;
   sort_order: number;
 };
@@ -44,6 +45,7 @@ function NewService() {
     description: "",
     content_html: "",
     image_url: null,
+    image_alt: "",
     icon: "",
     sort_order: 0,
   });
@@ -57,6 +59,7 @@ function NewService() {
           description: form.description,
           content_html: form.content_html,
           image_url: form.image_url,
+          image_alt: form.image_alt || form.title,
           icon: form.icon || null,
           sort_order: form.sort_order,
         },
@@ -134,6 +137,15 @@ export function ServiceForm({
         folder="services"
         label="Service image"
       />
+      <div className="space-y-2">
+        <Label htmlFor="image_alt">Image alt text (for accessibility &amp; SEO)</Label>
+        <Input
+          id="image_alt"
+          value={form.image_alt}
+          onChange={(e) => setForm({ ...form, image_alt: e.target.value })}
+          placeholder="e.g. Chiller van loading fresh produce, Dubai"
+        />
+      </div>
       <div className="space-y-2">
         <Label htmlFor="description">Short description (shown on the Services list)</Label>
         <Textarea

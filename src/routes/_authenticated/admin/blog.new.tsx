@@ -34,6 +34,7 @@ function NewPost() {
     slug: "",
     excerpt: "",
     cover_image_url: null as string | null,
+    cover_image_alt: "",
     content_html: "",
     meta_title: "",
     meta_description: "",
@@ -48,6 +49,7 @@ function NewPost() {
           slug: form.slug || slugify(form.title),
           excerpt: form.excerpt || null,
           cover_image_url: form.cover_image_url,
+          cover_image_alt: form.cover_image_alt || form.title,
           content_html: form.content_html,
           meta_title: form.meta_title || null,
           meta_description: form.meta_description || null,
@@ -95,6 +97,7 @@ type FormState = {
   slug: string;
   excerpt: string;
   cover_image_url: string | null;
+  cover_image_alt: string;
   content_html: string;
   meta_title: string;
   meta_description: string;
@@ -132,6 +135,15 @@ export function PostForm({ form, setForm }: { form: FormState; setForm: (f: Form
         folder="blog/covers"
         label="Cover image"
       />
+      <div className="space-y-2">
+        <Label htmlFor="cover_image_alt">Cover image alt text (for accessibility &amp; SEO)</Label>
+        <Input
+          id="cover_image_alt"
+          value={form.cover_image_alt}
+          onChange={(e) => setForm({ ...form, cover_image_alt: e.target.value })}
+          placeholder="e.g. Refrigerated van parked outside a Dubai pharmacy"
+        />
+      </div>
       <div className="space-y-2">
         <Label htmlFor="excerpt">Excerpt (short summary shown in the blog list)</Label>
         <Textarea

@@ -79,7 +79,7 @@ function IndustryDetail() {
           <div className="max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-elegant">
             <img
               src={industry.image_url}
-              alt={industry.name}
+              alt={industry.image_alt || industry.name}
               className="w-full h-auto max-h-[480px] object-cover"
             />
           </div>

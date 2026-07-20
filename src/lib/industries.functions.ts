@@ -9,7 +9,7 @@ export const listIndustriesPublic = createServerFn({ method: "GET" }).handler(as
   const sb = getPublicSupabase();
   const { data, error } = await sb
     .from("industries")
-    .select("id, slug, name, description, image_url")
+    .select("id, slug, name, description, image_url, image_alt")
     .order("sort_order", { ascending: true });
   // Fail soft: never let a missing table or read error take down pages
   // that show this list (homepage marquee, industries page).
@@ -71,6 +71,7 @@ const industryInputSchema = z.object({
   description: z.string().max(1000).optional().default(""),
   content_html: z.string().max(50000).optional().default(""),
   image_url: z.string().max(1000).optional().nullable(),
+  image_alt: z.string().max(300).optional().nullable(),
   sort_order: z.number().int().default(0),
 });
 

@@ -33,6 +33,7 @@ type FormState = {
   volume: string;
   ideal: string;
   image_url: string | null;
+  alt_text: string;
   sort_order: number;
 };
 
@@ -48,6 +49,7 @@ function NewVehicle() {
     volume: "",
     ideal: "",
     image_url: null,
+    alt_text: "",
     sort_order: 0,
   });
 
@@ -57,6 +59,7 @@ function NewVehicle() {
         data: {
           ...form,
           slug: form.slug || slugify(form.name),
+          alt_text: form.alt_text || form.name,
         },
       }),
     onSuccess: ({ id }) => {
@@ -129,6 +132,15 @@ export function VehicleForm({
         folder="fleet"
         label="Vehicle photo"
       />
+      <div className="space-y-2">
+        <Label htmlFor="alt_text">Photo alt text (for accessibility &amp; SEO)</Label>
+        <Input
+          id="alt_text"
+          value={form.alt_text}
+          onChange={(e) => setForm({ ...form, alt_text: e.target.value })}
+          placeholder="e.g. Toyota Hiace chiller van interior, Dubai"
+        />
+      </div>
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="category">Category</Label>

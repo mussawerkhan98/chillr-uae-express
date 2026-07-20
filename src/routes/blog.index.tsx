@@ -61,7 +61,7 @@ function BlogIndex() {
                   <div className="aspect-[16/10] overflow-hidden bg-muted">
                     <img
                       src={p.cover_image_url}
-                      alt={p.title}
+                      alt={p.cover_image_alt || p.title}
                       loading="lazy"
                       className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
                     />

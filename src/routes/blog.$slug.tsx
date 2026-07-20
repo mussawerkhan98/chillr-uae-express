@@ -96,7 +96,7 @@ function BlogPost() {
           <div className="max-w-5xl mx-auto rounded-3xl overflow-hidden shadow-elegant">
             <img
               src={post.cover_image_url}
-              alt={post.title}
+              alt={post.cover_image_alt || post.title}
               className="w-full h-auto max-h-[480px] object-cover"
             />
           </div>
@@ -157,7 +157,7 @@ function BlogPost() {
                     <div className="aspect-[16/10] overflow-hidden bg-muted">
                       <img
                         src={p.cover_image_url}
-                        alt={p.title}
+                        alt={p.cover_image_alt || p.title}
                         loading="lazy"
                         className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-700"
                       />
