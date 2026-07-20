@@ -1,5 +1,5 @@
 import { Link, useRouterState, useNavigate } from "@tanstack/react-router";
-import { LayoutDashboard, FileText, Images, Truck, Wrench, HelpCircle, Settings, LogOut, Snowflake, ExternalLink, Building2, MapPin } from "lucide-react";
+import { LayoutDashboard, FileText, Images, Truck, Wrench, HelpCircle, Settings, LogOut, Snowflake, ExternalLink, Building2, MapPin, LayoutTemplate } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -13,6 +13,7 @@ const NAV: NavItem[] = [
   { to: "/admin/services", label: "Services", icon: Wrench },
   { to: "/admin/industries", label: "Industries", icon: Building2 },
   { to: "/admin/locations", label: "Locations", icon: MapPin },
+  { to: "/admin/page-content", label: "Page content", icon: LayoutTemplate },
   { to: "/admin/faqs", label: "FAQs", icon: HelpCircle },
   { to: "/admin/settings", label: "Site settings", icon: Settings },
 ];

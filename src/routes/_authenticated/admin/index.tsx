@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { FileText, Images, Truck, Wrench, HelpCircle, Settings, Building2, MapPin } from "lucide-react";
+import { FileText, Images, Truck, Wrench, HelpCircle, Settings, Building2, MapPin, LayoutTemplate } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   component: AdminHome,
@@ -17,6 +17,7 @@ const CARDS = [
   { to: "/admin/services", label: "Services", desc: "Edit service offerings", icon: Wrench },
   { to: "/admin/industries", label: "Industries", desc: "Edit industries served", icon: Building2 },
   { to: "/admin/locations", label: "Locations", desc: "Edit emirates and coverage", icon: MapPin },
+  { to: "/admin/page-content", label: "Page content", desc: "Home & About marketing copy", icon: LayoutTemplate },
   { to: "/admin/faqs", label: "FAQs", desc: "Update Q&A", icon: HelpCircle },
   {
     to: "/admin/settings",

@@ -21,6 +21,8 @@ import { listIndustriesPublic } from "@/lib/industries.functions";
 import { siteImagesQuery, pickImage } from "@/lib/site-images.query";
 import { settingsQuery, getSetting } from "@/lib/settings.query";
 import { locationsQuery } from "@/lib/locations.query";
+import { pageContentQuery, contentForSection } from "@/lib/page-content.query";
+import { getIcon } from "@/lib/icon-map";
 import { useQuery } from "@tanstack/react-query";
 import heroImg from "@/assets/hero-chiller-van.jpg";
 import interiorImg from "@/assets/cold-chain-interior.jpg";
@@ -45,6 +47,7 @@ export const Route = createFileRoute("/")({
       context.queryClient.ensureQueryData(settingsQuery()),
       context.queryClient.ensureQueryData(industriesQuery()),
       context.queryClient.ensureQueryData(locationsQuery()),
+      context.queryClient.ensureQueryData(pageContentQuery("home")),
     ]);
     return { fleet, services, faqs, images, settings };
   },
@@ -391,28 +394,33 @@ function WhyUs({
     src: interiorImg,
     alt: "Interior of a refrigerated van maintaining sub-zero temperature",
   });
-  const items = [
-    {
-      icon: ThermometerSnowflake,
-      title: "Precision temperature control",
-      desc: "Continuous monitoring with calibrated loggers. Every delivery, fully traceable.",
-    },
-    {
-      icon: Clock,
-      title: "24/7 dispatch",
-      desc: "Round-the-clock availability with emergency response across all seven emirates.",
-    },
-    {
-      icon: Shield,
-      title: "Compliance-first",
-      desc: "Dubai Municipality permits, HACCP-aligned handling, GDP-aware pharma routes.",
-    },
-    {
-      icon: Truck,
-      title: "Modern maintained fleet",
-      desc: "Regularly serviced chiller vans, freezer trucks and pickups — always road-ready.",
-    },
-  ];
+  const { data: pageContent = [] } = useQuery(pageContentQuery("home"));
+  const cmsItems = contentForSection(pageContent, "why_iqrar");
+  const items =
+    cmsItems.length > 0
+      ? cmsItems.map((row) => ({ icon: getIcon(row.icon), title: row.heading, desc: row.body }))
+      : [
+          {
+            icon: ThermometerSnowflake,
+            title: "Precision temperature control",
+            desc: "Continuous monitoring with calibrated loggers. Every delivery, fully traceable.",
+          },
+          {
+            icon: Clock,
+            title: "24/7 dispatch",
+            desc: "Round-the-clock availability with emergency response across all seven emirates.",
+          },
+          {
+            icon: Shield,
+            title: "Compliance-first",
+            desc: "Dubai Municipality permits, HACCP-aligned handling, GDP-aware pharma routes.",
+          },
+          {
+            icon: Truck,
+            title: "Modern maintained fleet",
+            desc: "Regularly serviced chiller vans, freezer trucks and pickups — always road-ready.",
+          },
+        ];
   return (
     <section className="container-page py-24">
       <div className="grid gap-14 lg:grid-cols-2 lg:items-center">
@@ -520,26 +528,31 @@ function UAEMapLazy() {
 }
 
 function TestimonialsSection() {
-  const testimonials = [
-    {
-      quote:
-        "IQRAR has become our default chiller partner for daily hotel supply runs. Their drivers understand cold-chain — not just delivery.",
-      name: "Operations Manager",
-      role: "5-Star Hotel, Dubai Marina",
-    },
-    {
-      quote:
-        "Temperature logs on every trip, on-time pickups, and a team that answers WhatsApp at 3am. That's rare in this industry.",
-      name: "Logistics Lead",
-      role: "Pharma Distributor, Abu Dhabi",
-    },
-    {
-      quote:
-        "We moved 4 tons of frozen seafood from Fujairah to Sharjah with zero temperature deviation. Highly recommended.",
-      name: "Procurement Head",
-      role: "Seafood Wholesaler",
-    },
-  ];
+  const { data: pageContent = [] } = useQuery(pageContentQuery("home"));
+  const cmsTestimonials = contentForSection(pageContent, "testimonials");
+  const testimonials =
+    cmsTestimonials.length > 0
+      ? cmsTestimonials.map((row) => ({ quote: row.body, name: row.heading, role: row.subheading }))
+      : [
+          {
+            quote:
+              "IQRAR has become our default chiller partner for daily hotel supply runs. Their drivers understand cold-chain — not just delivery.",
+            name: "Operations Manager",
+            role: "5-Star Hotel, Dubai Marina",
+          },
+          {
+            quote:
+              "Temperature logs on every trip, on-time pickups, and a team that answers WhatsApp at 3am. That's rare in this industry.",
+            name: "Logistics Lead",
+            role: "Pharma Distributor, Abu Dhabi",
+          },
+          {
+            quote:
+              "We moved 4 tons of frozen seafood from Fujairah to Sharjah with zero temperature deviation. Highly recommended.",
+            name: "Procurement Head",
+            role: "Seafood Wholesaler",
+          },
+        ];
   return (
     <section className="bg-accent/50 py-24">
       <div className="container-page">

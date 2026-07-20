@@ -320,6 +320,45 @@ export type Database = {
         }
         Relationships: []
       }
+      page_content: {
+        Row: {
+          body: string
+          created_at: string
+          heading: string
+          icon: string | null
+          id: string
+          page_slug: string
+          section_key: string
+          sort_order: number
+          subheading: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          created_at?: string
+          heading?: string
+          icon?: string | null
+          id?: string
+          page_slug: string
+          section_key: string
+          sort_order?: number
+          subheading?: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          heading?: string
+          icon?: string | null
+          id?: string
+          page_slug?: string
+          section_key?: string
+          sort_order?: number
+          subheading?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           key: string

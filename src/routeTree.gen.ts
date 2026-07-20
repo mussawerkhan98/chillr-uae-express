@@ -34,6 +34,7 @@ import { Route as AuthenticatedAdminRouteRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin/index'
 import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin/settings'
 import { Route as AuthenticatedAdminServicesRouteImport } from './routes/_authenticated/admin/services'
+import { Route as AuthenticatedAdminPageContentRouteImport } from './routes/_authenticated/admin/page-content'
 import { Route as AuthenticatedAdminLocationsRouteImport } from './routes/_authenticated/admin/locations'
 import { Route as AuthenticatedAdminIndustriesRouteImport } from './routes/_authenticated/admin/industries'
 import { Route as AuthenticatedAdminImagesRouteImport } from './routes/_authenticated/admin/images'
@@ -41,6 +42,7 @@ import { Route as AuthenticatedAdminFleetRouteImport } from './routes/_authentic
 import { Route as AuthenticatedAdminFaqsRouteImport } from './routes/_authenticated/admin/faqs'
 import { Route as AuthenticatedAdminBlogRouteImport } from './routes/_authenticated/admin/blog'
 import { Route as AuthenticatedAdminServicesIndexRouteImport } from './routes/_authenticated/admin/services.index'
+import { Route as AuthenticatedAdminPageContentIndexRouteImport } from './routes/_authenticated/admin/page-content.index'
 import { Route as AuthenticatedAdminLocationsIndexRouteImport } from './routes/_authenticated/admin/locations.index'
 import { Route as AuthenticatedAdminIndustriesIndexRouteImport } from './routes/_authenticated/admin/industries.index'
 import { Route as AuthenticatedAdminFleetIndexRouteImport } from './routes/_authenticated/admin/fleet.index'
@@ -48,6 +50,8 @@ import { Route as AuthenticatedAdminFaqsIndexRouteImport } from './routes/_authe
 import { Route as AuthenticatedAdminBlogIndexRouteImport } from './routes/_authenticated/admin/blog.index'
 import { Route as AuthenticatedAdminServicesNewRouteImport } from './routes/_authenticated/admin/services.new'
 import { Route as AuthenticatedAdminServicesIdRouteImport } from './routes/_authenticated/admin/services.$id'
+import { Route as AuthenticatedAdminPageContentNewRouteImport } from './routes/_authenticated/admin/page-content.new'
+import { Route as AuthenticatedAdminPageContentIdRouteImport } from './routes/_authenticated/admin/page-content.$id'
 import { Route as AuthenticatedAdminLocationsNewRouteImport } from './routes/_authenticated/admin/locations.new'
 import { Route as AuthenticatedAdminLocationsIdRouteImport } from './routes/_authenticated/admin/locations.$id'
 import { Route as AuthenticatedAdminIndustriesNewRouteImport } from './routes/_authenticated/admin/industries.new'
@@ -185,6 +189,12 @@ const AuthenticatedAdminServicesRoute =
     path: '/services',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminPageContentRoute =
+  AuthenticatedAdminPageContentRouteImport.update({
+    id: '/page-content',
+    path: '/page-content',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAdminLocationsRoute =
   AuthenticatedAdminLocationsRouteImport.update({
     id: '/locations',
@@ -223,6 +233,12 @@ const AuthenticatedAdminServicesIndexRoute =
     id: '/',
     path: '/',
     getParentRoute: () => AuthenticatedAdminServicesRoute,
+  } as any)
+const AuthenticatedAdminPageContentIndexRoute =
+  AuthenticatedAdminPageContentIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedAdminPageContentRoute,
   } as any)
 const AuthenticatedAdminLocationsIndexRoute =
   AuthenticatedAdminLocationsIndexRouteImport.update({
@@ -265,6 +281,18 @@ const AuthenticatedAdminServicesIdRoute =
     id: '/$id',
     path: '/$id',
     getParentRoute: () => AuthenticatedAdminServicesRoute,
+  } as any)
+const AuthenticatedAdminPageContentNewRoute =
+  AuthenticatedAdminPageContentNewRouteImport.update({
+    id: '/new',
+    path: '/new',
+    getParentRoute: () => AuthenticatedAdminPageContentRoute,
+  } as any)
+const AuthenticatedAdminPageContentIdRoute =
+  AuthenticatedAdminPageContentIdRouteImport.update({
+    id: '/$id',
+    path: '/$id',
+    getParentRoute: () => AuthenticatedAdminPageContentRoute,
   } as any)
 const AuthenticatedAdminLocationsNewRoute =
   AuthenticatedAdminLocationsNewRouteImport.update({
@@ -355,6 +383,7 @@ export interface FileRoutesByFullPath {
   '/admin/images': typeof AuthenticatedAdminImagesRoute
   '/admin/industries': typeof AuthenticatedAdminIndustriesRouteWithChildren
   '/admin/locations': typeof AuthenticatedAdminLocationsRouteWithChildren
+  '/admin/page-content': typeof AuthenticatedAdminPageContentRouteWithChildren
   '/admin/services': typeof AuthenticatedAdminServicesRouteWithChildren
   '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
@@ -368,6 +397,8 @@ export interface FileRoutesByFullPath {
   '/admin/industries/new': typeof AuthenticatedAdminIndustriesNewRoute
   '/admin/locations/$id': typeof AuthenticatedAdminLocationsIdRoute
   '/admin/locations/new': typeof AuthenticatedAdminLocationsNewRoute
+  '/admin/page-content/$id': typeof AuthenticatedAdminPageContentIdRoute
+  '/admin/page-content/new': typeof AuthenticatedAdminPageContentNewRoute
   '/admin/services/$id': typeof AuthenticatedAdminServicesIdRoute
   '/admin/services/new': typeof AuthenticatedAdminServicesNewRoute
   '/admin/blog/': typeof AuthenticatedAdminBlogIndexRoute
@@ -375,6 +406,7 @@ export interface FileRoutesByFullPath {
   '/admin/fleet/': typeof AuthenticatedAdminFleetIndexRoute
   '/admin/industries/': typeof AuthenticatedAdminIndustriesIndexRoute
   '/admin/locations/': typeof AuthenticatedAdminLocationsIndexRoute
+  '/admin/page-content/': typeof AuthenticatedAdminPageContentIndexRoute
   '/admin/services/': typeof AuthenticatedAdminServicesIndexRoute
 }
 export interface FileRoutesByTo {
@@ -407,6 +439,8 @@ export interface FileRoutesByTo {
   '/admin/industries/new': typeof AuthenticatedAdminIndustriesNewRoute
   '/admin/locations/$id': typeof AuthenticatedAdminLocationsIdRoute
   '/admin/locations/new': typeof AuthenticatedAdminLocationsNewRoute
+  '/admin/page-content/$id': typeof AuthenticatedAdminPageContentIdRoute
+  '/admin/page-content/new': typeof AuthenticatedAdminPageContentNewRoute
   '/admin/services/$id': typeof AuthenticatedAdminServicesIdRoute
   '/admin/services/new': typeof AuthenticatedAdminServicesNewRoute
   '/admin/blog': typeof AuthenticatedAdminBlogIndexRoute
@@ -414,6 +448,7 @@ export interface FileRoutesByTo {
   '/admin/fleet': typeof AuthenticatedAdminFleetIndexRoute
   '/admin/industries': typeof AuthenticatedAdminIndustriesIndexRoute
   '/admin/locations': typeof AuthenticatedAdminLocationsIndexRoute
+  '/admin/page-content': typeof AuthenticatedAdminPageContentIndexRoute
   '/admin/services': typeof AuthenticatedAdminServicesIndexRoute
 }
 export interface FileRoutesById {
@@ -446,6 +481,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/images': typeof AuthenticatedAdminImagesRoute
   '/_authenticated/admin/industries': typeof AuthenticatedAdminIndustriesRouteWithChildren
   '/_authenticated/admin/locations': typeof AuthenticatedAdminLocationsRouteWithChildren
+  '/_authenticated/admin/page-content': typeof AuthenticatedAdminPageContentRouteWithChildren
   '/_authenticated/admin/services': typeof AuthenticatedAdminServicesRouteWithChildren
   '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
@@ -459,6 +495,8 @@ export interface FileRoutesById {
   '/_authenticated/admin/industries/new': typeof AuthenticatedAdminIndustriesNewRoute
   '/_authenticated/admin/locations/$id': typeof AuthenticatedAdminLocationsIdRoute
   '/_authenticated/admin/locations/new': typeof AuthenticatedAdminLocationsNewRoute
+  '/_authenticated/admin/page-content/$id': typeof AuthenticatedAdminPageContentIdRoute
+  '/_authenticated/admin/page-content/new': typeof AuthenticatedAdminPageContentNewRoute
   '/_authenticated/admin/services/$id': typeof AuthenticatedAdminServicesIdRoute
   '/_authenticated/admin/services/new': typeof AuthenticatedAdminServicesNewRoute
   '/_authenticated/admin/blog/': typeof AuthenticatedAdminBlogIndexRoute
@@ -466,6 +504,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/fleet/': typeof AuthenticatedAdminFleetIndexRoute
   '/_authenticated/admin/industries/': typeof AuthenticatedAdminIndustriesIndexRoute
   '/_authenticated/admin/locations/': typeof AuthenticatedAdminLocationsIndexRoute
+  '/_authenticated/admin/page-content/': typeof AuthenticatedAdminPageContentIndexRoute
   '/_authenticated/admin/services/': typeof AuthenticatedAdminServicesIndexRoute
 }
 export interface FileRouteTypes {
@@ -498,6 +537,7 @@ export interface FileRouteTypes {
     | '/admin/images'
     | '/admin/industries'
     | '/admin/locations'
+    | '/admin/page-content'
     | '/admin/services'
     | '/admin/settings'
     | '/admin/'
@@ -511,6 +551,8 @@ export interface FileRouteTypes {
     | '/admin/industries/new'
     | '/admin/locations/$id'
     | '/admin/locations/new'
+    | '/admin/page-content/$id'
+    | '/admin/page-content/new'
     | '/admin/services/$id'
     | '/admin/services/new'
     | '/admin/blog/'
@@ -518,6 +560,7 @@ export interface FileRouteTypes {
     | '/admin/fleet/'
     | '/admin/industries/'
     | '/admin/locations/'
+    | '/admin/page-content/'
     | '/admin/services/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -550,6 +593,8 @@ export interface FileRouteTypes {
     | '/admin/industries/new'
     | '/admin/locations/$id'
     | '/admin/locations/new'
+    | '/admin/page-content/$id'
+    | '/admin/page-content/new'
     | '/admin/services/$id'
     | '/admin/services/new'
     | '/admin/blog'
@@ -557,6 +602,7 @@ export interface FileRouteTypes {
     | '/admin/fleet'
     | '/admin/industries'
     | '/admin/locations'
+    | '/admin/page-content'
     | '/admin/services'
   id:
     | '__root__'
@@ -588,6 +634,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/images'
     | '/_authenticated/admin/industries'
     | '/_authenticated/admin/locations'
+    | '/_authenticated/admin/page-content'
     | '/_authenticated/admin/services'
     | '/_authenticated/admin/settings'
     | '/_authenticated/admin/'
@@ -601,6 +648,8 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/industries/new'
     | '/_authenticated/admin/locations/$id'
     | '/_authenticated/admin/locations/new'
+    | '/_authenticated/admin/page-content/$id'
+    | '/_authenticated/admin/page-content/new'
     | '/_authenticated/admin/services/$id'
     | '/_authenticated/admin/services/new'
     | '/_authenticated/admin/blog/'
@@ -608,6 +657,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/fleet/'
     | '/_authenticated/admin/industries/'
     | '/_authenticated/admin/locations/'
+    | '/_authenticated/admin/page-content/'
     | '/_authenticated/admin/services/'
   fileRoutesById: FileRoutesById
 }
@@ -804,6 +854,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminServicesRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/page-content': {
+      id: '/_authenticated/admin/page-content'
+      path: '/page-content'
+      fullPath: '/admin/page-content'
+      preLoaderRoute: typeof AuthenticatedAdminPageContentRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/admin/locations': {
       id: '/_authenticated/admin/locations'
       path: '/locations'
@@ -853,6 +910,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminServicesIndexRouteImport
       parentRoute: typeof AuthenticatedAdminServicesRoute
     }
+    '/_authenticated/admin/page-content/': {
+      id: '/_authenticated/admin/page-content/'
+      path: '/'
+      fullPath: '/admin/page-content/'
+      preLoaderRoute: typeof AuthenticatedAdminPageContentIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminPageContentRoute
+    }
     '/_authenticated/admin/locations/': {
       id: '/_authenticated/admin/locations/'
       path: '/'
@@ -901,6 +965,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/services/$id'
       preLoaderRoute: typeof AuthenticatedAdminServicesIdRouteImport
       parentRoute: typeof AuthenticatedAdminServicesRoute
+    }
+    '/_authenticated/admin/page-content/new': {
+      id: '/_authenticated/admin/page-content/new'
+      path: '/new'
+      fullPath: '/admin/page-content/new'
+      preLoaderRoute: typeof AuthenticatedAdminPageContentNewRouteImport
+      parentRoute: typeof AuthenticatedAdminPageContentRoute
+    }
+    '/_authenticated/admin/page-content/$id': {
+      id: '/_authenticated/admin/page-content/$id'
+      path: '/$id'
+      fullPath: '/admin/page-content/$id'
+      preLoaderRoute: typeof AuthenticatedAdminPageContentIdRouteImport
+      parentRoute: typeof AuthenticatedAdminPageContentRoute
     }
     '/_authenticated/admin/locations/new': {
       id: '/_authenticated/admin/locations/new'
@@ -1067,6 +1145,26 @@ const AuthenticatedAdminLocationsRouteWithChildren =
     AuthenticatedAdminLocationsRouteChildren,
   )
 
+interface AuthenticatedAdminPageContentRouteChildren {
+  AuthenticatedAdminPageContentIdRoute: typeof AuthenticatedAdminPageContentIdRoute
+  AuthenticatedAdminPageContentNewRoute: typeof AuthenticatedAdminPageContentNewRoute
+  AuthenticatedAdminPageContentIndexRoute: typeof AuthenticatedAdminPageContentIndexRoute
+}
+
+const AuthenticatedAdminPageContentRouteChildren: AuthenticatedAdminPageContentRouteChildren =
+  {
+    AuthenticatedAdminPageContentIdRoute: AuthenticatedAdminPageContentIdRoute,
+    AuthenticatedAdminPageContentNewRoute:
+      AuthenticatedAdminPageContentNewRoute,
+    AuthenticatedAdminPageContentIndexRoute:
+      AuthenticatedAdminPageContentIndexRoute,
+  }
+
+const AuthenticatedAdminPageContentRouteWithChildren =
+  AuthenticatedAdminPageContentRoute._addFileChildren(
+    AuthenticatedAdminPageContentRouteChildren,
+  )
+
 interface AuthenticatedAdminServicesRouteChildren {
   AuthenticatedAdminServicesIdRoute: typeof AuthenticatedAdminServicesIdRoute
   AuthenticatedAdminServicesNewRoute: typeof AuthenticatedAdminServicesNewRoute
@@ -1092,6 +1190,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminImagesRoute: typeof AuthenticatedAdminImagesRoute
   AuthenticatedAdminIndustriesRoute: typeof AuthenticatedAdminIndustriesRouteWithChildren
   AuthenticatedAdminLocationsRoute: typeof AuthenticatedAdminLocationsRouteWithChildren
+  AuthenticatedAdminPageContentRoute: typeof AuthenticatedAdminPageContentRouteWithChildren
   AuthenticatedAdminServicesRoute: typeof AuthenticatedAdminServicesRouteWithChildren
   AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
@@ -1107,6 +1206,8 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
       AuthenticatedAdminIndustriesRouteWithChildren,
     AuthenticatedAdminLocationsRoute:
       AuthenticatedAdminLocationsRouteWithChildren,
+    AuthenticatedAdminPageContentRoute:
+      AuthenticatedAdminPageContentRouteWithChildren,
     AuthenticatedAdminServicesRoute:
       AuthenticatedAdminServicesRouteWithChildren,
     AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,

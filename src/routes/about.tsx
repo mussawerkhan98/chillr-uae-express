@@ -5,6 +5,8 @@ import { SITE, STATS, canonicalUrl } from "@/lib/site";
 import interior from "@/assets/cold-chain-interior.jpg";
 import { siteImagesQuery, pickImage } from "@/lib/site-images.query";
 import { settingsQuery, getSetting } from "@/lib/settings.query";
+import { pageContentQuery, contentForSection } from "@/lib/page-content.query";
+import { getIcon } from "@/lib/icon-map";
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -29,6 +31,7 @@ export const Route = createFileRoute("/about")({
     Promise.all([
       context.queryClient.ensureQueryData(siteImagesQuery()),
       context.queryClient.ensureQueryData(settingsQuery()),
+      context.queryClient.ensureQueryData(pageContentQuery("about")),
     ]),
   component: About,
 });
@@ -36,6 +39,7 @@ export const Route = createFileRoute("/about")({
 function About() {
   const { data: images } = useSuspenseQuery(siteImagesQuery());
   const { data: settings } = useSuspenseQuery(settingsQuery());
+  const { data: pageContent = [] } = useSuspenseQuery(pageContentQuery("about"));
   const interiorImg = pickImage(images, "cold_chain_interior", {
     src: interior,
     alt: "Refrigerated cargo compartment interior",
@@ -70,28 +74,32 @@ function About() {
     value: getSetting(settings, `stat_${n}_value`, STATS[n - 1]?.value ?? ""),
     label: getSetting(settings, `stat_${n}_label`, STATS[n - 1]?.label ?? ""),
   }));
-  const values = [
-    {
-      icon: Snowflake,
-      title: "Cold-chain obsession",
-      desc: "Every trip is planned around the temperature envelope your cargo needs.",
-    },
-    {
-      icon: Shield,
-      title: "Compliance-first",
-      desc: "Municipality permits, HACCP-aligned protocols, GDP-aware pharma handling.",
-    },
-    {
-      icon: Target,
-      title: "On-time, every time",
-      desc: "Route planning, live tracking and slot-based deliveries you can build around.",
-    },
-    {
-      icon: Heart,
-      title: "Customer-obsessed",
-      desc: "24/7 humans on WhatsApp. Real answers, not chatbots.",
-    },
-  ];
+  const cmsValues = contentForSection(pageContent, "about_values");
+  const values =
+    cmsValues.length > 0
+      ? cmsValues.map((row) => ({ icon: getIcon(row.icon), title: row.heading, desc: row.body }))
+      : [
+          {
+            icon: Snowflake,
+            title: "Cold-chain obsession",
+            desc: "Every trip is planned around the temperature envelope your cargo needs.",
+          },
+          {
+            icon: Shield,
+            title: "Compliance-first",
+            desc: "Municipality permits, HACCP-aligned protocols, GDP-aware pharma handling.",
+          },
+          {
+            icon: Target,
+            title: "On-time, every time",
+            desc: "Route planning, live tracking and slot-based deliveries you can build around.",
+          },
+          {
+            icon: Heart,
+            title: "Customer-obsessed",
+            desc: "24/7 humans on WhatsApp. Real answers, not chatbots.",
+          },
+        ];
   return (
     <>
       <section className="relative overflow-hidden">
