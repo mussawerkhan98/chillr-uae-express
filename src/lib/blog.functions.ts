@@ -9,7 +9,7 @@ export const listPublishedPosts = createServerFn({ method: "GET" }).handler(asyn
   const sb = getPublicSupabase();
   const { data, error } = await sb
     .from("blog_posts")
-    .select("id, slug, title, excerpt, cover_image_url, cover_image_alt, published_at")
+    .select("*")
     .eq("published", true)
     .order("published_at", { ascending: false });
   // Fail soft: never let a read error (e.g. a column pending migration)

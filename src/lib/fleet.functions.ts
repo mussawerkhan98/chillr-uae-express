@@ -9,7 +9,7 @@ export const listFleetPublic = createServerFn({ method: "GET" }).handler(async (
   const sb = getPublicSupabase();
   const { data, error } = await sb
     .from("fleet_vehicles")
-    .select("id, slug, name, category, capacity, temp_range, volume, ideal, image_url, alt_text, starting_price, currency")
+    .select("*")
     .order("sort_order", { ascending: true });
   // Fail soft: this runs on the homepage and /fleet, and selects columns
   // (starting_price, currency) that only exist once fleet_pricing_migration.sql
