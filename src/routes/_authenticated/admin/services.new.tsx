@@ -33,6 +33,9 @@ type FormState = {
   image_url: string | null;
   image_alt: string;
   icon: string;
+  meta_title: string;
+  meta_description: string;
+  h1_override: string;
   sort_order: number;
 };
 
@@ -47,6 +50,9 @@ function NewService() {
     image_url: null,
     image_alt: "",
     icon: "",
+    meta_title: "",
+    meta_description: "",
+    h1_override: "",
     sort_order: 0,
   });
 
@@ -61,6 +67,9 @@ function NewService() {
           image_url: form.image_url,
           image_alt: form.image_alt || form.title,
           icon: form.icon || null,
+          meta_title: form.meta_title || null,
+          meta_description: form.meta_description || null,
+          h1_override: form.h1_override || null,
           sort_order: form.sort_order,
         },
       }),
@@ -170,6 +179,38 @@ export function ServiceForm({
           value={form.sort_order}
           onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) || 0 })}
         />
+      </div>
+
+      <div className="space-y-5 pt-4 border-t">
+        <h2 className="font-display text-lg font-bold text-navy">SEO overrides (optional)</h2>
+        <div className="space-y-2">
+          <Label htmlFor="h1_override">Page heading (H1) override</Label>
+          <Input
+            id="h1_override"
+            value={form.h1_override}
+            onChange={(e) => setForm({ ...form, h1_override: e.target.value })}
+            placeholder={`Defaults to "${form.title || "service title"}"`}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="meta_title">SEO title</Label>
+          <Input
+            id="meta_title"
+            value={form.meta_title}
+            onChange={(e) => setForm({ ...form, meta_title: e.target.value })}
+            placeholder="Defaults to service title"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="meta_description">SEO description</Label>
+          <Textarea
+            id="meta_description"
+            rows={2}
+            value={form.meta_description}
+            onChange={(e) => setForm({ ...form, meta_description: e.target.value })}
+            placeholder="Defaults to short description"
+          />
+        </div>
       </div>
     </div>
   );

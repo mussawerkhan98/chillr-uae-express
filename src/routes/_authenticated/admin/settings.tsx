@@ -64,9 +64,22 @@ const FIELDS: Field[] = [
   { key: "stat_3_label", label: "About page: stat 3 label", group: "About page" },
   { key: "stat_4_value", label: "About page: stat 4 value", group: "About page" },
   { key: "stat_4_label", label: "About page: stat 4 label", group: "About page" },
+
+  {
+    key: "default_og_image",
+    label: "Default social share image (og:image) — full URL, 1200x630 recommended",
+    group: "SEO & business defaults",
+  },
+  {
+    key: "business_address",
+    label: "Business address (used in LocalBusiness structured data)",
+    group: "SEO & business defaults",
+  },
+  { key: "business_hours_open", label: "Opening time (24h, e.g. 00:00)", group: "SEO & business defaults" },
+  { key: "business_hours_close", label: "Closing time (24h, e.g. 23:59)", group: "SEO & business defaults" },
 ];
 
-const GROUPS = ["Social links", "Homepage hero section", "About page"];
+const GROUPS = ["Social links", "Homepage hero section", "About page", "SEO & business defaults"];
 
 function SettingsPage() {
   const listFn = useServerFn(adminListSettings);

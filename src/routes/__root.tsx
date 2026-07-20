@@ -101,13 +101,13 @@ function buildOrgJsonLd(settings: Record<string, string | null> | undefined) {
     "@id": "https://iqrarchillervanrental.ae/#business",
     name: SITE.name,
     url: "https://iqrarchillervanrental.ae/",
-    image: "/favicon.ico",
+    image: getSetting(settings, "default_og_image", "https://iqrarchillervanrental.ae/og-image.jpg"),
     description: SITE.description,
     telephone: getSetting(settings, "site_phone", SITE.phone),
     email: getSetting(settings, "site_email", SITE.email),
     address: {
       "@type": "PostalAddress",
-      addressLocality: "Dubai",
+      streetAddress: getSetting(settings, "business_address", SITE.address),
       addressCountry: "AE",
     },
     areaServed: [
@@ -117,7 +117,8 @@ function buildOrgJsonLd(settings: Record<string, string | null> | undefined) {
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
-      opens: "00:00", closes: "23:59",
+      opens: getSetting(settings, "business_hours_open", "00:00"),
+      closes: getSetting(settings, "business_hours_close", "23:59"),
     },
     sameAs,
   };
@@ -148,11 +149,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "description", content: "Premium refrigerated chiller van & freezer truck rental across the UAE. 24/7 temperature-controlled cold-chain logistics for food, pharma, seafood & flowers. Call +971 50 598 6571." },
       { property: "og:description", content: "Premium refrigerated chiller van & freezer truck rental across the UAE. 24/7 temperature-controlled cold-chain logistics for food, pharma, seafood & flowers. Call +971 50 598 6571." },
       { name: "twitter:description", content: "Premium refrigerated chiller van & freezer truck rental across the UAE. 24/7 temperature-controlled cold-chain logistics for food, pharma, seafood & flowers. Call +971 50 598 6571." },
-      { property: "og:image", content: "https://iqrarchillervanrental.ae/og-image.jpg" },
+      { property: "og:image", content: getSetting(loaderData?.[0], "default_og_image", "https://iqrarchillervanrental.ae/og-image.jpg") },
       { property: "og:image:width", content: "1200" },
       { property: "og:image:height", content: "630" },
       { property: "og:image:alt", content: "IQRAR Chiller Van Transport — refrigerated van and freezer truck rental across the UAE" },
-      { name: "twitter:image", content: "https://iqrarchillervanrental.ae/og-image.jpg" },
+      { name: "twitter:image", content: getSetting(loaderData?.[0], "default_og_image", "https://iqrarchillervanrental.ae/og-image.jpg") },
     ],
     links: [
       { rel: "stylesheet", href: appCss },

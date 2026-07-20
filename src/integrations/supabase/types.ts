@@ -59,9 +59,12 @@ export type Database = {
           blurb: string
           body_content: string
           created_at: string
+          h1_override: string | null
           id: string
           map_x: number
           map_y: number
+          meta_description: string | null
+          meta_title: string | null
           name: string
           neighborhoods: string
           response_time: string
@@ -74,9 +77,12 @@ export type Database = {
           blurb?: string
           body_content?: string
           created_at?: string
+          h1_override?: string | null
           id?: string
           map_x?: number
           map_y?: number
+          meta_description?: string | null
+          meta_title?: string | null
           name: string
           neighborhoods?: string
           response_time?: string
@@ -89,9 +95,12 @@ export type Database = {
           blurb?: string
           body_content?: string
           created_at?: string
+          h1_override?: string | null
           id?: string
           map_x?: number
           map_y?: number
+          meta_description?: string | null
+          meta_title?: string | null
           name?: string
           neighborhoods?: string
           response_time?: string
@@ -232,10 +241,13 @@ export type Database = {
           content_html: string
           created_at: string
           description: string
+          h1_override: string | null
           icon: string | null
           id: string
           image_alt: string | null
           image_url: string | null
+          meta_description: string | null
+          meta_title: string | null
           slug: string
           sort_order: number
           title: string
@@ -245,10 +257,13 @@ export type Database = {
           content_html?: string
           created_at?: string
           description: string
+          h1_override?: string | null
           icon?: string | null
           id?: string
           image_alt?: string | null
           image_url?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
           slug: string
           sort_order?: number
           title: string
@@ -258,10 +273,13 @@ export type Database = {
           content_html?: string
           created_at?: string
           description?: string
+          h1_override?: string | null
           icon?: string | null
           id?: string
           image_alt?: string | null
           image_url?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
           slug?: string
           sort_order?: number
           title?: string

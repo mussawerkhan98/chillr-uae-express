@@ -32,6 +32,9 @@ function EditService() {
     image_url: null as string | null,
     image_alt: "",
     icon: "",
+    meta_title: "",
+    meta_description: "",
+    h1_override: "",
     sort_order: 0,
   });
 
@@ -45,6 +48,9 @@ function EditService() {
         image_url: data.image_url ?? null,
         image_alt: data.image_alt ?? "",
         icon: data.icon ?? "",
+        meta_title: (data as any).meta_title ?? "",
+        meta_description: (data as any).meta_description ?? "",
+        h1_override: (data as any).h1_override ?? "",
         sort_order: data.sort_order,
       });
     }
@@ -62,6 +68,9 @@ function EditService() {
           image_url: form.image_url,
           image_alt: form.image_alt || form.title,
           icon: form.icon || null,
+          meta_title: form.meta_title || null,
+          meta_description: form.meta_description || null,
+          h1_override: form.h1_override || null,
           sort_order: form.sort_order,
         },
       }),

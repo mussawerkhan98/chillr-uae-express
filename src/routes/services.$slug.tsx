@@ -19,8 +19,8 @@ export const Route = createFileRoute("/services/$slug")({
   head: ({ loaderData }) => {
     const service = loaderData;
     if (!service) return { meta: [{ title: "Service not found" }] };
-    const title = `${service.title} | IQRAR Chiller Van Transport`;
-    const description = service.description;
+    const title = service.meta_title?.trim() || `${service.title} | IQRAR Chiller Van Transport`;
+    const description = service.meta_description?.trim() || service.description;
     return {
       meta: [
         { title },
@@ -90,7 +90,7 @@ function ServiceDetail() {
               <ThermometerSnowflake className="h-3 w-3" /> Cold-chain service
             </div>
             <h1 className="mt-4 font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-navy tracking-tight leading-tight">
-              {service.title}
+              {service.h1_override?.trim() || service.title}
             </h1>
             <p className="mt-5 text-lg text-muted-foreground leading-relaxed">
               {service.description}

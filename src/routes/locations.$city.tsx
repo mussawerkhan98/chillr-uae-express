@@ -22,8 +22,8 @@ export const Route = createFileRoute("/locations/$city")({
       };
     }
     const c = loaderData.city;
-    const title = `Chiller Van Transport in ${c.name} | Refrigerated Truck Rental — IQRAR`;
-    const desc = `Refrigerated chiller van and freezer truck rental in ${c.name}. 24/7 dispatch, ${c.response_time} response, HACCP-aligned cold-chain transport across ${c.name} and neighbouring emirates.`;
+    const title = (c as any).meta_title?.trim() || `Chiller Van Transport in ${c.name} | Refrigerated Truck Rental — IQRAR`;
+    const desc = (c as any).meta_description?.trim() || `Refrigerated chiller van and freezer truck rental in ${c.name}. 24/7 dispatch, ${c.response_time} response, HACCP-aligned cold-chain transport across ${c.name} and neighbouring emirates.`;
     return {
       meta: [
         { title },
@@ -89,7 +89,11 @@ function CityPage() {
               <MapPin className="h-3 w-3" /> {c.name}, UAE
             </div>
             <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-navy tracking-tight">
-              Chiller Van Rental in <span className="gradient-text">{c.name}</span>
+              {(c as any).h1_override?.trim() ? (
+                (c as any).h1_override
+              ) : (
+                <>Chiller Van Rental in <span className="gradient-text">{c.name}</span></>
+              )}
             </h1>
             <p className="mt-5 text-lg text-muted-foreground max-w-2xl">{c.blurb}</p>
 

@@ -32,6 +32,9 @@ type FormState = {
   body_content: string;
   neighborhoods: string;
   response_time: string;
+  meta_title: string;
+  meta_description: string;
+  h1_override: string;
   map_x: number;
   map_y: number;
   sort_order: number;
@@ -48,6 +51,9 @@ function NewLocation() {
     body_content: "",
     neighborhoods: "",
     response_time: "",
+    meta_title: "",
+    meta_description: "",
+    h1_override: "",
     map_x: 50,
     map_y: 50,
     sort_order: 0,
@@ -195,6 +201,38 @@ export function LocationForm({
             type="number"
             value={form.sort_order}
             onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) || 0 })}
+          />
+        </div>
+      </div>
+
+      <div className="space-y-5 pt-4 border-t">
+        <h2 className="font-display text-lg font-bold text-navy">SEO overrides (optional)</h2>
+        <div className="space-y-2">
+          <Label htmlFor="h1_override">Page heading (H1) override</Label>
+          <Input
+            id="h1_override"
+            value={form.h1_override}
+            onChange={(e) => setForm({ ...form, h1_override: e.target.value })}
+            placeholder={`Defaults to "Chiller Van Transport in ${form.name || "[Emirate]"}"`}
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="meta_title">SEO title</Label>
+          <Input
+            id="meta_title"
+            value={form.meta_title}
+            onChange={(e) => setForm({ ...form, meta_title: e.target.value })}
+            placeholder="Defaults to the auto-generated location title"
+          />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="meta_description">SEO description</Label>
+          <Textarea
+            id="meta_description"
+            rows={2}
+            value={form.meta_description}
+            onChange={(e) => setForm({ ...form, meta_description: e.target.value })}
+            placeholder="Defaults to the auto-generated location description"
           />
         </div>
       </div>
