@@ -29,6 +29,32 @@ export const Route = createFileRoute("/services/$slug")({
         { property: "og:url", content: `/services/${service.slug}` },
       ],
       links: [{ rel: "canonical", href: `/services/${service.slug}` }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Service",
+            name: service.title,
+            description: service.description,
+            url: `https://iqrarchillervanrental.ae/services/${service.slug}`,
+            ...(service.image_url ? { image: service.image_url } : {}),
+            provider: {
+              "@type": "LocalBusiness",
+              name: "IQRAR Chiller Van Transport",
+              telephone: "+971505986571",
+              areaServed: [
+                "Dubai", "Abu Dhabi", "Sharjah", "Ajman",
+                "Ras Al Khaimah", "Fujairah", "Umm Al Quwain",
+              ],
+            },
+            areaServed: {
+              "@type": "Country",
+              name: "United Arab Emirates",
+            },
+          }),
+        },
+      ],
     };
   },
   component: ServiceDetail,

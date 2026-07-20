@@ -18,7 +18,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { FloatingCTAs } from "@/components/FloatingCTAs";
 import { SITE } from "@/lib/site";
 import { supabase } from "@/integrations/supabase/client";
-import { settingsQuery } from "@/lib/settings.query";
+import { settingsQuery, getSetting } from "@/lib/settings.query";
 import { locationsQuery } from "@/lib/locations.query";
 
 function NotFoundComponent() {
@@ -84,31 +84,44 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
-const ORG_JSONLD = {
-  "@context": "https://schema.org",
-  "@type": "LocalBusiness",
-  "@id": "https://iqrarchiller.ae/#business",
-  name: SITE.name,
-  image: "/favicon.ico",
-  description: SITE.description,
-  telephone: SITE.phone,
-  email: SITE.email,
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "Dubai",
-    addressCountry: "AE",
-  },
-  areaServed: [
-    "Dubai", "Abu Dhabi", "Sharjah", "Ajman",
-    "Ras Al Khaimah", "Fujairah", "Umm Al Quwain",
-  ],
-  openingHoursSpecification: {
-    "@type": "OpeningHoursSpecification",
-    dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
-    opens: "00:00", closes: "23:59",
-  },
-  sameAs: [],
-};
+function buildOrgJsonLd(settings: Record<string, string | null> | undefined) {
+  // sameAs: pulled from admin-editable Site settings (Social links group) when
+  // present; falls back to an empty list (no hardcoded social URLs) if none
+  // have been configured yet.
+  const sameAs = [
+    getSetting(settings, "social_facebook", ""),
+    getSetting(settings, "social_instagram", ""),
+    getSetting(settings, "social_linkedin", ""),
+    getSetting(settings, "social_tiktok", ""),
+  ].filter((url) => url && url.trim().length > 0);
+
+  return {
+    "@context": "https://schema.org",
+    "@type": ["LocalBusiness", "Organization"],
+    "@id": "https://iqrarchillervanrental.ae/#business",
+    name: SITE.name,
+    url: "https://iqrarchillervanrental.ae/",
+    image: "/favicon.ico",
+    description: SITE.description,
+    telephone: getSetting(settings, "site_phone", SITE.phone),
+    email: getSetting(settings, "site_email", SITE.email),
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Dubai",
+      addressCountry: "AE",
+    },
+    areaServed: [
+      "Dubai", "Abu Dhabi", "Sharjah", "Ajman",
+      "Ras Al Khaimah", "Fujairah", "Umm Al Quwain",
+    ],
+    openingHoursSpecification: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"],
+      opens: "00:00", closes: "23:59",
+    },
+    sameAs,
+  };
+}
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   loader: ({ context }) =>
@@ -116,7 +129,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       context.queryClient.ensureQueryData(settingsQuery()),
       context.queryClient.ensureQueryData(locationsQuery()),
     ]),
-  head: () => ({
+  head: ({ loaderData }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -154,7 +167,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     scripts: [
       {
         type: "application/ld+json",
-        children: JSON.stringify(ORG_JSONLD),
+        children: JSON.stringify(buildOrgJsonLd(loaderData?.[0])),
       },
     ],
   }),

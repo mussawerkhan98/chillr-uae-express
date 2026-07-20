@@ -32,6 +32,11 @@ const FIELDS: Field[] = [
   { key: "meta_home_title", label: "Homepage SEO title" },
   { key: "meta_home_description", label: "Homepage SEO description", multiline: true },
 
+  { key: "social_facebook", label: "Facebook page URL", group: "Social links" },
+  { key: "social_instagram", label: "Instagram profile URL", group: "Social links" },
+  { key: "social_linkedin", label: "LinkedIn page URL", group: "Social links" },
+  { key: "social_tiktok", label: "TikTok profile URL", group: "Social links" },
+
   { key: "hero_badge_text", label: "Small badge text (above the headline)", group: "Homepage hero section" },
   { key: "hero_title", label: "Headline", multiline: true, group: "Homepage hero section" },
   { key: "hero_subtitle", label: "Subtitle paragraph", multiline: true, group: "Homepage hero section" },
@@ -61,7 +66,7 @@ const FIELDS: Field[] = [
   { key: "stat_4_label", label: "About page: stat 4 label", group: "About page" },
 ];
 
-const GROUPS = ["Homepage hero section", "About page"];
+const GROUPS = ["Social links", "Homepage hero section", "About page"];
 
 function SettingsPage() {
   const listFn = useServerFn(adminListSettings);
