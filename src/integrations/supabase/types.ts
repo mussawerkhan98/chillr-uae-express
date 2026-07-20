@@ -59,6 +59,7 @@ export type Database = {
           blurb: string
           body_content: string
           created_at: string
+          google_maps_url: string | null
           h1_override: string | null
           id: string
           map_x: number
@@ -77,6 +78,7 @@ export type Database = {
           blurb?: string
           body_content?: string
           created_at?: string
+          google_maps_url?: string | null
           h1_override?: string | null
           id?: string
           map_x?: number
@@ -95,6 +97,7 @@ export type Database = {
           blurb?: string
           body_content?: string
           created_at?: string
+          google_maps_url?: string | null
           h1_override?: string | null
           id?: string
           map_x?: number

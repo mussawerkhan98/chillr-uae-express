@@ -78,6 +78,7 @@ const locationInputSchema = z.object({
   meta_title: z.string().max(200).optional().nullable(),
   meta_description: z.string().max(500).optional().nullable(),
   h1_override: z.string().max(200).optional().nullable(),
+  google_maps_url: z.string().max(2000).optional().nullable(),
   map_x: z.number().default(50),
   map_y: z.number().default(50),
   sort_order: z.number().int().default(0),

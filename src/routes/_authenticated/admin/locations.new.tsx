@@ -35,6 +35,7 @@ type FormState = {
   meta_title: string;
   meta_description: string;
   h1_override: string;
+  google_maps_url: string;
   map_x: number;
   map_y: number;
   sort_order: number;
@@ -54,6 +55,7 @@ function NewLocation() {
     meta_title: "",
     meta_description: "",
     h1_override: "",
+    google_maps_url: "",
     map_x: 50,
     map_y: 50,
     sort_order: 0,
@@ -174,6 +176,19 @@ export function LocationForm({
           onChange={(e) => setForm({ ...form, response_time: e.target.value })}
           placeholder="30–60 minutes"
         />
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="google_maps_url">Google Maps embed URL</Label>
+        <Input
+          id="google_maps_url"
+          value={form.google_maps_url}
+          onChange={(e) => setForm({ ...form, google_maps_url: e.target.value })}
+          placeholder="https://www.google.com/maps/embed?pb=..."
+        />
+        <p className="text-xs text-muted-foreground">
+          In Google Maps: Share → Embed a map → copy just the URL inside the iframe's src=&quot;...&quot;
+          (not the whole HTML snippet). Leave blank to auto-generate a generic map from the name.
+        </p>
       </div>
       <div className="grid gap-4 sm:grid-cols-3">
         <div className="space-y-2">

@@ -166,7 +166,10 @@ function CityPage() {
         <div className="rounded-3xl overflow-hidden border border-border shadow-card">
           <iframe
             title={`Google Map of ${c.name}, UAE`}
-            src={`https://www.google.com/maps?q=${encodeURIComponent(c.name + ', United Arab Emirates')}&output=embed`}
+            src={
+              (c as any).google_maps_url?.trim() ||
+              `https://www.google.com/maps?q=${encodeURIComponent(c.name + ', United Arab Emirates')}&output=embed`
+            }
             className="w-full h-[400px] border-0"
             loading="lazy"
             referrerPolicy="no-referrer-when-downgrade"
