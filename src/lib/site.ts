@@ -1,3 +1,17 @@
+export const SITE_URL = "https://iqrarchillervanrental.ae";
+
+/**
+ * Build an absolute, self-referencing canonical URL for a given path.
+ * Strips any query string / hash and trailing slash (except for the
+ * homepage, which canonicalizes to the bare domain root).
+ */
+export function canonicalUrl(path: string): string {
+  const clean = path.split("?")[0].split("#")[0];
+  if (clean === "/" || clean === "") return `${SITE_URL}/`;
+  const noTrailingSlash = clean.endsWith("/") ? clean.slice(0, -1) : clean;
+  return `${SITE_URL}${noTrailingSlash}`;
+}
+
 export const SITE = {
   name: "IQRAR Chiller Van Transport",
   shortName: "IQRAR",

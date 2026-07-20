@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery, useQuery } from "@tanstack/react-query";
 import { getPublishedPostBySlug, listPublishedPosts } from "@/lib/blog.functions";
+import { canonicalUrl } from "@/lib/site";
 import { format } from "date-fns";
 import { ArrowLeft, ArrowRight, Snowflake } from "lucide-react";
 
@@ -30,7 +31,7 @@ export const Route = createFileRoute("/blog/$slug")({
       { property: "og:title", content: title },
       { property: "og:description", content: description },
       { property: "og:type", content: "article" },
-      { property: "og:url", content: `/blog/${post.slug}` },
+      { property: "og:url", content: canonicalUrl(`/blog/${post.slug}`) },
     ];
     if (post.cover_image_url) {
       meta.push(
@@ -38,7 +39,7 @@ export const Route = createFileRoute("/blog/$slug")({
         { name: "twitter:image", content: post.cover_image_url },
       );
     }
-    return { meta, links: [{ rel: "canonical", href: `/blog/${post.slug}` }] };
+    return { meta, links: [{ rel: "canonical", href: canonicalUrl(`/blog/${post.slug}`) }] };
   },
   component: BlogPost,
   errorComponent: ({ error }) => <div className="container-page py-16 text-center text-muted-foreground">{error.message}</div>,

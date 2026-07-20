@@ -13,7 +13,7 @@ import {
   CheckCircle2,
   Star,
 } from "lucide-react";
-import { SITE, STATS } from "@/lib/site";
+import { SITE, STATS, canonicalUrl } from "@/lib/site";
 import { listFleetPublic } from "@/lib/fleet.functions";
 import { listServicesPublic } from "@/lib/services.functions";
 import { listFaqsPublic } from "@/lib/faqs.functions";
@@ -67,9 +67,9 @@ export const Route = createFileRoute("/")({
         { name: "description", content: description },
         { property: "og:title", content: title },
         { property: "og:description", content: description },
-        { property: "og:url", content: "/" },
+        { property: "og:url", content: canonicalUrl("/") },
       ],
-      links: [{ rel: "canonical", href: "/" }],
+      links: [{ rel: "canonical", href: canonicalUrl("/") }],
       scripts: [
         {
           type: "application/ld+json",

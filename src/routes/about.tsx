@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { Snowflake, Shield, Award, Target, Heart, Truck } from "lucide-react";
-import { SITE, STATS } from "@/lib/site";
+import { SITE, STATS, canonicalUrl } from "@/lib/site";
 import interior from "@/assets/cold-chain-interior.jpg";
 import { siteImagesQuery, pickImage } from "@/lib/site-images.query";
 import { settingsQuery, getSetting } from "@/lib/settings.query";
@@ -21,9 +21,9 @@ export const Route = createFileRoute("/about")({
         content:
           "UAE cold-chain specialists. Modern refrigerated fleet, HACCP-aligned operations, 24/7 dispatch across all seven emirates.",
       },
-      { property: "og:url", content: "/about" },
+      { property: "og:url", content: canonicalUrl("/about") },
     ],
-    links: [{ rel: "canonical", href: "/about" }],
+    links: [{ rel: "canonical", href: canonicalUrl("/about") }],
   }),
   loader: ({ context }) =>
     Promise.all([

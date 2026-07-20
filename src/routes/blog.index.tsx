@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { listPublishedPosts } from "@/lib/blog.functions";
+import { canonicalUrl } from "@/lib/site";
 import { format } from "date-fns";
 import { ArrowRight } from "lucide-react";
 
@@ -14,9 +15,9 @@ export const Route = createFileRoute("/blog/")({
       { name: "description", content: "Guides, tips and updates from IQRAR on refrigerated logistics, cold-chain compliance and safe delivery across the UAE." },
       { property: "og:title", content: "IQRAR Blog — Cold-chain insights" },
       { property: "og:description", content: "Guides, tips and updates on refrigerated logistics across the UAE." },
-      { property: "og:url", content: "/blog" },
+      { property: "og:url", content: canonicalUrl("/blog") },
     ],
-    links: [{ rel: "canonical", href: "/blog" }],
+    links: [{ rel: "canonical", href: canonicalUrl("/blog") }],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(postsQuery()),
   component: BlogIndex,

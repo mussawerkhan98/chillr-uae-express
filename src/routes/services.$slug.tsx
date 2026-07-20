@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getServiceBySlug } from "@/lib/services.functions";
+import { canonicalUrl } from "@/lib/site";
 import { ArrowLeft, ThermometerSnowflake } from "lucide-react";
 
 const serviceQuery = (slug: string) =>
@@ -26,9 +27,9 @@ export const Route = createFileRoute("/services/$slug")({
         { name: "description", content: description },
         { property: "og:title", content: title },
         { property: "og:description", content: description },
-        { property: "og:url", content: `/services/${service.slug}` },
+        { property: "og:url", content: canonicalUrl(`/services/${service.slug}`) },
       ],
-      links: [{ rel: "canonical", href: `/services/${service.slug}` }],
+      links: [{ rel: "canonical", href: canonicalUrl(`/services/${service.slug}`) }],
       scripts: [
         {
           type: "application/ld+json",

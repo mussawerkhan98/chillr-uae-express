@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { ThermometerSnowflake, ArrowRight, MessageSquareText } from "lucide-react";
 import { listServicesPublic } from "@/lib/services.functions";
+import { canonicalUrl } from "@/lib/site";
 
 const servicesQuery = () =>
   queryOptions({ queryKey: ["services", "list"], queryFn: () => listServicesPublic() });
@@ -21,9 +22,9 @@ export const Route = createFileRoute("/services/")({
         content:
           "Nine specialised refrigerated transport services across the UAE — from pharma to seafood, catered to your cargo profile.",
       },
-      { property: "og:url", content: "/services" },
+      { property: "og:url", content: canonicalUrl("/services") },
     ],
-    links: [{ rel: "canonical", href: "/services" }],
+    links: [{ rel: "canonical", href: canonicalUrl("/services") }],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(servicesQuery()),
   component: ServicesPage,

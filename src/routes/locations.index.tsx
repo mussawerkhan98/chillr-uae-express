@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { MapPin, ArrowRight, Clock } from "lucide-react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { locationsQuery } from "@/lib/locations.query";
+import { canonicalUrl } from "@/lib/site";
 import { UAEMap } from "@/components/UAEMap";
 
 export const Route = createFileRoute("/locations/")({
@@ -11,9 +12,9 @@ export const Route = createFileRoute("/locations/")({
       { name: "description", content: "IQRAR chiller van and freezer truck transport across Dubai, Abu Dhabi, Sharjah, Ajman, Ras Al Khaimah, Fujairah and Umm Al Quwain." },
       { property: "og:title", content: "UAE Coverage — IQRAR Chiller Van Transport" },
       { property: "og:description", content: "Refrigerated transport in all seven emirates. Local response teams and same-day cross-emirate delivery." },
-      { property: "og:url", content: "/locations" },
+      { property: "og:url", content: canonicalUrl("/locations") },
     ],
-    links: [{ rel: "canonical", href: "/locations" }],
+    links: [{ rel: "canonical", href: canonicalUrl("/locations") }],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(locationsQuery()),
   component: LocationsPage,

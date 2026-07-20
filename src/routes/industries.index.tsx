@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { Building2, ArrowRight, MessageSquareText } from "lucide-react";
 import { listIndustriesPublic } from "@/lib/industries.functions";
+import { canonicalUrl } from "@/lib/site";
 
 const industriesQuery = () =>
   queryOptions({ queryKey: ["industries", "list"], queryFn: () => listIndustriesPublic() });
@@ -13,9 +14,9 @@ export const Route = createFileRoute("/industries/")({
       { name: "description", content: "IQRAR serves restaurants, hotels, hospitals, supermarkets, catering, food manufacturing, floral, ice-cream and pharmaceutical clients across the UAE." },
       { property: "og:title", content: "Industries — IQRAR Chiller Van Transport" },
       { property: "og:description", content: "Cold-chain logistics tailored to UAE hospitality, healthcare, retail and manufacturing." },
-      { property: "og:url", content: "/industries" },
+      { property: "og:url", content: canonicalUrl("/industries") },
     ],
-    links: [{ rel: "canonical", href: "/industries" }],
+    links: [{ rel: "canonical", href: canonicalUrl("/industries") }],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(industriesQuery()),
   component: IndustriesPage,

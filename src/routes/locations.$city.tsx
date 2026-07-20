@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { MapPin, Clock, ArrowRight, MessageCircle, Phone, CheckCircle2 } from "lucide-react";
-import { SITE, FLEET, FAQS } from "@/lib/site";
+import { SITE, FLEET, FAQS, canonicalUrl } from "@/lib/site";
 import { getLocationBySlug, listLocationsPublic } from "@/lib/locations.functions";
 
 export const Route = createFileRoute("/locations/$city")({
@@ -30,10 +30,10 @@ export const Route = createFileRoute("/locations/$city")({
         { name: "description", content: desc },
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
-        { property: "og:url", content: `/locations/${params.city}` },
+        { property: "og:url", content: canonicalUrl(`/locations/${params.city}`) },
         { property: "og:type", content: "website" },
       ],
-      links: [{ rel: "canonical", href: `/locations/${params.city}` }],
+      links: [{ rel: "canonical", href: canonicalUrl(`/locations/${params.city}`) }],
       scripts: [
         {
           type: "application/ld+json",

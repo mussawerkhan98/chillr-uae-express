@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { getIndustryBySlug } from "@/lib/industries.functions";
+import { canonicalUrl } from "@/lib/site";
 import { ArrowLeft, Building2 } from "lucide-react";
 
 const industryQuery = (slug: string) =>
@@ -26,9 +27,9 @@ export const Route = createFileRoute("/industries/$slug")({
         { name: "description", content: description },
         { property: "og:title", content: title },
         { property: "og:description", content: description },
-        { property: "og:url", content: `/industries/${industry.slug}` },
+        { property: "og:url", content: canonicalUrl(`/industries/${industry.slug}`) },
       ],
-      links: [{ rel: "canonical", href: `/industries/${industry.slug}` }],
+      links: [{ rel: "canonical", href: canonicalUrl(`/industries/${industry.slug}`) }],
     };
   },
   component: IndustryDetail,

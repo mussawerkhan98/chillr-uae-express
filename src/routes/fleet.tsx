@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { Truck, Snowflake, Ruler, ThermometerSnowflake, ArrowRight } from "lucide-react";
 import { listFleetPublic } from "@/lib/fleet.functions";
+import { canonicalUrl } from "@/lib/site";
 import { siteImagesQuery, pickImage } from "@/lib/site-images.query";
 import fleetImg from "@/assets/fleet-lineup.jpg";
 
@@ -26,9 +27,9 @@ export const Route = createFileRoute("/fleet")({
         content:
           "Modern refrigerated fleet across the UAE. Chiller vans, freezer trucks and pickup chillers with continuous temperature monitoring.",
       },
-      { property: "og:url", content: "/fleet" },
+      { property: "og:url", content: canonicalUrl("/fleet") },
     ],
-    links: [{ rel: "canonical", href: "/fleet" }],
+    links: [{ rel: "canonical", href: canonicalUrl("/fleet") }],
   }),
   loader: ({ context }) =>
     Promise.all([

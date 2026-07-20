@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { listFaqsPublic } from "@/lib/faqs.functions";
+import { canonicalUrl } from "@/lib/site";
 
 const faqsQuery = () =>
   queryOptions({ queryKey: ["faqs", "list"], queryFn: () => listFaqsPublic() });
@@ -20,9 +21,9 @@ export const Route = createFileRoute("/faq")({
         property: "og:description",
         content: "Answers about our refrigerated transport across the UAE.",
       },
-      { property: "og:url", content: "/faq" },
+      { property: "og:url", content: canonicalUrl("/faq") },
     ],
-    links: [{ rel: "canonical", href: "/faq" }],
+    links: [{ rel: "canonical", href: canonicalUrl("/faq") }],
     scripts: [
       {
         type: "application/ld+json",

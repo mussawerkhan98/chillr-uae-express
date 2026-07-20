@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Mail, Phone, MapPin, MessageCircle, Send, CheckCircle2 } from "lucide-react";
 import { z } from "zod";
-import { SITE } from "@/lib/site";
+import { SITE, canonicalUrl } from "@/lib/site";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { settingsQuery, getSetting } from "@/lib/settings.query";
 
@@ -33,9 +33,9 @@ export const Route = createFileRoute("/contact")({
         property: "og:description",
         content: "Get an instant quote for refrigerated transport across all seven emirates.",
       },
-      { property: "og:url", content: "/contact" },
+      { property: "og:url", content: canonicalUrl("/contact") },
     ],
-    links: [{ rel: "canonical", href: "/contact" }],
+    links: [{ rel: "canonical", href: canonicalUrl("/contact") }],
   }),
   component: ContactPage,
 });
