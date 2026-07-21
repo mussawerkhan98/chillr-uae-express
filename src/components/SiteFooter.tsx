@@ -1,9 +1,17 @@
 import { Link } from "@tanstack/react-router";
-import { Mail, Phone, MapPin, MessageCircle, Snowflake } from "lucide-react";
+import { Mail, Phone, MapPin, MessageCircle, Snowflake, Facebook, Instagram, Linkedin } from "lucide-react";
 import { SITE, NAV_LINKS } from "@/lib/site";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { settingsQuery, getSetting } from "@/lib/settings.query";
 import { locationsQuery } from "@/lib/locations.query";
+
+function TikTokIcon({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className={className} aria-hidden>
+      <path d="M16.6 5.82c-.86-.83-1.35-1.98-1.35-3.32h-3.05v13.36c0 1.53-1.24 2.77-2.77 2.77a2.77 2.77 0 0 1 0-5.54c.28 0 .55.04.8.12V9.98a5.86 5.86 0 0 0-.8-.06 5.82 5.82 0 1 0 5.82 5.82V8.9a7.06 7.06 0 0 0 4.15 1.33V7.19c-.93 0-1.79-.29-2.5-.78-.1-.06-.2-.13-.3-.2Z" />
+    </svg>
+  );
+}
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -16,6 +24,16 @@ export function SiteFooter() {
   const email = getSetting(settings, "site_email", SITE.email);
   const address = getSetting(settings, "site_address", SITE.address);
   const tagline = getSetting(settings, "site_tagline", SITE.tagline);
+  const facebook = getSetting(settings, "social_facebook", "");
+  const instagram = getSetting(settings, "social_instagram", "");
+  const linkedin = getSetting(settings, "social_linkedin", "");
+  const tiktok = getSetting(settings, "social_tiktok", "");
+  const socialLinks = [
+    { url: facebook, label: "Facebook", Icon: Facebook },
+    { url: instagram, label: "Instagram", Icon: Instagram },
+    { url: linkedin, label: "LinkedIn", Icon: Linkedin },
+    { url: tiktok, label: "TikTok", Icon: TikTokIcon },
+  ].filter((s) => s.url.trim().length > 0);
   return (
     <footer className="mt-24 bg-navy text-ice">
       <div className="container-page py-16 grid gap-12 lg:grid-cols-4">
@@ -43,6 +61,22 @@ export function SiteFooter() {
           <div className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary/20 border border-primary/30 px-4 py-2 text-xs font-medium">
             <Snowflake className="h-4 w-4" aria-hidden /> {tagline}
           </div>
+          {socialLinks.length > 0 && (
+            <div className="mt-5 flex items-center gap-3">
+              {socialLinks.map(({ url, label, Icon }) => (
+                <a
+                  key={label}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="flex h-9 w-9 items-center justify-center rounded-full bg-white/10 text-ice/80 hover:bg-secondary hover:text-navy transition-colors"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              ))}
+            </div>
+          )}
         </div>
 
         <div>
