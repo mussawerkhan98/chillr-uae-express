@@ -151,7 +151,7 @@ export function SiteFooter() {
               rel="noopener noreferrer"
               className="font-semibold text-secondary hover:text-white transition-colors"
             >
-              www.byteflow.ae
+              Byteflow
             </a>
           </p>
         </div>
