@@ -2,10 +2,17 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { ThermometerSnowflake, ArrowRight, MessageSquareText } from "lucide-react";
 import { listServicesPublic } from "@/lib/services.functions";
+import { listFaqsPublic } from "@/lib/faqs.functions";
+import { FaqSection } from "@/components/FaqSection";
 import { canonicalUrl } from "@/lib/site";
 
 const servicesQuery = () =>
   queryOptions({ queryKey: ["services", "list"], queryFn: () => listServicesPublic() });
+const servicesFaqsQuery = () =>
+  queryOptions({
+    queryKey: ["faqs", "list", "services"],
+    queryFn: () => listFaqsPublic({ data: { page: "services" } }),
+  });
 
 export const Route = createFileRoute("/services/")({
   head: () => ({
@@ -26,12 +33,17 @@ export const Route = createFileRoute("/services/")({
     ],
     links: [{ rel: "canonical", href: canonicalUrl("/services") }],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(servicesQuery()),
+  loader: ({ context }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(servicesQuery()),
+      context.queryClient.ensureQueryData(servicesFaqsQuery()),
+    ]),
   component: ServicesPage,
 });
 
 function ServicesPage() {
   const { data: services } = useSuspenseQuery(servicesQuery());
+  const { data: faqs = [] } = useSuspenseQuery(servicesFaqsQuery());
 
   return (
     <>
@@ -112,6 +124,8 @@ function ServicesPage() {
           </div>
         )}
       </section>
+
+      <FaqSection faqs={faqs} eyebrow="FAQ" title="Service questions, answered." />
     </>
   );
 }

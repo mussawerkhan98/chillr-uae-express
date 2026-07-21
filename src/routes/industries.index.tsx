@@ -2,10 +2,17 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { Building2, ArrowRight, MessageSquareText } from "lucide-react";
 import { listIndustriesPublic } from "@/lib/industries.functions";
+import { listFaqsPublic } from "@/lib/faqs.functions";
+import { FaqSection } from "@/components/FaqSection";
 import { canonicalUrl } from "@/lib/site";
 
 const industriesQuery = () =>
   queryOptions({ queryKey: ["industries", "list"], queryFn: () => listIndustriesPublic() });
+const industriesFaqsQuery = () =>
+  queryOptions({
+    queryKey: ["faqs", "list", "industries"],
+    queryFn: () => listFaqsPublic({ data: { page: "industries" } }),
+  });
 
 export const Route = createFileRoute("/industries/")({
   head: () => ({
@@ -18,12 +25,17 @@ export const Route = createFileRoute("/industries/")({
     ],
     links: [{ rel: "canonical", href: canonicalUrl("/industries") }],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(industriesQuery()),
+  loader: ({ context }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(industriesQuery()),
+      context.queryClient.ensureQueryData(industriesFaqsQuery()),
+    ]),
   component: IndustriesPage,
 });
 
 function IndustriesPage() {
   const { data: industries } = useSuspenseQuery(industriesQuery());
+  const { data: faqs = [] } = useSuspenseQuery(industriesFaqsQuery());
 
   return (
     <>
@@ -106,6 +118,8 @@ function IndustriesPage() {
           </div>
         )}
       </section>
+
+      <FaqSection faqs={faqs} eyebrow="FAQ" title="Industry questions, answered." />
     </>
   );
 }

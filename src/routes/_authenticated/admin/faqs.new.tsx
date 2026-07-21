@@ -8,18 +8,24 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { adminCreateFaq } from "@/lib/faqs.functions";
+import { FAQ_PAGE_OPTIONS, pagesToArray, arrayToPages } from "@/lib/faq-pages";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/admin/faqs/new")({
   component: NewFaq,
 });
 
-type FormState = { question: string; answer: string; sort_order: number };
+type FormState = { question: string; answer: string; pages: string; sort_order: number };
 
 function NewFaq() {
   const navigate = useNavigate();
   const createFn = useServerFn(adminCreateFaq);
-  const [form, setForm] = useState<FormState>({ question: "", answer: "", sort_order: 0 });
+  const [form, setForm] = useState<FormState>({
+    question: "",
+    answer: "",
+    pages: "home,faq",
+    sort_order: 0,
+  });
 
   const save = useMutation({
     mutationFn: () => createFn({ data: form }),
@@ -79,6 +85,34 @@ export function FaqForm({ form, setForm }: { form: FormState; setForm: (f: FormS
           value={form.answer}
           onChange={(e) => setForm({ ...form, answer: e.target.value })}
         />
+      </div>
+      <div className="space-y-2">
+        <Label>Show this FAQ on</Label>
+        <div className="grid grid-cols-2 gap-2 rounded-md border border-input p-3">
+          {FAQ_PAGE_OPTIONS.map((opt) => {
+            const selected = pagesToArray(form.pages);
+            const checked = selected.includes(opt.slug);
+            return (
+              <label key={opt.slug} className="flex items-center gap-2 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={checked}
+                  onChange={(e) => {
+                    const next = e.target.checked
+                      ? [...selected, opt.slug]
+                      : selected.filter((p) => p !== opt.slug);
+                    setForm({ ...form, pages: arrayToPages(next) });
+                  }}
+                  className="h-4 w-4 rounded border-input"
+                />
+                {opt.label}
+              </label>
+            );
+          })}
+        </div>
+        <p className="text-xs text-muted-foreground">
+          Pick every page this Q&amp;A should appear on. It can be shown on more than one.
+        </p>
       </div>
       <div className="space-y-2">
         <Label htmlFor="sort_order">Sort order</Label>

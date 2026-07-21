@@ -24,11 +24,16 @@ function EditFaq() {
     queryFn: () => getFn({ data: { id } }),
   });
 
-  const [form, setForm] = useState({ question: "", answer: "", sort_order: 0 });
+  const [form, setForm] = useState({ question: "", answer: "", pages: "home,faq", sort_order: 0 });
 
   useEffect(() => {
     if (data) {
-      setForm({ question: data.question, answer: data.answer, sort_order: data.sort_order });
+      setForm({
+        question: data.question,
+        answer: data.answer,
+        pages: (data as any).pages ?? "home,faq",
+        sort_order: data.sort_order,
+      });
     }
   }, [data]);
 

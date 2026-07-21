@@ -4,16 +4,36 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 // ---------- Public reads (SSR-safe, no auth) ----------
 
-export const listFaqsPublic = createServerFn({ method: "GET" }).handler(async () => {
-  const { getPublicSupabase } = await import("./supabase-public.server");
-  const sb = getPublicSupabase();
-  const { data, error } = await sb
-    .from("faqs")
-    .select("id, question, answer")
-    .order("sort_order", { ascending: true });
-  if (error) throw new Error(error.message);
-  return data ?? [];
-});
+export const listFaqsPublic = createServerFn({ method: "GET" })
+  .inputValidator((input?: { page?: string }) =>
+    z.object({ page: z.string().max(100).optional() }).parse(input ?? {}),
+  )
+  .handler(async ({ data: input }) => {
+    const { getPublicSupabase } = await import("./supabase-public.server");
+    const sb = getPublicSupabase();
+    // select("*") rather than naming "pages" explicitly: this column is
+    // added by a migration that may not have run yet, and this function
+    // is now consumed on nearly every public page — a missing-column
+    // error here must never take down the whole site.
+    const { data, error } = await sb
+      .from("faqs")
+      .select("*")
+      .order("sort_order", { ascending: true });
+    if (error) {
+      console.error("[faqs] listFaqsPublic error:", error.message);
+      return [];
+    }
+    const rows = (data ?? []) as Array<{ id: string; question: string; answer: string; pages?: string | null }>;
+    // No page filter: return everything (used by the dedicated /faq page,
+    // which is meant to be the full reference list regardless of tagging).
+    if (!input?.page) return rows;
+    return rows.filter((r) =>
+      (r.pages ?? "home,faq")
+        .split(",")
+        .map((p) => p.trim())
+        .includes(input.page as string),
+    );
+  });
 
 // ---------- Admin CRUD ----------
 
@@ -49,6 +69,7 @@ export const adminGetFaq = createServerFn({ method: "GET" })
 const faqInputSchema = z.object({
   question: z.string().min(1).max(300),
   answer: z.string().min(1).max(2000),
+  pages: z.string().max(500).optional().default("home,faq"),
   sort_order: z.number().int().default(0),
 });
 

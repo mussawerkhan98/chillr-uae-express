@@ -4,7 +4,15 @@ import { Truck, Snowflake, Ruler, ThermometerSnowflake, ArrowRight } from "lucid
 import { listFleetPublic } from "@/lib/fleet.functions";
 import { canonicalUrl } from "@/lib/site";
 import { siteImagesQuery, pickImage } from "@/lib/site-images.query";
+import { listFaqsPublic } from "@/lib/faqs.functions";
+import { FaqSection } from "@/components/FaqSection";
 import fleetImg from "@/assets/fleet-lineup.jpg";
+
+const fleetFaqsQuery = () =>
+  queryOptions({
+    queryKey: ["faqs", "list", "fleet"],
+    queryFn: () => listFaqsPublic({ data: { page: "fleet" } }),
+  });
 
 const fleetQuery = () =>
   queryOptions({ queryKey: ["fleet", "list"], queryFn: () => listFleetPublic() });
@@ -35,6 +43,7 @@ export const Route = createFileRoute("/fleet")({
     Promise.all([
       context.queryClient.ensureQueryData(fleetQuery()),
       context.queryClient.ensureQueryData(siteImagesQuery()),
+      context.queryClient.ensureQueryData(fleetFaqsQuery()),
     ]),
   component: FleetPage,
 });
@@ -42,6 +51,7 @@ export const Route = createFileRoute("/fleet")({
 function FleetPage() {
   const { data: fleet } = useSuspenseQuery(fleetQuery());
   const { data: images } = useSuspenseQuery(siteImagesQuery());
+  const { data: faqs = [] } = useSuspenseQuery(fleetFaqsQuery());
   const hero = pickImage(images, "fleet_lineup", {
     src: fleetImg,
     alt: "IQRAR refrigerated fleet lineup",
@@ -151,6 +161,8 @@ function FleetPage() {
           </div>
         )}
       </section>
+
+      <FaqSection faqs={faqs} eyebrow="FAQ" title="Fleet questions, answered." />
     </>
   );
 }

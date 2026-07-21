@@ -3,8 +3,16 @@ import { useState } from "react";
 import { Mail, Phone, MapPin, MessageCircle, Send, CheckCircle2 } from "lucide-react";
 import { z } from "zod";
 import { SITE, canonicalUrl } from "@/lib/site";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { settingsQuery, getSetting } from "@/lib/settings.query";
+import { listFaqsPublic } from "@/lib/faqs.functions";
+import { FaqSection } from "@/components/FaqSection";
+
+const contactFaqsQuery = () =>
+  queryOptions({
+    queryKey: ["faqs", "list", "contact"],
+    queryFn: () => listFaqsPublic({ data: { page: "contact" } }),
+  });
 
 const contactSchema = z.object({
   name: z.string().trim().min(2, "Please enter your name").max(100),
@@ -37,6 +45,7 @@ export const Route = createFileRoute("/contact")({
     ],
     links: [{ rel: "canonical", href: canonicalUrl("/contact") }],
   }),
+  loader: ({ context }) => context.queryClient.ensureQueryData(contactFaqsQuery()),
   component: ContactPage,
 });
 
@@ -44,6 +53,7 @@ function ContactPage() {
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const [errors, setErrors] = useState<Record<string, string>>({});
   const { data: settings } = useSuspenseQuery(settingsQuery());
+  const { data: faqs = [] } = useSuspenseQuery(contactFaqsQuery());
   const phone = getSetting(settings, "site_phone", SITE.phone);
   const phoneHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
   const whatsapp = getSetting(settings, "site_whatsapp", SITE.whatsapp);
@@ -93,6 +103,7 @@ function ContactPage() {
     "mt-1 block w-full rounded-xl border border-input bg-background px-4 py-3 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-primary transition";
 
   return (
+    <>
     <section className="container-page py-16">
       <div className="grid gap-12 lg:grid-cols-5">
         <aside className="lg:col-span-2">
@@ -283,6 +294,9 @@ function ContactPage() {
         </form>
       </div>
     </section>
+
+      <FaqSection faqs={faqs} eyebrow="FAQ" title="Before you reach out." seeAllHref="/faq" />
+    </>
   );
 }
 

@@ -1,9 +1,17 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { MapPin, ArrowRight, Clock } from "lucide-react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { locationsQuery } from "@/lib/locations.query";
+import { listFaqsPublic } from "@/lib/faqs.functions";
+import { FaqSection } from "@/components/FaqSection";
 import { canonicalUrl } from "@/lib/site";
 import { UAEMap } from "@/components/UAEMap";
+
+const locationsFaqsQuery = () =>
+  queryOptions({
+    queryKey: ["faqs", "list", "locations"],
+    queryFn: () => listFaqsPublic({ data: { page: "locations" } }),
+  });
 
 export const Route = createFileRoute("/locations/")({
   head: () => ({
@@ -16,12 +24,17 @@ export const Route = createFileRoute("/locations/")({
     ],
     links: [{ rel: "canonical", href: canonicalUrl("/locations") }],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(locationsQuery()),
+  loader: ({ context }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(locationsQuery()),
+      context.queryClient.ensureQueryData(locationsFaqsQuery()),
+    ]),
   component: LocationsPage,
 });
 
 function LocationsPage() {
   const { data: CITIES } = useSuspenseQuery(locationsQuery());
+  const { data: faqs = [] } = useSuspenseQuery(locationsFaqsQuery());
 
   return (
     <>
@@ -72,6 +85,8 @@ function LocationsPage() {
           ))}
         </div>
       </section>
+
+      <FaqSection faqs={faqs} eyebrow="FAQ" title="Coverage questions, answered." />
     </>
   );
 }

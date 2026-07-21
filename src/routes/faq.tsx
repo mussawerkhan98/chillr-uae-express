@@ -4,7 +4,7 @@ import { listFaqsPublic } from "@/lib/faqs.functions";
 import { canonicalUrl } from "@/lib/site";
 
 const faqsQuery = () =>
-  queryOptions({ queryKey: ["faqs", "list"], queryFn: () => listFaqsPublic() });
+  queryOptions({ queryKey: ["faqs", "list", "faq"], queryFn: () => listFaqsPublic({ data: { page: "faq" } }) });
 
 export const Route = createFileRoute("/faq")({
   loader: ({ context }) => context.queryClient.ensureQueryData(faqsQuery()),

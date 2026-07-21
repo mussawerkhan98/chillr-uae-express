@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { Snowflake, Shield, Award, Target, Heart, Truck } from "lucide-react";
 import { SITE, STATS, canonicalUrl } from "@/lib/site";
 import interior from "@/assets/cold-chain-interior.jpg";
@@ -7,6 +7,14 @@ import { siteImagesQuery, pickImage } from "@/lib/site-images.query";
 import { settingsQuery, getSetting } from "@/lib/settings.query";
 import { pageContentQuery, contentForSection } from "@/lib/page-content.query";
 import { getIcon } from "@/lib/icon-map";
+import { listFaqsPublic } from "@/lib/faqs.functions";
+import { FaqSection } from "@/components/FaqSection";
+
+const aboutFaqsQuery = () =>
+  queryOptions({
+    queryKey: ["faqs", "list", "about"],
+    queryFn: () => listFaqsPublic({ data: { page: "about" } }),
+  });
 
 export const Route = createFileRoute("/about")({
   head: () => ({
@@ -32,6 +40,7 @@ export const Route = createFileRoute("/about")({
       context.queryClient.ensureQueryData(siteImagesQuery()),
       context.queryClient.ensureQueryData(settingsQuery()),
       context.queryClient.ensureQueryData(pageContentQuery("about")),
+      context.queryClient.ensureQueryData(aboutFaqsQuery()),
     ]),
   component: About,
 });
@@ -40,6 +49,7 @@ function About() {
   const { data: images } = useSuspenseQuery(siteImagesQuery());
   const { data: settings } = useSuspenseQuery(settingsQuery());
   const { data: pageContent = [] } = useSuspenseQuery(pageContentQuery("about"));
+  const { data: faqs = [] } = useSuspenseQuery(aboutFaqsQuery());
   const interiorImg = pickImage(images, "cold_chain_interior", {
     src: interior,
     alt: "Refrigerated cargo compartment interior",
@@ -179,6 +189,8 @@ function About() {
           ))}
         </div>
       </section>
+
+      <FaqSection faqs={faqs} eyebrow="FAQ" title="Questions about IQRAR?" />
 
       <section className="container-page py-16">
         <div className="rounded-3xl bg-navy text-white p-10 sm:p-14 flex flex-col md:flex-row md:items-center gap-6 justify-between">

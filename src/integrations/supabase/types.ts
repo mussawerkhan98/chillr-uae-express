@@ -169,6 +169,7 @@ export type Database = {
           answer: string
           created_at: string
           id: string
+          pages: string
           question: string
           sort_order: number
           updated_at: string
@@ -177,6 +178,7 @@ export type Database = {
           answer: string
           created_at?: string
           id?: string
+          pages?: string
           question: string
           sort_order?: number
           updated_at?: string
@@ -185,6 +187,7 @@ export type Database = {
           answer?: string
           created_at?: string
           id?: string
+          pages?: string
           question?: string
           sort_order?: number
           updated_at?: string

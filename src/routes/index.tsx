@@ -23,6 +23,7 @@ import { settingsQuery, getSetting } from "@/lib/settings.query";
 import { locationsQuery } from "@/lib/locations.query";
 import { pageContentQuery, contentForSection } from "@/lib/page-content.query";
 import { getIcon } from "@/lib/icon-map";
+import { FaqSection } from "@/components/FaqSection";
 import { useQuery } from "@tanstack/react-query";
 import heroImg from "@/assets/hero-chiller-van.jpg";
 import interiorImg from "@/assets/cold-chain-interior.jpg";
@@ -33,7 +34,7 @@ const fleetQuery = () =>
 const servicesQuery = () =>
   queryOptions({ queryKey: ["services", "list"], queryFn: () => listServicesPublic() });
 const faqsQuery = () =>
-  queryOptions({ queryKey: ["faqs", "list"], queryFn: () => listFaqsPublic() });
+  queryOptions({ queryKey: ["faqs", "list", "home"], queryFn: () => listFaqsPublic({ data: { page: "home" } }) });
 const industriesQuery = () =>
   queryOptions({ queryKey: ["industries", "list"], queryFn: () => listIndustriesPublic() });
 
@@ -109,7 +110,11 @@ function Home() {
       <IndustriesStrip />
       <CoverageSection />
       <TestimonialsSection />
-      <FaqSection faqs={faqs} />
+      <FaqSection
+        faqs={faqs}
+        desc="Everything you need to know about our chiller and freezer transport services."
+        limit={5}
+      />
       <CTASection settings={settings} />
     </>
   );
@@ -574,41 +579,6 @@ function TestimonialsSection() {
                 <div className="text-xs text-muted-foreground">{t.role}</div>
               </figcaption>
             </figure>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function FaqSection({ faqs }: { faqs: Awaited<ReturnType<typeof listFaqsPublic>> }) {
-  return (
-    <section className="container-page py-24">
-      <div className="grid gap-12 lg:grid-cols-3">
-        <div className="lg:col-span-1">
-          <SectionHeader
-            eyebrow="FAQ"
-            title="Answers, before you ask."
-            desc="Everything you need to know about our chiller and freezer transport services."
-          />
-          <Link
-            to="/faq"
-            className="mt-6 inline-flex items-center gap-1 text-primary font-semibold text-sm hover:gap-2 transition-all"
-          >
-            See all FAQs <ArrowRight className="h-4 w-4" />
-          </Link>
-        </div>
-        <div className="lg:col-span-2 divide-y divide-border rounded-2xl border border-border bg-card overflow-hidden">
-          {faqs.slice(0, 5).map((f) => (
-            <details key={f.id} className="group p-6">
-              <summary className="flex cursor-pointer items-center justify-between gap-4 font-display font-semibold text-navy list-none">
-                {f.question}
-                <span className="h-8 w-8 rounded-full bg-accent text-primary flex items-center justify-center transition-transform group-open:rotate-45">
-                  +
-                </span>
-              </summary>
-              <p className="mt-3 text-sm text-muted-foreground leading-relaxed">{f.answer}</p>
-            </details>
           ))}
         </div>
       </div>
