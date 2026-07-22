@@ -130,6 +130,9 @@ function ServiceDetail() {
               [&_blockquote]:border-l-4 [&_blockquote]:border-primary/40 [&_blockquote]:pl-5 [&_blockquote]:italic [&_blockquote]:text-muted-foreground [&_blockquote]:my-6
               [&_img]:rounded-2xl [&_img]:shadow-card [&_img]:my-8 [&_img]:w-full [&_img]:h-auto
               [&_hr]:my-10 [&_hr]:border-border
+              [&_table]:w-full [&_table]:my-6 [&_table]:text-sm
+              [&_th]:text-left [&_th]:font-semibold [&_th]:text-navy [&_th]:border-b [&_th]:border-border [&_th]:p-2
+              [&_td]:border-b [&_td]:border-border [&_td]:p-2
             "
             dangerouslySetInnerHTML={{ __html: service.content_html }}
           />

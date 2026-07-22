@@ -2,8 +2,28 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Image from "@tiptap/extension-image";
+import { Table } from "@tiptap/extension-table";
+import { TableRow } from "@tiptap/extension-table-row";
+import { TableHeader } from "@tiptap/extension-table-header";
+import { TableCell } from "@tiptap/extension-table-cell";
 import { useEffect, useState } from "react";
-import { Bold, Italic, Heading2, Heading3, List, ListOrdered, Link2, Image as ImageIcon, Quote, Undo2, Redo2 } from "lucide-react";
+import {
+  Bold,
+  Italic,
+  Heading2,
+  Heading3,
+  List,
+  ListOrdered,
+  Link2,
+  Image as ImageIcon,
+  Quote,
+  Undo2,
+  Redo2,
+  Table2,
+  Rows3,
+  Columns3,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { uploadMedia } from "@/lib/upload";
 import { toast } from "sonner";
@@ -24,13 +44,20 @@ export function RichTextEditor({
         StarterKit,
         Link.configure({ openOnClick: false, HTMLAttributes: { class: "text-primary underline" } }),
         Image.configure({ HTMLAttributes: { class: "rounded-lg my-4 max-w-full h-auto" } }),
+        Table.configure({ resizable: true, HTMLAttributes: { class: "rte-table" } }),
+        TableRow,
+        TableHeader,
+        TableCell,
       ],
       content: value || "<p></p>",
       onUpdate: ({ editor }) => onChange(editor.getHTML()),
       editorProps: {
         attributes: {
           class:
-            "prose prose-slate max-w-none min-h-[400px] p-4 focus:outline-none prose-headings:font-display prose-headings:text-navy prose-a:text-primary",
+            "rte-content prose prose-slate max-w-none min-h-[400px] p-4 focus:outline-none prose-headings:font-display prose-headings:text-navy prose-a:text-primary " +
+            "[&_table]:w-full [&_table]:my-4 [&_table]:text-sm [&_table]:border-collapse " +
+            "[&_th]:text-left [&_th]:font-semibold [&_th]:text-navy [&_th]:border [&_th]:border-border [&_th]:p-2 [&_th]:bg-accent " +
+            "[&_td]:border [&_td]:border-border [&_td]:p-2 [&_td]:align-top",
         },
       },
       immediatelyRender: false,
@@ -90,6 +117,51 @@ export function RichTextEditor({
         <div className="w-px h-6 bg-border mx-1" />
         <Button type="button" size="sm" variant="ghost" className={btn(editor.isActive("link"))} onClick={handleLink}><Link2 className="h-4 w-4" /></Button>
         <Button type="button" size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={handleImage}><ImageIcon className="h-4 w-4" /></Button>
+        <div className="w-px h-6 bg-border mx-1" />
+        <Button
+          type="button"
+          size="sm"
+          variant="ghost"
+          className="h-8 w-8 p-0"
+          title="Insert table"
+          onClick={() => editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run()}
+        >
+          <Table2 className="h-4 w-4" />
+        </Button>
+        {editor.isActive("table") && (
+          <>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              className="h-8 w-8 p-0"
+              title="Add row after"
+              onClick={() => editor.chain().focus().addRowAfter().run()}
+            >
+              <Rows3 className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              className="h-8 w-8 p-0"
+              title="Add column after"
+              onClick={() => editor.chain().focus().addColumnAfter().run()}
+            >
+              <Columns3 className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              className="h-8 w-8 p-0 text-destructive"
+              title="Delete table"
+              onClick={() => editor.chain().focus().deleteTable().run()}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
+          </>
+        )}
         <div className="ml-auto flex gap-1">
           <Button type="button" size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => editor.chain().focus().undo().run()}><Undo2 className="h-4 w-4" /></Button>
           <Button type="button" size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={() => editor.chain().focus().redo().run()}><Redo2 className="h-4 w-4" /></Button>

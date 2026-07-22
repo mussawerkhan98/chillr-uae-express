@@ -156,6 +156,9 @@ function CityPage() {
               [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ul]:space-y-1.5
               [&_li]:leading-7
               [&_strong]:text-navy [&_strong]:font-semibold
+              [&_table]:w-full [&_table]:my-6 [&_table]:text-sm
+              [&_th]:text-left [&_th]:font-semibold [&_th]:text-navy [&_th]:border-b [&_th]:border-border [&_th]:p-2
+              [&_td]:border-b [&_td]:border-border [&_td]:p-2
             "
             dangerouslySetInnerHTML={{ __html: c.body_content }}
           />
