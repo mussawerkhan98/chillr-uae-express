@@ -1,12 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { listPublishedPosts } from "@/lib/blog.functions";
+import { listFaqsPublic } from "@/lib/faqs.functions";
+import { FaqSection } from "@/components/FaqSection";
 import { canonicalUrl } from "@/lib/site";
 import { format } from "date-fns";
 import { ArrowRight } from "lucide-react";
 
 const postsQuery = () =>
   queryOptions({ queryKey: ["blog", "list"], queryFn: () => listPublishedPosts() });
+const blogFaqsQuery = () =>
+  queryOptions({
+    queryKey: ["faqs", "list", "blog"],
+    queryFn: () => listFaqsPublic({ data: { page: "blog" } }),
+  });
 
 export const Route = createFileRoute("/blog/")({
   head: () => ({
@@ -19,7 +26,11 @@ export const Route = createFileRoute("/blog/")({
     ],
     links: [{ rel: "canonical", href: canonicalUrl("/blog") }],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(postsQuery()),
+  loader: ({ context }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(postsQuery()),
+      context.queryClient.ensureQueryData(blogFaqsQuery()),
+    ]),
   component: BlogIndex,
   errorComponent: ({ error }) => <div className="container-page py-16 text-center text-muted-foreground">{error.message}</div>,
   notFoundComponent: () => <div className="container-page py-16 text-center">No posts.</div>,
@@ -27,6 +38,7 @@ export const Route = createFileRoute("/blog/")({
 
 function BlogIndex() {
   const { data: posts } = useSuspenseQuery(postsQuery());
+  const { data: faqs = [] } = useSuspenseQuery(blogFaqsQuery());
 
   return (
     <>
@@ -91,6 +103,8 @@ function BlogIndex() {
           </div>
         )}
       </section>
+
+      <FaqSection faqs={faqs} eyebrow="FAQ" title="Common questions about our blog." />
     </>
   );
 }

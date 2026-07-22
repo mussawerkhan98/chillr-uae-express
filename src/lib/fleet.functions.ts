@@ -69,6 +69,8 @@ const fleetInputSchema = z.object({
   alt_text: z.string().max(300).optional().nullable(),
   starting_price: z.number().nonnegative().optional().nullable(),
   currency: z.string().max(10).optional().default("AED"),
+  related_link_url: z.string().max(500).optional().nullable(),
+  related_link_label: z.string().max(150).optional().nullable(),
   sort_order: z.number().int().default(0),
 });
 

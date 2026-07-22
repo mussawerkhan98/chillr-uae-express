@@ -205,6 +205,8 @@ export type Database = {
           ideal: string
           image_url: string | null
           name: string
+          related_link_label: string | null
+          related_link_url: string | null
           slug: string
           sort_order: number
           starting_price: number | null
@@ -222,6 +224,8 @@ export type Database = {
           ideal: string
           image_url?: string | null
           name: string
+          related_link_label?: string | null
+          related_link_url?: string | null
           slug: string
           sort_order?: number
           starting_price?: number | null
@@ -239,6 +243,8 @@ export type Database = {
           ideal?: string
           image_url?: string | null
           name?: string
+          related_link_label?: string | null
+          related_link_url?: string | null
           slug?: string
           sort_order?: number
           starting_price?: number | null

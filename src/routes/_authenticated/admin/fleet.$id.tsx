@@ -36,6 +36,8 @@ function EditVehicle() {
     alt_text: "",
     starting_price: null as number | null,
     currency: "AED",
+    related_link_url: "",
+    related_link_label: "",
     sort_order: 0,
   });
 
@@ -53,6 +55,8 @@ function EditVehicle() {
         alt_text: data.alt_text ?? "",
         starting_price: (data as any).starting_price ?? null,
         currency: (data as any).currency ?? "AED",
+        related_link_url: (data as any).related_link_url ?? "",
+        related_link_label: (data as any).related_link_label ?? "",
         sort_order: data.sort_order,
       });
     }

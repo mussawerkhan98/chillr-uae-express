@@ -36,6 +36,8 @@ type FormState = {
   alt_text: string;
   starting_price: number | null;
   currency: string;
+  related_link_url: string;
+  related_link_label: string;
   sort_order: number;
 };
 
@@ -54,6 +56,8 @@ function NewVehicle() {
     alt_text: "",
     starting_price: null,
     currency: "AED",
+    related_link_url: "",
+    related_link_label: "",
     sort_order: 0,
   });
 
@@ -215,6 +219,26 @@ export function VehicleForm({
             value={form.currency}
             onChange={(e) => setForm({ ...form, currency: e.target.value.toUpperCase() })}
             placeholder="AED"
+          />
+        </div>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 pt-4 border-t">
+        <div className="space-y-2 sm:col-span-2">
+          <Label htmlFor="related_link_url">Related link (interlinking — e.g. a blog post about this vehicle)</Label>
+          <Input
+            id="related_link_url"
+            value={form.related_link_url}
+            onChange={(e) => setForm({ ...form, related_link_url: e.target.value })}
+            placeholder="/blog/your-post-slug or a full https:// URL"
+          />
+        </div>
+        <div className="space-y-2 sm:col-span-2">
+          <Label htmlFor="related_link_label">Link text shown on the card</Label>
+          <Input
+            id="related_link_label"
+            value={form.related_link_label}
+            onChange={(e) => setForm({ ...form, related_link_label: e.target.value })}
+            placeholder="e.g. Read our guide to this vehicle"
           />
         </div>
       </div>

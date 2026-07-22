@@ -11,6 +11,7 @@ export const FAQ_PAGE_OPTIONS = [
   { slug: "industries", label: "Industries" },
   { slug: "locations", label: "Locations" },
   { slug: "contact", label: "Contact" },
+  { slug: "blog", label: "Blog" },
   { slug: "faq", label: "FAQ page (full list)" },
 ] as const;
 
