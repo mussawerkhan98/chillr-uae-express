@@ -1,6 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery, useQuery } from "@tanstack/react-query";
 import { getPublishedPostBySlug, listPublishedPosts } from "@/lib/blog.functions";
+import { listFaqsPublic } from "@/lib/faqs.functions";
+import { FaqSection } from "@/components/FaqSection";
 import { canonicalUrl } from "@/lib/site";
 import { format } from "date-fns";
 import { ArrowLeft, ArrowRight, Snowflake } from "lucide-react";
@@ -17,11 +19,21 @@ const postQuery = (slug: string) =>
     },
   });
 
+const postFaqsQuery = (slug: string) =>
+  queryOptions({
+    queryKey: ["faqs", "list", "blogPost", slug],
+    queryFn: () => listFaqsPublic({ data: { postSlug: slug } }),
+  });
+
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ context, params }) => context.queryClient.ensureQueryData(postQuery(params.slug)),
+  loader: ({ context, params }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(postQuery(params.slug)),
+      context.queryClient.ensureQueryData(postFaqsQuery(params.slug)),
+    ]),
   head: ({ loaderData }) => {
-    const post = loaderData;
+    const post = loaderData?.[0];
     if (!post) return { meta: [{ title: "Post not found" }] };
     const title = post.meta_title || `${post.title} | IQRAR`;
     const description = post.meta_description || post.excerpt || "";
@@ -57,6 +69,7 @@ const relatedQuery = () =>
 function BlogPost() {
   const { slug } = Route.useParams();
   const { data: post } = useSuspenseQuery(postQuery(slug));
+  const { data: faqs = [] } = useSuspenseQuery(postFaqsQuery(slug));
   const { data: allPosts = [] } = useQuery(relatedQuery());
   const related = allPosts.filter((p) => p.slug !== slug).slice(0, 3);
 
@@ -180,6 +193,14 @@ function BlogPost() {
           </div>
         )}
       </div>
+
+      <FaqSection
+        faqs={faqs}
+        eyebrow="FAQ"
+        title="Frequently asked questions"
+        desc="Common questions about this article, answered."
+        seeAllHref={null}
+      />
     </article>
   );
 }

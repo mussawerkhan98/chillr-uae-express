@@ -24,7 +24,13 @@ function EditFaq() {
     queryFn: () => getFn({ data: { id } }),
   });
 
-  const [form, setForm] = useState({ question: "", answer: "", pages: "home,faq", sort_order: 0 });
+  const [form, setForm] = useState({
+    question: "",
+    answer: "",
+    pages: "home,faq",
+    blog_post_slug: "",
+    sort_order: 0,
+  });
 
   useEffect(() => {
     if (data) {
@@ -32,6 +38,7 @@ function EditFaq() {
         question: data.question,
         answer: data.answer,
         pages: (data as any).pages ?? "home,faq",
+        blog_post_slug: (data as any).blog_post_slug ?? "",
         sort_order: data.sort_order,
       });
     }

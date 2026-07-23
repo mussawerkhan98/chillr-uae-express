@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { ArrowLeft, Save, Loader2 } from "lucide-react";
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { adminCreateFaq } from "@/lib/faqs.functions";
+import { adminListPosts } from "@/lib/blog.functions";
 import { FAQ_PAGE_OPTIONS, pagesToArray, arrayToPages } from "@/lib/faq-pages";
 import { toast } from "sonner";
 
@@ -15,7 +16,13 @@ export const Route = createFileRoute("/_authenticated/admin/faqs/new")({
   component: NewFaq,
 });
 
-type FormState = { question: string; answer: string; pages: string; sort_order: number };
+type FormState = {
+  question: string;
+  answer: string;
+  pages: string;
+  blog_post_slug: string;
+  sort_order: number;
+};
 
 function NewFaq() {
   const navigate = useNavigate();
@@ -24,6 +31,7 @@ function NewFaq() {
     question: "",
     answer: "",
     pages: "home,faq",
+    blog_post_slug: "",
     sort_order: 0,
   });
 
@@ -114,6 +122,10 @@ export function FaqForm({ form, setForm }: { form: FormState; setForm: (f: FormS
           Pick every page this Q&amp;A should appear on. It can be shown on more than one.
         </p>
       </div>
+      <BlogPostPicker
+        value={form.blog_post_slug}
+        onChange={(slug) => setForm({ ...form, blog_post_slug: slug })}
+      />
       <div className="space-y-2">
         <Label htmlFor="sort_order">Sort order</Label>
         <Input
@@ -123,6 +135,36 @@ export function FaqForm({ form, setForm }: { form: FormState; setForm: (f: FormS
           onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) || 0 })}
         />
       </div>
+    </div>
+  );
+}
+
+function BlogPostPicker({ value, onChange }: { value: string; onChange: (slug: string) => void }) {
+  const listPostsFn = useServerFn(adminListPosts);
+  const { data: posts = [] } = useQuery({
+    queryKey: ["admin", "blog", "posts", "forFaqPicker"],
+    queryFn: () => listPostsFn(),
+  });
+
+  return (
+    <div className="space-y-2">
+      <Label htmlFor="blog_post_slug">Attach to a specific blog post (optional)</Label>
+      <select
+        id="blog_post_slug"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
+      >
+        <option value="">None — use page targeting above instead</option>
+        {posts.map((p) => (
+          <option key={p.id} value={p.slug}>
+            {p.title}
+          </option>
+        ))}
+      </select>
+      <p className="text-xs text-muted-foreground">
+        If set, this FAQ only shows on that specific blog post's page, regardless of the page checkboxes above.
+      </p>
     </div>
   );
 }

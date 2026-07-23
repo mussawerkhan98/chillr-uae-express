@@ -167,6 +167,7 @@ export type Database = {
       faqs: {
         Row: {
           answer: string
+          blog_post_slug: string | null
           created_at: string
           id: string
           pages: string
@@ -176,6 +177,7 @@ export type Database = {
         }
         Insert: {
           answer: string
+          blog_post_slug?: string | null
           created_at?: string
           id?: string
           pages?: string
@@ -185,6 +187,7 @@ export type Database = {
         }
         Update: {
           answer?: string
+          blog_post_slug?: string | null
           created_at?: string
           id?: string
           pages?: string

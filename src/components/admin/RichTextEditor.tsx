@@ -144,6 +144,16 @@ export function RichTextEditor({
               type="button"
               size="sm"
               variant="ghost"
+              className="h-8 w-8 p-0 text-destructive"
+              title="Delete current row"
+              onClick={() => editor.chain().focus().deleteRow().run()}
+            >
+              <Rows3 className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
               className="h-8 w-8 p-0"
               title="Add column after"
               onClick={() => editor.chain().focus().addColumnAfter().run()}
@@ -155,7 +165,17 @@ export function RichTextEditor({
               size="sm"
               variant="ghost"
               className="h-8 w-8 p-0 text-destructive"
-              title="Delete table"
+              title="Delete current column"
+              onClick={() => editor.chain().focus().deleteColumn().run()}
+            >
+              <Columns3 className="h-4 w-4" />
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="ghost"
+              className="h-8 w-8 p-0 text-destructive"
+              title="Delete entire table"
               onClick={() => editor.chain().focus().deleteTable().run()}
             >
               <Trash2 className="h-4 w-4" />

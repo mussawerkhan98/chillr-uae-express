@@ -5,8 +5,10 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 // ---------- Public reads (SSR-safe, no auth) ----------
 
 export const listFaqsPublic = createServerFn({ method: "GET" })
-  .inputValidator((input?: { page?: string }) =>
-    z.object({ page: z.string().max(100).optional() }).parse(input ?? {}),
+  .inputValidator((input?: { page?: string; postSlug?: string }) =>
+    z
+      .object({ page: z.string().max(100).optional(), postSlug: z.string().max(200).optional() })
+      .parse(input ?? {}),
   )
   .handler(async ({ data: input }) => {
     const { getPublicSupabase } = await import("./supabase-public.server");
@@ -23,7 +25,19 @@ export const listFaqsPublic = createServerFn({ method: "GET" })
       console.error("[faqs] listFaqsPublic error:", error.message);
       return [];
     }
-    const rows = (data ?? []) as Array<{ id: string; question: string; answer: string; pages?: string | null }>;
+    const rows = (data ?? []) as Array<{
+      id: string;
+      question: string;
+      answer: string;
+      pages?: string | null;
+      blog_post_slug?: string | null;
+    }>;
+    // A FAQ attached to a specific blog post is scoped to that post only —
+    // this takes priority over (and is independent of) the page-based
+    // "pages" targeting used everywhere else.
+    if (input?.postSlug) {
+      return rows.filter((r) => (r.blog_post_slug ?? "").trim() === input.postSlug);
+    }
     // No page filter: return everything (used by the dedicated /faq page,
     // which is meant to be the full reference list regardless of tagging).
     if (!input?.page) return rows;
@@ -70,6 +84,9 @@ const faqInputSchema = z.object({
   question: z.string().min(1).max(300),
   answer: z.string().min(1).max(2000),
   pages: z.string().max(500).optional().default("home,faq"),
+  // Optional: ties this FAQ to one specific blog post (by slug) so it only
+  // shows on that post's page, instead of / in addition to page targeting.
+  blog_post_slug: z.string().max(200).optional().default(""),
   sort_order: z.number().int().default(0),
 });
 
