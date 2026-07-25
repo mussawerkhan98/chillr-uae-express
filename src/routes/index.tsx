@@ -167,8 +167,10 @@ function Hero({
           fetchPriority="high"
           className="h-full w-full object-cover"
         />
-        {!isDark && <div className="absolute inset-0 bg-[var(--gradient-hero)]" />}
-        {isDark && <div className="absolute inset-0 bg-white/50" />}
+        <div
+          className="absolute inset-0"
+          style={{ backgroundImage: isDark ? "var(--gradient-hero-light)" : "var(--gradient-hero)" }}
+        />
       </div>
       <div className="container-page relative pt-20 pb-28 lg:pt-32 lg:pb-40">
         <div className="max-w-3xl animate-fade-up">

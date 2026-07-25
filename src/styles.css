@@ -82,7 +82,12 @@
 
   /* Gradients & shadows */
   --gradient-brand: linear-gradient(135deg, #0057D9 0%, #00B8F5 100%);
-  --gradient-hero: linear-gradient(135deg, rgba(11,31,53,0.85) 0%, rgba(0,87,217,0.55) 100%);
+  --gradient-hero:
+    linear-gradient(180deg, rgba(11,31,53,0) 55%, rgba(11,31,53,0.55) 100%),
+    linear-gradient(115deg, rgba(11,31,53,0.92) 0%, rgba(11,31,53,0.62) 38%, rgba(0,87,217,0.4) 68%, rgba(0,184,245,0.16) 100%);
+  --gradient-hero-light:
+    linear-gradient(180deg, rgba(255,255,255,0) 55%, rgba(255,255,255,0.7) 100%),
+    linear-gradient(115deg, rgba(234,248,255,0.88) 0%, rgba(255,255,255,0.55) 45%, rgba(0,87,217,0.14) 100%);
   --gradient-glass: linear-gradient(180deg, rgba(255,255,255,0.7), rgba(255,255,255,0.35));
   --shadow-elegant: 0 20px 50px -20px rgba(0, 87, 217, 0.35);
   --shadow-card: 0 8px 24px -12px rgba(11, 31, 53, 0.12);
@@ -110,7 +115,9 @@
   --border: rgba(255,255,255,0.08);
   --input: rgba(255,255,255,0.12);
   --ring: #00B8F5;
-  --gradient-hero: linear-gradient(135deg, rgba(5,16,30,0.9) 0%, rgba(0,87,217,0.55) 100%);
+  --gradient-hero:
+    linear-gradient(180deg, rgba(5,16,30,0) 55%, rgba(5,16,30,0.6) 100%),
+    linear-gradient(115deg, rgba(5,16,30,0.94) 0%, rgba(5,16,30,0.66) 38%, rgba(0,87,217,0.42) 68%, rgba(0,184,245,0.18) 100%);
 }
 
 @utility container-page {
