@@ -4,6 +4,7 @@ import { listPublishedPosts } from "@/lib/blog.functions";
 import { listFaqsPublic } from "@/lib/faqs.functions";
 import { FaqSection } from "@/components/FaqSection";
 import { canonicalUrl } from "@/lib/site";
+import { settingsQuery, getSetting } from "@/lib/settings.query";
 import { format } from "date-fns";
 import { ArrowRight } from "lucide-react";
 
@@ -30,6 +31,7 @@ export const Route = createFileRoute("/blog/")({
     Promise.all([
       context.queryClient.ensureQueryData(postsQuery()),
       context.queryClient.ensureQueryData(blogFaqsQuery()),
+      context.queryClient.ensureQueryData(settingsQuery()),
     ]),
   component: BlogIndex,
   errorComponent: ({ error }) => <div className="container-page py-16 text-center text-muted-foreground">{error.message}</div>,
@@ -39,19 +41,24 @@ export const Route = createFileRoute("/blog/")({
 function BlogIndex() {
   const { data: posts } = useSuspenseQuery(postsQuery());
   const { data: faqs = [] } = useSuspenseQuery(blogFaqsQuery());
+  const { data: settings } = useSuspenseQuery(settingsQuery());
 
   return (
     <>
       <section className="container-page pt-16">
         <div className="max-w-3xl">
           <div className="inline-flex items-center gap-2 rounded-full bg-accent text-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-widest">
-            Insights
+            {getSetting(settings, "blog_hero_eyebrow", "Insights")}
           </div>
           <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-navy tracking-tight">
-            Cold-chain insights & news
+            {getSetting(settings, "blog_hero_title", "Cold-chain insights & news")}
           </h1>
           <p className="mt-5 text-lg text-muted-foreground">
-            Practical guides, industry updates and behind-the-scenes stories from the IQRAR team.
+            {getSetting(
+              settings,
+              "blog_hero_subtitle",
+              "Practical guides, industry updates and behind-the-scenes stories from the IQRAR team.",
+            )}
           </p>
         </div>
       </section>

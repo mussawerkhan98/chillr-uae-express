@@ -104,12 +104,12 @@ function Home() {
     <>
       <Hero images={images} settings={settings} />
       <StatsBar />
-      <ServicesSection services={services} />
-      <FleetSection fleet={fleet} images={images} />
-      <WhyUs images={images} />
+      <ServicesSection services={services} settings={settings} />
+      <FleetSection fleet={fleet} images={images} settings={settings} />
+      <WhyUs images={images} settings={settings} />
       <IndustriesStrip />
-      <CoverageSection />
-      <TestimonialsSection />
+      <CoverageSection settings={settings} />
+      <TestimonialsSection settings={settings} />
       <FaqSection
         faqs={faqs}
         desc="Everything you need to know about our chiller and freezer transport services."
@@ -269,15 +269,21 @@ function SectionHeader({
 
 function ServicesSection({
   services,
+  settings,
 }: {
   services: Awaited<ReturnType<typeof listServicesPublic>>;
+  settings: Record<string, string | null>;
 }) {
   return (
     <section id="services" className="container-page py-24">
       <SectionHeader
-        eyebrow="Services"
-        title="Cold-chain logistics, engineered for the UAE."
-        desc="Purpose-built vehicles, trained drivers and continuous temperature monitoring — for every industry that depends on the cold chain."
+        eyebrow={getSetting(settings, "home_services_eyebrow", "Services")}
+        title={getSetting(settings, "home_services_title", "Cold-chain logistics, engineered for the UAE.")}
+        desc={getSetting(
+          settings,
+          "home_services_desc",
+          "Purpose-built vehicles, trained drivers and continuous temperature monitoring — for every industry that depends on the cold chain.",
+        )}
       />
       <div className="mt-12 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
         {services.map((s) => (
@@ -312,9 +318,11 @@ function ServicesSection({
 function FleetSection({
   fleet,
   images,
+  settings,
 }: {
   fleet: Awaited<ReturnType<typeof listFleetPublic>>;
   images: Awaited<ReturnType<typeof import("@/lib/images.functions").listSiteImagesPublic>>;
+  settings: Record<string, string | null>;
 }) {
   const lineup = pickImage(images, "fleet_lineup", {
     src: fleetImg,
@@ -325,9 +333,13 @@ function FleetSection({
       <div className="container-page">
         <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
           <SectionHeader
-            eyebrow="Our Fleet"
-            title="From compact chiller vans to 5-ton freezer trucks."
-            desc="A modern, meticulously maintained fleet — matched to your cargo, route and temperature profile."
+            eyebrow={getSetting(settings, "home_fleet_eyebrow", "Our Fleet")}
+            title={getSetting(settings, "home_fleet_title", "From compact chiller vans to 5-ton freezer trucks.")}
+            desc={getSetting(
+              settings,
+              "home_fleet_desc",
+              "A modern, meticulously maintained fleet — matched to your cargo, route and temperature profile.",
+            )}
           />
           <Link
             to="/fleet"
@@ -394,8 +406,10 @@ function FleetSection({
 
 function WhyUs({
   images,
+  settings,
 }: {
   images: Awaited<ReturnType<typeof import("@/lib/images.functions").listSiteImagesPublic>>;
+  settings: Record<string, string | null>;
 }) {
   const interior = pickImage(images, "cold_chain_interior", {
     src: interiorImg,
@@ -451,8 +465,8 @@ function WhyUs({
         </div>
         <div>
           <SectionHeader
-            eyebrow="Why IQRAR"
-            title="A cold-chain partner, not just a transporter."
+            eyebrow={getSetting(settings, "home_why_eyebrow", "Why IQRAR")}
+            title={getSetting(settings, "home_why_title", "A cold-chain partner, not just a transporter.")}
           />
           <div className="mt-8 grid gap-5 sm:grid-cols-2">
             {items.map(({ icon: Icon, title, desc }) => (
@@ -491,16 +505,20 @@ function IndustriesStrip() {
   );
 }
 
-function CoverageSection() {
+function CoverageSection({ settings }: { settings: Record<string, string | null> }) {
   const { data: locations = [] } = useQuery(locationsQuery());
   return (
     <section className="container-page py-24">
       <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
         <div>
           <SectionHeader
-            eyebrow="Coverage"
-            title="Every emirate. Every temperature. Every day."
-            desc="From Deira to Fujairah, we run scheduled and on-demand chiller routes across the UAE — with local response teams in every emirate."
+            eyebrow={getSetting(settings, "home_coverage_eyebrow", "Coverage")}
+            title={getSetting(settings, "home_coverage_title", "Every emirate. Every temperature. Every day.")}
+            desc={getSetting(
+              settings,
+              "home_coverage_desc",
+              "From Deira to Fujairah, we run scheduled and on-demand chiller routes across the UAE — with local response teams in every emirate.",
+            )}
           />
           <ul className="mt-8 grid grid-cols-2 gap-3">
             {locations.map((c) => (
@@ -534,7 +552,7 @@ function UAEMapLazy() {
   return <UAEMap cities={locations} />;
 }
 
-function TestimonialsSection() {
+function TestimonialsSection({ settings }: { settings: Record<string, string | null> }) {
   const { data: pageContent = [] } = useQuery(pageContentQuery("home"));
   const cmsTestimonials = contentForSection(pageContent, "testimonials");
   const testimonials =
@@ -563,7 +581,10 @@ function TestimonialsSection() {
   return (
     <section className="bg-accent/50 py-24">
       <div className="container-page">
-        <SectionHeader eyebrow="Testimonials" title="Trusted by UAE's cold-chain operators." />
+        <SectionHeader
+          eyebrow={getSetting(settings, "home_testimonials_eyebrow", "Testimonials")}
+          title={getSetting(settings, "home_testimonials_title", "Trusted by UAE's cold-chain operators.")}
+        />
         <div className="mt-12 grid gap-6 md:grid-cols-3">
           {testimonials.map((t) => (
             <figure
@@ -601,11 +622,14 @@ function CTASection({ settings }: { settings: Record<string, string | null> }) {
         <div className="relative grid gap-8 lg:grid-cols-2 lg:items-center">
           <div>
             <h2 className="font-display text-3xl sm:text-4xl font-bold tracking-tight">
-              Need a chiller van today?
+              {getSetting(settings, "home_cta_title", "Need a chiller van today?")}
             </h2>
             <p className="mt-3 text-white/85 max-w-lg">
-              Message us on WhatsApp for an instant quote, or call our 24/7 dispatch line. We
-              usually reply within minutes.
+              {getSetting(
+                settings,
+                "home_cta_desc",
+                "Message us on WhatsApp for an instant quote, or call our 24/7 dispatch line. We usually reply within minutes.",
+              )}
             </p>
           </div>
           <div className="flex flex-wrap gap-3 lg:justify-end">

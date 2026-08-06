@@ -6,6 +6,7 @@ import { canonicalUrl } from "@/lib/site";
 import { siteImagesQuery, pickImage } from "@/lib/site-images.query";
 import { listFaqsPublic } from "@/lib/faqs.functions";
 import { FaqSection } from "@/components/FaqSection";
+import { settingsQuery, getSetting } from "@/lib/settings.query";
 import fleetImg from "@/assets/fleet-lineup.jpg";
 
 const fleetFaqsQuery = () =>
@@ -44,6 +45,7 @@ export const Route = createFileRoute("/fleet")({
       context.queryClient.ensureQueryData(fleetQuery()),
       context.queryClient.ensureQueryData(siteImagesQuery()),
       context.queryClient.ensureQueryData(fleetFaqsQuery()),
+      context.queryClient.ensureQueryData(settingsQuery()),
     ]),
   component: FleetPage,
 });
@@ -52,6 +54,7 @@ function FleetPage() {
   const { data: fleet } = useSuspenseQuery(fleetQuery());
   const { data: images } = useSuspenseQuery(siteImagesQuery());
   const { data: faqs = [] } = useSuspenseQuery(fleetFaqsQuery());
+  const { data: settings } = useSuspenseQuery(settingsQuery());
   const hero = pickImage(images, "fleet_lineup", {
     src: fleetImg,
     alt: "IQRAR refrigerated fleet lineup",
@@ -62,14 +65,17 @@ function FleetPage() {
       <section className="container-page pt-16 pb-10">
         <div className="max-w-3xl">
           <div className="inline-flex items-center gap-2 rounded-full bg-accent text-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-widest">
-            Our Fleet
+            {getSetting(settings, "fleet_hero_eyebrow", "Our Fleet")}
           </div>
           <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-navy tracking-tight">
-            Matched to your cargo. Ready around the clock.
+            {getSetting(settings, "fleet_hero_title", "Matched to your cargo. Ready around the clock.")}
           </h1>
           <p className="mt-5 text-lg text-muted-foreground">
-            Compact chiller vans for city routes. Freezer trucks for deep-freeze cargo. Every
-            vehicle temperature-mapped and continuously monitored.
+            {getSetting(
+              settings,
+              "fleet_hero_subtitle",
+              "Compact chiller vans for city routes. Freezer trucks for deep-freeze cargo. Every vehicle temperature-mapped and continuously monitored.",
+            )}
           </p>
         </div>
         <img

@@ -2,12 +2,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { listFaqsPublic } from "@/lib/faqs.functions";
 import { canonicalUrl } from "@/lib/site";
+import { settingsQuery, getSetting } from "@/lib/settings.query";
 
 const faqsQuery = () =>
   queryOptions({ queryKey: ["faqs", "list", "faq"], queryFn: () => listFaqsPublic({ data: { page: "faq" } }) });
 
 export const Route = createFileRoute("/faq")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(faqsQuery()),
+  loader: ({ context }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(faqsQuery()),
+      context.queryClient.ensureQueryData(settingsQuery()),
+    ]),
   head: ({ loaderData }) => ({
     meta: [
       { title: "FAQ — Chiller Van Rental UAE | IQRAR Chiller Van Transport" },
@@ -30,7 +35,7 @@ export const Route = createFileRoute("/faq")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "FAQPage",
-          mainEntity: (loaderData ?? []).map((f) => ({
+          mainEntity: (loaderData?.[0] ?? []).map((f) => ({
             "@type": "Question",
             name: f.question,
             acceptedAnswer: { "@type": "Answer", text: f.answer },
@@ -44,18 +49,23 @@ export const Route = createFileRoute("/faq")({
 
 function FaqPage() {
   const { data: faqs } = useSuspenseQuery(faqsQuery());
+  const { data: settings } = useSuspenseQuery(settingsQuery());
 
   return (
     <section className="container-page py-16">
       <div className="max-w-3xl">
         <div className="inline-flex items-center gap-2 rounded-full bg-accent text-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-widest">
-          FAQ
+          {getSetting(settings, "faq_hero_eyebrow", "FAQ")}
         </div>
         <h1 className="mt-4 font-display text-4xl sm:text-5xl font-bold text-navy tracking-tight">
-          Questions, answered.
+          {getSetting(settings, "faq_hero_title", "Questions, answered.")}
         </h1>
         <p className="mt-4 text-lg text-muted-foreground">
-          Everything you might want to know about our refrigerated transport across the UAE.
+          {getSetting(
+            settings,
+            "faq_hero_subtitle",
+            "Everything you might want to know about our refrigerated transport across the UAE.",
+          )}
         </p>
       </div>
 

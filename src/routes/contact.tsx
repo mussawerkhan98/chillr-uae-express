@@ -45,7 +45,11 @@ export const Route = createFileRoute("/contact")({
     ],
     links: [{ rel: "canonical", href: canonicalUrl("/contact") }],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(contactFaqsQuery()),
+  loader: ({ context }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(contactFaqsQuery()),
+      context.queryClient.ensureQueryData(settingsQuery()),
+    ]),
   component: ContactPage,
 });
 
@@ -108,14 +112,17 @@ function ContactPage() {
       <div className="grid gap-12 lg:grid-cols-5">
         <aside className="lg:col-span-2">
           <div className="inline-flex items-center gap-2 rounded-full bg-accent text-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-widest">
-            Contact
+            {getSetting(settings, "contact_hero_eyebrow", "Contact")}
           </div>
           <h1 className="mt-4 font-display text-4xl sm:text-5xl font-bold text-navy tracking-tight">
-            Get an instant chiller van quote.
+            {getSetting(settings, "contact_hero_title", "Get an instant chiller van quote.")}
           </h1>
           <p className="mt-4 text-muted-foreground">
-            Send the form and we'll open WhatsApp with your details filled in — reply usually within
-            minutes, 24/7.
+            {getSetting(
+              settings,
+              "contact_hero_subtitle",
+              "Send the form and we'll open WhatsApp with your details filled in — reply usually within minutes, 24/7.",
+            )}
           </p>
 
           <div className="mt-8 space-y-4">

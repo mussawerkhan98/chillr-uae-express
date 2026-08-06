@@ -5,6 +5,7 @@ import { listServicesPublic } from "@/lib/services.functions";
 import { listFaqsPublic } from "@/lib/faqs.functions";
 import { FaqSection } from "@/components/FaqSection";
 import { canonicalUrl } from "@/lib/site";
+import { settingsQuery, getSetting } from "@/lib/settings.query";
 
 const servicesQuery = () =>
   queryOptions({ queryKey: ["services", "list"], queryFn: () => listServicesPublic() });
@@ -37,6 +38,7 @@ export const Route = createFileRoute("/services/")({
     Promise.all([
       context.queryClient.ensureQueryData(servicesQuery()),
       context.queryClient.ensureQueryData(servicesFaqsQuery()),
+      context.queryClient.ensureQueryData(settingsQuery()),
     ]),
   component: ServicesPage,
 });
@@ -44,20 +46,24 @@ export const Route = createFileRoute("/services/")({
 function ServicesPage() {
   const { data: services } = useSuspenseQuery(servicesQuery());
   const { data: faqs = [] } = useSuspenseQuery(servicesFaqsQuery());
+  const { data: settings } = useSuspenseQuery(settingsQuery());
 
   return (
     <>
       <section className="container-page pt-16 pb-8">
         <div className="max-w-3xl">
           <div className="inline-flex items-center gap-2 rounded-full bg-accent text-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-widest">
-            Services
+            {getSetting(settings, "services_hero_eyebrow", "Services")}
           </div>
           <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-navy tracking-tight">
-            Purpose-built cold-chain services for every UAE industry.
+            {getSetting(settings, "services_hero_title", "Purpose-built cold-chain services for every UAE industry.")}
           </h1>
           <p className="mt-5 text-lg text-muted-foreground">
-            From pharma-grade GDP routes to floral humidity control, our fleet and crew are trained
-            around your cargo — not the other way around.
+            {getSetting(
+              settings,
+              "services_hero_subtitle",
+              "From pharma-grade GDP routes to floral humidity control, our fleet and crew are trained around your cargo — not the other way around.",
+            )}
           </p>
         </div>
       </section>

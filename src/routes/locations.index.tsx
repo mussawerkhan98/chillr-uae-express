@@ -6,6 +6,7 @@ import { listFaqsPublic } from "@/lib/faqs.functions";
 import { FaqSection } from "@/components/FaqSection";
 import { canonicalUrl } from "@/lib/site";
 import { UAEMap } from "@/components/UAEMap";
+import { settingsQuery, getSetting } from "@/lib/settings.query";
 
 const locationsFaqsQuery = () =>
   queryOptions({
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/locations/")({
     Promise.all([
       context.queryClient.ensureQueryData(locationsQuery()),
       context.queryClient.ensureQueryData(locationsFaqsQuery()),
+      context.queryClient.ensureQueryData(settingsQuery()),
     ]),
   component: LocationsPage,
 });
@@ -35,19 +37,24 @@ export const Route = createFileRoute("/locations/")({
 function LocationsPage() {
   const { data: CITIES } = useSuspenseQuery(locationsQuery());
   const { data: faqs = [] } = useSuspenseQuery(locationsFaqsQuery());
+  const { data: settings } = useSuspenseQuery(settingsQuery());
 
   return (
     <>
       <section className="container-page pt-16">
         <div className="max-w-3xl">
           <div className="inline-flex items-center gap-2 rounded-full bg-accent text-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-widest">
-            Coverage
+            {getSetting(settings, "locations_hero_eyebrow", "Coverage")}
           </div>
           <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-navy tracking-tight">
-            Chiller van transport in every emirate.
+            {getSetting(settings, "locations_hero_title", "Chiller van transport in every emirate.")}
           </h1>
           <p className="mt-5 text-lg text-muted-foreground">
-            Tap any emirate below to see local coverage, response times and popular routes.
+            {getSetting(
+              settings,
+              "locations_hero_subtitle",
+              "Tap any emirate below to see local coverage, response times and popular routes.",
+            )}
           </p>
         </div>
       </section>

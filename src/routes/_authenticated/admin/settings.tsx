@@ -77,9 +77,80 @@ const FIELDS: Field[] = [
   },
   { key: "business_hours_open", label: "Opening time (24h, e.g. 00:00)", group: "SEO & business defaults" },
   { key: "business_hours_close", label: "Closing time (24h, e.g. 23:59)", group: "SEO & business defaults" },
+
+  { key: "home_services_eyebrow", label: "Small label above the heading", group: "Homepage: Services section" },
+  { key: "home_services_title", label: "Heading", multiline: true, group: "Homepage: Services section" },
+  { key: "home_services_desc", label: "Paragraph", multiline: true, group: "Homepage: Services section" },
+
+  { key: "home_fleet_eyebrow", label: "Small label above the heading", group: "Homepage: Fleet section" },
+  { key: "home_fleet_title", label: "Heading", multiline: true, group: "Homepage: Fleet section" },
+  { key: "home_fleet_desc", label: "Paragraph", multiline: true, group: "Homepage: Fleet section" },
+
+  { key: "home_why_eyebrow", label: "Small label above the heading", group: "Homepage: Why IQRAR section" },
+  { key: "home_why_title", label: "Heading", multiline: true, group: "Homepage: Why IQRAR section" },
+
+  { key: "home_coverage_eyebrow", label: "Small label above the heading", group: "Homepage: Coverage section" },
+  { key: "home_coverage_title", label: "Heading", multiline: true, group: "Homepage: Coverage section" },
+  { key: "home_coverage_desc", label: "Paragraph", multiline: true, group: "Homepage: Coverage section" },
+
+  {
+    key: "home_testimonials_eyebrow",
+    label: "Small label above the heading",
+    group: "Homepage: Testimonials section",
+  },
+  { key: "home_testimonials_title", label: "Heading", multiline: true, group: "Homepage: Testimonials section" },
+
+  { key: "home_cta_title", label: "Heading", multiline: true, group: "Homepage: bottom call-to-action banner" },
+  { key: "home_cta_desc", label: "Paragraph", multiline: true, group: "Homepage: bottom call-to-action banner" },
+
+  { key: "services_hero_eyebrow", label: "Small label above the heading", group: "Services page" },
+  { key: "services_hero_title", label: "Heading", multiline: true, group: "Services page" },
+  { key: "services_hero_subtitle", label: "Paragraph", multiline: true, group: "Services page" },
+
+  { key: "fleet_hero_eyebrow", label: "Small label above the heading", group: "Fleet page" },
+  { key: "fleet_hero_title", label: "Heading", multiline: true, group: "Fleet page" },
+  { key: "fleet_hero_subtitle", label: "Paragraph", multiline: true, group: "Fleet page" },
+
+  { key: "industries_hero_eyebrow", label: "Small label above the heading", group: "Industries page" },
+  { key: "industries_hero_title", label: "Heading", multiline: true, group: "Industries page" },
+  { key: "industries_hero_subtitle", label: "Paragraph", multiline: true, group: "Industries page" },
+
+  { key: "locations_hero_eyebrow", label: "Small label above the heading", group: "Locations page" },
+  { key: "locations_hero_title", label: "Heading", multiline: true, group: "Locations page" },
+  { key: "locations_hero_subtitle", label: "Paragraph", multiline: true, group: "Locations page" },
+
+  { key: "contact_hero_eyebrow", label: "Small label above the heading", group: "Contact page" },
+  { key: "contact_hero_title", label: "Heading", multiline: true, group: "Contact page" },
+  { key: "contact_hero_subtitle", label: "Paragraph", multiline: true, group: "Contact page" },
+
+  { key: "faq_hero_eyebrow", label: "Small label above the heading", group: "FAQ page" },
+  { key: "faq_hero_title", label: "Heading", multiline: true, group: "FAQ page" },
+  { key: "faq_hero_subtitle", label: "Paragraph", multiline: true, group: "FAQ page" },
+
+  { key: "blog_hero_eyebrow", label: "Small label above the heading", group: "Blog page" },
+  { key: "blog_hero_title", label: "Heading", multiline: true, group: "Blog page" },
+  { key: "blog_hero_subtitle", label: "Paragraph", multiline: true, group: "Blog page" },
 ];
 
-const GROUPS = ["Social links", "Homepage hero section", "About page", "SEO & business defaults"];
+const GROUPS = [
+  "Social links",
+  "Homepage hero section",
+  "Homepage: Services section",
+  "Homepage: Fleet section",
+  "Homepage: Why IQRAR section",
+  "Homepage: Coverage section",
+  "Homepage: Testimonials section",
+  "Homepage: bottom call-to-action banner",
+  "About page",
+  "Services page",
+  "Fleet page",
+  "Industries page",
+  "Locations page",
+  "Contact page",
+  "FAQ page",
+  "Blog page",
+  "SEO & business defaults",
+];
 
 function SettingsPage() {
   const listFn = useServerFn(adminListSettings);

@@ -5,6 +5,7 @@ import { listIndustriesPublic } from "@/lib/industries.functions";
 import { listFaqsPublic } from "@/lib/faqs.functions";
 import { FaqSection } from "@/components/FaqSection";
 import { canonicalUrl } from "@/lib/site";
+import { settingsQuery, getSetting } from "@/lib/settings.query";
 
 const industriesQuery = () =>
   queryOptions({ queryKey: ["industries", "list"], queryFn: () => listIndustriesPublic() });
@@ -29,6 +30,7 @@ export const Route = createFileRoute("/industries/")({
     Promise.all([
       context.queryClient.ensureQueryData(industriesQuery()),
       context.queryClient.ensureQueryData(industriesFaqsQuery()),
+      context.queryClient.ensureQueryData(settingsQuery()),
     ]),
   component: IndustriesPage,
 });
@@ -36,20 +38,24 @@ export const Route = createFileRoute("/industries/")({
 function IndustriesPage() {
   const { data: industries } = useSuspenseQuery(industriesQuery());
   const { data: faqs = [] } = useSuspenseQuery(industriesFaqsQuery());
+  const { data: settings } = useSuspenseQuery(settingsQuery());
 
   return (
     <>
       <section className="container-page pt-16 pb-8">
         <div className="max-w-3xl">
           <div className="inline-flex items-center gap-2 rounded-full bg-accent text-primary px-3 py-1 text-[11px] font-semibold uppercase tracking-widest">
-            Industries
+            {getSetting(settings, "industries_hero_eyebrow", "Industries")}
           </div>
           <h1 className="mt-4 font-display text-4xl sm:text-5xl lg:text-6xl font-bold text-navy tracking-tight">
-            Trusted across the industries the UAE runs on.
+            {getSetting(settings, "industries_hero_title", "Trusted across the industries the UAE runs on.")}
           </h1>
           <p className="mt-5 text-lg text-muted-foreground">
-            Cold-chain expectations vary. So do our routes, vehicles and handling
-            protocols — matched to your industry from day one.
+            {getSetting(
+              settings,
+              "industries_hero_subtitle",
+              "Cold-chain expectations vary. So do our routes, vehicles and handling protocols — matched to your industry from day one.",
+            )}
           </p>
         </div>
       </section>
