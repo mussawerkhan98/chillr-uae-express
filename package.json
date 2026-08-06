@@ -12,6 +12,7 @@
     "format": "prettier --write ."
 
 
+    
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
