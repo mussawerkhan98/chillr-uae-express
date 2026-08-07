@@ -1,15 +1,20 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { ArrowLeft, Save, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { adminCreateLocation } from "@/lib/locations.functions";
 import { toast } from "sonner";
+
+// Lazy-loaded: TipTap/ProseMirror is only needed on this admin form,
+// so this keeps it out of the shared bundle every public page loads.
+const RichTextEditor = lazy(() =>
+  import("@/components/admin/RichTextEditor").then((m) => ({ default: m.RichTextEditor })),
+);
 
 export const Route = createFileRoute("/_authenticated/admin/locations/new")({
   component: NewLocation,
@@ -154,10 +159,12 @@ export function LocationForm({
       </div>
       <div className="space-y-2">
         <Label>Full page content (unique detail shown further down this emirate's page — response times, zones, landmarks served, etc.)</Label>
-        <RichTextEditor
-          value={form.body_content}
-          onChange={(html) => setForm({ ...form, body_content: html })}
-        />
+        <Suspense fallback={<div className="min-h-[440px] rounded-lg border border-input bg-card animate-pulse" />}>
+          <RichTextEditor
+            value={form.body_content}
+            onChange={(html) => setForm({ ...form, body_content: html })}
+          />
+        </Suspense>
       </div>
       <div className="space-y-2">
         <Label htmlFor="neighborhoods">Popular areas (comma-separated)</Label>

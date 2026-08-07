@@ -1,17 +1,22 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useState, lazy, Suspense } from "react";
 import { ArrowLeft, Save, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { ImageUploader } from "@/components/admin/ImageUploader";
 import { adminCreatePost } from "@/lib/blog.functions";
 import { toast } from "sonner";
+
+// Lazy-loaded: TipTap/ProseMirror is only needed on this admin form,
+// so this keeps it out of the shared bundle every public page loads.
+const RichTextEditor = lazy(() =>
+  import("@/components/admin/RichTextEditor").then((m) => ({ default: m.RichTextEditor })),
+);
 
 export const Route = createFileRoute("/_authenticated/admin/blog/new")({
   component: NewPost,
@@ -155,10 +160,12 @@ export function PostForm({ form, setForm }: { form: FormState; setForm: (f: Form
       </div>
       <div className="space-y-2">
         <Label>Content</Label>
-        <RichTextEditor
-          value={form.content_html}
-          onChange={(html) => setForm({ ...form, content_html: html })}
-        />
+        <Suspense fallback={<div className="min-h-[440px] rounded-lg border border-input bg-card animate-pulse" />}>
+          <RichTextEditor
+            value={form.content_html}
+            onChange={(html) => setForm({ ...form, content_html: html })}
+          />
+        </Suspense>
       </div>
       <div className="grid gap-6 sm:grid-cols-2 pt-4 border-t">
         <div className="space-y-2">
