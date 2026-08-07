@@ -96,8 +96,8 @@ export function HeroSnowfall() {
     }
 
     function makeFlake(w: number, h: number, seedY?: number): Flake {
-      const size = 10 + Math.random() * 16; // 10–26px "radius"
-      const depth = (size - 10) / 16; // 0 (far) .. 1 (close)
+      const size = 5 + Math.random() * 6; // 5–11px "radius"
+      const depth = (size - 5) / 6; // 0 (far) .. 1 (close)
       return {
         x: Math.random() * w,
         y: seedY ?? Math.random() * h,
