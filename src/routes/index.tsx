@@ -24,6 +24,7 @@ import { locationsQuery } from "@/lib/locations.query";
 import { pageContentQuery, contentForSection } from "@/lib/page-content.query";
 import { getIcon } from "@/lib/icon-map";
 import { FaqSection } from "@/components/FaqSection";
+import { HeroSnowfall } from "@/components/HeroSnowfall";
 import { useQuery } from "@tanstack/react-query";
 import heroImg from "@/assets/hero-chiller-van.jpg";
 import interiorImg from "@/assets/cold-chain-interior.jpg";
@@ -171,6 +172,7 @@ function Hero({
           className="absolute inset-0"
           style={{ backgroundImage: isDark ? "var(--gradient-hero-light)" : "var(--gradient-hero)" }}
         />
+        <HeroSnowfall />
       </div>
       <div className="container-page relative pt-20 pb-28 lg:pt-32 lg:pb-40">
         <div className="max-w-3xl animate-fade-up">
