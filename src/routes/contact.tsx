@@ -1,12 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { Mail, Phone, MapPin, MessageCircle, Send, CheckCircle2 } from "lucide-react";
+import { Mail, Phone, MapPin, Send, CheckCircle2 } from "lucide-react";
 import { z } from "zod";
 import { SITE, canonicalUrl } from "@/lib/site";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { settingsQuery, getSetting } from "@/lib/settings.query";
 import { listFaqsPublic } from "@/lib/faqs.functions";
 import { FaqSection } from "@/components/FaqSection";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 
 const contactFaqsQuery = () =>
   queryOptions({
@@ -147,7 +148,7 @@ function ContactPage() {
               className="flex items-center gap-4 rounded-2xl border border-border bg-card p-4 hover:border-primary hover:bg-accent transition-colors"
             >
               <div className="h-11 w-11 rounded-xl bg-[#25D366] text-white flex items-center justify-center">
-                <MessageCircle className="h-5 w-5" />
+                <WhatsAppIcon className="h-5 w-5" />
               </div>
               <div>
                 <div className="text-xs uppercase tracking-wider text-muted-foreground">

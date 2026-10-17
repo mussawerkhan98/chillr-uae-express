@@ -7,7 +7,6 @@ import {
   Clock,
   ThermometerSnowflake,
   MapPin,
-  MessageCircle,
   Phone,
   ArrowRight,
   CheckCircle2,
@@ -29,6 +28,7 @@ import { useQuery } from "@tanstack/react-query";
 import heroImg from "@/assets/hero-chiller-van.jpg";
 import interiorImg from "@/assets/cold-chain-interior.jpg";
 import fleetImg from "@/assets/fleet-lineup.jpg";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 
 const fleetQuery = () =>
   queryOptions({ queryKey: ["fleet", "list"], queryFn: () => listFleetPublic() });
@@ -200,7 +200,7 @@ function Hero({
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-white/10 backdrop-blur-md border border-white/30 text-white px-6 py-3.5 text-sm font-semibold hover:bg-white/20 transition-colors"
             >
-              <MessageCircle className="h-4 w-4" /> WhatsApp
+              <WhatsAppIcon className="h-4 w-4" /> WhatsApp
             </a>
             <a
               href={phoneHref}
@@ -641,7 +641,7 @@ function CTASection({ settings }: { settings: Record<string, string | null> }) {
               rel="noopener noreferrer"
               className="inline-flex items-center gap-2 rounded-full bg-white text-primary px-6 py-3.5 text-sm font-semibold hover:bg-ice"
             >
-              <MessageCircle className="h-4 w-4" /> WhatsApp Us
+              <WhatsAppIcon className="h-4 w-4" /> WhatsApp Us
             </a>
             <a
               href={phoneHref}

@@ -1,7 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { MapPin, Clock, ArrowRight, MessageCircle, Phone, CheckCircle2 } from "lucide-react";
+import { MapPin, Clock, ArrowRight, Phone, CheckCircle2 } from "lucide-react";
 import { SITE, FLEET, FAQS, canonicalUrl } from "@/lib/site";
 import { getLocationBySlug, listLocationsPublic } from "@/lib/locations.functions";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 
 export const Route = createFileRoute("/locations/$city")({
   loader: async ({ params }) => {
@@ -99,7 +100,7 @@ function CityPage() {
 
             <div className="mt-8 flex flex-wrap gap-3">
               <a href={SITE.whatsappHref} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full gradient-brand text-white px-6 py-3.5 text-sm font-semibold shadow-elegant hover-lift">
-                <MessageCircle className="h-4 w-4" /> Book on WhatsApp
+                <WhatsAppIcon className="h-4 w-4" /> Book on WhatsApp
               </a>
               <a href={SITE.phoneHref} className="inline-flex items-center gap-2 rounded-full bg-white border border-border text-navy px-6 py-3.5 text-sm font-semibold hover:bg-accent">
                 <Phone className="h-4 w-4" /> {SITE.phone}

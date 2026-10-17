@@ -1,9 +1,10 @@
 import { Link } from "@tanstack/react-router";
-import { Mail, Phone, MapPin, MessageCircle, Snowflake, Facebook, Instagram, Linkedin } from "lucide-react";
+import { Mail, Phone, MapPin, Snowflake, Facebook, Instagram, Linkedin } from "lucide-react";
 import { SITE, NAV_LINKS } from "@/lib/site";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { settingsQuery, getSetting } from "@/lib/settings.query";
 import { locationsQuery } from "@/lib/locations.query";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 
 function TikTokIcon({ className }: { className?: string }) {
   return (
@@ -123,7 +124,7 @@ export function SiteFooter() {
             rel="noopener noreferrer"
             className="flex items-center gap-2 text-ice/80 hover:text-secondary"
           >
-            <MessageCircle className="h-4 w-4 text-secondary" /> WhatsApp
+            <WhatsAppIcon className="h-4 w-4 text-secondary" /> WhatsApp
           </a>
           <a
             href={`mailto:${email}`}

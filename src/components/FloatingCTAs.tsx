@@ -1,5 +1,6 @@
-import { MessageCircle, Phone } from "lucide-react";
+import { Phone } from "lucide-react";
 import { SITE } from "@/lib/site";
+import { WhatsAppIcon } from "@/components/WhatsAppIcon";
 
 export function FloatingCTAs() {
   return (
@@ -11,7 +12,7 @@ export function FloatingCTAs() {
         aria-label="Chat on WhatsApp"
         className="group inline-flex items-center justify-center h-14 w-14 rounded-full bg-[#25D366] text-white shadow-elegant hover:scale-110 transition-transform animate-float"
       >
-        <MessageCircle className="h-6 w-6" />
+        <WhatsAppIcon className="h-7 w-7" />
       </a>
       <a
         href={SITE.phoneHref}
