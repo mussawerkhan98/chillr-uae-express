@@ -54,7 +54,7 @@ export const Route = createFileRoute("/blog/$slug")({
     return { meta, links: [{ rel: "canonical", href: canonicalUrl(`/blog/${post.slug}`) }] };
   },
   component: BlogPost,
-  errorComponent: ({ error }) => <div className="container-page py-16 text-center text-muted-foreground">{error.message}</div>,
+  errorComponent: ({ error }) => <div className="container-page py-16 text-center text-muted-foreground">{error instanceof Error ? error.message : String(error)}</div>,
   notFoundComponent: () => (
     <div className="container-page py-24 text-center">
       <h1 className="font-display text-3xl font-bold text-navy">Article not found</h1>

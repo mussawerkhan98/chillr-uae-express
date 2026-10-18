@@ -34,7 +34,7 @@ export const Route = createFileRoute("/blog/")({
       context.queryClient.ensureQueryData(settingsQuery()),
     ]),
   component: BlogIndex,
-  errorComponent: ({ error }) => <div className="container-page py-16 text-center text-muted-foreground">{error.message}</div>,
+  errorComponent: ({ error }) => <div className="container-page py-16 text-center text-muted-foreground">{error instanceof Error ? error.message : String(error)}</div>,
   notFoundComponent: () => <div className="container-page py-16 text-center">No posts.</div>,
 });
 
