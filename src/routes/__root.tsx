@@ -17,6 +17,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { FloatingCTAs } from "@/components/FloatingCTAs";
+import { Analytics } from "@/components/Analytics";
 import { SITE } from "@/lib/site";
 import { supabase } from "@/integrations/supabase/client";
 import { settingsQuery, getSetting } from "@/lib/settings.query";
@@ -211,6 +212,7 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <Toaster position="top-right" richColors />
+      <Analytics />
       {isChromeless ? (
         <Outlet />
       ) : (

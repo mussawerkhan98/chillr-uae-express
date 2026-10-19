@@ -8,6 +8,7 @@ import { settingsQuery, getSetting } from "@/lib/settings.query";
 import { listFaqsPublic } from "@/lib/faqs.functions";
 import { FaqSection } from "@/components/FaqSection";
 import { WhatsAppIcon } from "@/components/WhatsAppIcon";
+import { trackEvent } from "@/lib/analytics";
 
 const contactFaqsQuery = () =>
   queryOptions({
@@ -100,6 +101,12 @@ function ContactPage() {
       .join("\n");
     const url = `https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`;
     window.open(url, "_blank", "noopener");
+    trackEvent("generate_lead", {
+      form_name: "quote_form",
+      method: "whatsapp",
+      vehicle: d.vehicle,
+      temperature: d.temperature,
+    });
     setStatus("success");
     form.reset();
   }
