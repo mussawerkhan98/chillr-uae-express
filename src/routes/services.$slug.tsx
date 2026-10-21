@@ -73,7 +73,7 @@ export const Route = createFileRoute("/services/$slug")({
 function ServiceDetail() {
   const { slug } = Route.useParams();
   const { data: service } = useSuspenseQuery(serviceQuery(slug));
-  const name = service.title.replace(/ in Dubai and Across the UAE$/i, "");
+  const name = (service.h1_override?.trim() || service.title).split(" | ")[0].replace(/ in Dubai and Across the UAE$/i, "");
   return (
     <DetailLayout
       backTo="/services"
