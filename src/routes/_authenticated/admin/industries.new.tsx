@@ -1,27 +1,29 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { useState, lazy, Suspense } from "react";
-import { ArrowLeft, Save, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ImageUploader } from "@/components/admin/ImageUploader";
+import { PageBuilder } from "@/components/admin/PageBuilder";
+import {
+  CharCount,
+  FormSection,
+  GooglePreview,
+  PageEditorShell,
+  contentChecks,
+  type CheckItem,
+} from "@/components/admin/PageEditorShell";
 import { adminCreateIndustry } from "@/lib/industries.functions";
 import { toast } from "sonner";
-
-// Lazy-loaded: TipTap/ProseMirror is only needed on this admin form,
-// so this keeps it out of the shared bundle every public page loads.
-const RichTextEditor = lazy(() =>
-  import("@/components/admin/RichTextEditor").then((m) => ({ default: m.RichTextEditor })),
-);
+import { BRAND } from "@/lib/page-brand";
 
 export const Route = createFileRoute("/_authenticated/admin/industries/new")({
   component: NewIndustry,
 });
 
-function slugify(s: string) {
+export function slugify(s: string) {
   return s
     .toLowerCase()
     .trim()
@@ -30,7 +32,7 @@ function slugify(s: string) {
     .slice(0, 100);
 }
 
-type FormState = {
+export type IndustryFormState = {
   name: string;
   slug: string;
   description: string;
@@ -40,65 +42,67 @@ type FormState = {
   sort_order: number;
 };
 
+export const emptyIndustry: IndustryFormState = {
+  name: "",
+  slug: "",
+  description: "",
+  content_html: "",
+  image_url: null,
+  image_alt: "",
+  sort_order: 0,
+};
+
+export function industryChecklist(f: IndustryFormState): CheckItem[] {
+  const d = f.description.trim().length;
+  return [
+    { label: "Industry name and page URL", ok: !!f.name.trim() && !!(f.slug || slugify(f.name)) },
+    { label: "Short description (120–160)", ok: d >= 120 && d <= 160, hint: "Also used as the Google description" },
+    { label: "Photo added", ok: !!f.image_url },
+    ...contentChecks(f.content_html),
+  ];
+}
+
+export function industryPayload(form: IndustryFormState) {
+  return {
+    name: form.name,
+    slug: form.slug || slugify(form.name),
+    description: form.description,
+    content_html: form.content_html,
+    image_url: form.image_url,
+    image_alt: form.image_alt || form.name,
+    sort_order: form.sort_order,
+  };
+}
+
 function NewIndustry() {
   const navigate = useNavigate();
   const createFn = useServerFn(adminCreateIndustry);
-  const [form, setForm] = useState<FormState>({
-    name: "",
-    slug: "",
-    description: "",
-    content_html: "",
-    image_url: null,
-    image_alt: "",
-    sort_order: 0,
-  });
+  const [form, setForm] = useState<IndustryFormState>(emptyIndustry);
 
   const save = useMutation({
-    mutationFn: () =>
-      createFn({
-        data: {
-          name: form.name,
-          slug: form.slug || slugify(form.name),
-          description: form.description,
-          content_html: form.content_html,
-          image_url: form.image_url,
-          image_alt: form.image_alt || form.name,
-          sort_order: form.sort_order,
-        },
-      }),
+    mutationFn: () => createFn({ data: industryPayload(form) }),
     onSuccess: ({ id }) => {
-      toast.success("Industry created");
+      toast.success("Industry page created");
       navigate({ to: "/admin/industries/$id", params: { id } });
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Save failed"),
   });
 
   return (
-    <div className="p-8 max-w-3xl space-y-6">
-      <Link
-        to="/admin/industries"
-        className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-      >
-        <ArrowLeft className="h-4 w-4" /> Back to industries
-      </Link>
-      <h1 className="font-display text-3xl font-bold text-navy">New industry</h1>
-
+    <PageEditorShell
+      backTo="/admin/industries"
+      backLabel="Back to industries"
+      heading="New industry page"
+      subheading="Fill in the numbered steps. The checklist on the right shows what is still missing."
+      checklist={industryChecklist(form)}
+      saving={save.isPending}
+      canSave={!!form.name.trim()}
+      saveLabel="Create industry page"
+      onSave={() => save.mutate()}
+      onCancel={() => navigate({ to: "/admin/industries" })}
+    >
       <IndustryForm form={form} setForm={setForm} />
-
-      <div className="flex items-center justify-end gap-3 pt-4 border-t">
-        <Button variant="outline" onClick={() => navigate({ to: "/admin/industries" })}>
-          Cancel
-        </Button>
-        <Button onClick={() => save.mutate()} disabled={save.isPending || !form.name.trim()}>
-          {save.isPending ? (
-            <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-          ) : (
-            <Save className="h-4 w-4 mr-1" />
-          )}
-          Save industry
-        </Button>
-      </div>
-    </div>
+    </PageEditorShell>
   );
 }
 
@@ -106,75 +110,88 @@ export function IndustryForm({
   form,
   setForm,
 }: {
-  form: FormState;
-  setForm: (f: FormState) => void;
+  form: IndustryFormState;
+  setForm: (f: IndustryFormState) => void;
 }) {
+  const path = `/industries/${form.slug || slugify(form.name) || "your-page"}`;
   return (
-    <div className="space-y-6">
-      <div className="space-y-2">
-        <Label htmlFor="name">Name</Label>
-        <Input
-          id="name"
-          value={form.name}
-          onChange={(e) =>
-            setForm({ ...form, name: e.target.value, slug: form.slug || slugify(e.target.value) })
-          }
-          placeholder="Restaurants"
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="slug">Slug (page URL)</Label>
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-muted-foreground">/industries/</span>
+    <>
+      <FormSection n={1} title="Basics" description="The industry name and the short text shown on the Industries list.">
+        <div className="space-y-2">
+          <Label htmlFor="name">Industry name</Label>
           <Input
-            id="slug"
-            value={form.slug}
-            onChange={(e) => setForm({ ...form, slug: slugify(e.target.value) })}
+            id="name"
+            value={form.name}
+            onChange={(e) => setForm({ ...form, name: e.target.value, slug: form.slug || slugify(e.target.value) })}
+            placeholder={BRAND.examples.industryName}
           />
         </div>
-      </div>
-      <ImageUploader
-        value={form.image_url}
-        onChange={(url) => setForm({ ...form, image_url: url })}
-        folder="industries"
-        label="Industry image"
-      />
-      <div className="space-y-2">
-        <Label htmlFor="image_alt">Image alt text (for accessibility &amp; SEO)</Label>
-        <Input
-          id="image_alt"
-          value={form.image_alt}
-          onChange={(e) => setForm({ ...form, image_alt: e.target.value })}
-          placeholder="e.g. Chiller van delivering to a restaurant kitchen, Dubai"
-        />
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="description">Short description (shown on the Industries list)</Label>
-        <Textarea
-          id="description"
-          rows={3}
-          value={form.description}
-          onChange={(e) => setForm({ ...form, description: e.target.value })}
-        />
-      </div>
-      <div className="space-y-2">
-        <Label>Full page content (shown on this industry's own page)</Label>
-        <Suspense fallback={<div className="min-h-[440px] rounded-lg border border-input bg-card animate-pulse" />}>
-          <RichTextEditor
-            value={form.content_html}
-            onChange={(html) => setForm({ ...form, content_html: html })}
+        <div className="space-y-2">
+          <Label htmlFor="slug">Page address</Label>
+          <div className="flex items-center overflow-hidden rounded-md border border-input bg-muted/40">
+            <span className="whitespace-nowrap px-3 text-sm text-muted-foreground">{BRAND.domain.replace(/^www\./, "")}/industries/</span>
+            <Input
+              id="slug"
+              className="rounded-none border-0 border-l bg-background"
+              value={form.slug}
+              onChange={(e) => setForm({ ...form, slug: slugify(e.target.value) })}
+              placeholder={BRAND.examples.industrySlug}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">Filled in automatically from the name. Avoid changing it after the page is live.</p>
+        </div>
+        <div className="space-y-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="description">Short description</Label>
+            <CharCount value={form.description} min={120} max={160} />
+          </div>
+          <Textarea
+            id="description"
+            rows={3}
+            value={form.description}
+            onChange={(e) => setForm({ ...form, description: e.target.value })}
+            placeholder="Shown on the Industries list, in the page header and in Google results."
           />
-        </Suspense>
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="sort_order">Sort order</Label>
-        <Input
-          id="sort_order"
-          type="number"
-          value={form.sort_order}
-          onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) || 0 })}
+        </div>
+        <div className="space-y-2 sm:max-w-xs">
+          <Label htmlFor="sort_order">Position in the list</Label>
+          <Input
+            id="sort_order"
+            type="number"
+            value={form.sort_order}
+            onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) || 0 })}
+          />
+          <p className="text-xs text-muted-foreground">Lower numbers show first.</p>
+        </div>
+        <GooglePreview
+          title={BRAND.industrySeoTitle(form.name || "Industry")}
+          path={path}
+          description={form.description}
         />
-      </div>
-    </div>
+      </FormSection>
+
+      <FormSection n={2} title="Photo" description="Shown in the page header and on the Industries list.">
+        <ImageUploader value={form.image_url} onChange={(url) => setForm({ ...form, image_url: url })} folder="industries" label="Industry photo" />
+        <div className="space-y-2">
+          <Label htmlFor="image_alt">Describe the photo (for Google and screen readers)</Label>
+          <Input
+            id="image_alt"
+            value={form.image_alt}
+            onChange={(e) => setForm({ ...form, image_alt: e.target.value })}
+            placeholder={BRAND.examples.industryImageAlt}
+          />
+        </div>
+      </FormSection>
+
+      <FormSection n={3} title="Page sections" description="Build the page from sections. Each one gets its own design on the website.">
+        <PageBuilder
+          value={form.content_html}
+          onChange={(html) => setForm({ ...form, content_html: html })}
+          kind="industry"
+          name={form.name}
+          pageTitle={form.name}
+        />
+      </FormSection>
+    </>
   );
 }

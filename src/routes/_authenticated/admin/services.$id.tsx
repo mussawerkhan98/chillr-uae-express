@@ -1,10 +1,10 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Save, Loader2, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { ServiceForm } from "./services.new";
+import { Loader2 } from "lucide-react";
+import { PageEditorShell } from "@/components/admin/PageEditorShell";
+import { ServiceForm, emptyService, serviceChecklist, servicePayload, type ServiceFormState } from "./services.new";
 import { adminGetService, adminUpdateService } from "@/lib/services.functions";
 import { toast } from "sonner";
 
@@ -24,19 +24,8 @@ function EditService() {
     queryFn: () => getFn({ data: { id } }),
   });
 
-  const [form, setForm] = useState({
-    title: "",
-    slug: "",
-    description: "",
-    content_html: "",
-    image_url: null as string | null,
-    image_alt: "",
-    icon: "",
-    meta_title: "",
-    meta_description: "",
-    h1_override: "",
-    sort_order: 0,
-  });
+  const [form, setForm] = useState<ServiceFormState>(emptyService);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     if (data) {
@@ -53,80 +42,43 @@ function EditService() {
         h1_override: (data as any).h1_override ?? "",
         sort_order: data.sort_order,
       });
+      setReady(true);
     }
   }, [data]);
 
   const save = useMutation({
-    mutationFn: () =>
-      updateFn({
-        data: {
-          id,
-          title: form.title,
-          slug: form.slug,
-          description: form.description,
-          content_html: form.content_html,
-          image_url: form.image_url,
-          image_alt: form.image_alt || form.title,
-          icon: form.icon || null,
-          meta_title: form.meta_title || null,
-          meta_description: form.meta_description || null,
-          h1_override: form.h1_override || null,
-          sort_order: form.sort_order,
-        },
-      }),
+    mutationFn: () => updateFn({ data: { id, ...servicePayload(form) } }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "services"] });
       qc.invalidateQueries({ queryKey: ["admin", "services", id] });
-      toast.success("Service saved");
+      toast.success("Changes saved — the live page is updated");
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Save failed"),
   });
 
-  if (isLoading) {
+  if (isLoading || !ready) {
     return (
-      <div className="p-12 flex items-center justify-center">
+      <div className="flex items-center justify-center p-12">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   return (
-    <div className="p-8 max-w-3xl space-y-6">
-      <div className="flex items-center justify-between">
-        <Link
-          to="/admin/services"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> Back to services
-        </Link>
-        {form.slug && (
-          <a
-            href={`/services/${form.slug}`}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
-          >
-            View live <ExternalLink className="h-3 w-3" />
-          </a>
-        )}
-      </div>
-      <h1 className="font-display text-3xl font-bold text-navy">Edit service</h1>
-
+    <PageEditorShell
+      backTo="/admin/services"
+      backLabel="Back to services"
+      heading="Edit service page"
+      subheading={form.title}
+      viewHref={form.slug ? `/services/${form.slug}` : undefined}
+      checklist={serviceChecklist(form)}
+      saving={save.isPending}
+      canSave={!!form.title.trim()}
+      saveLabel="Save changes"
+      onSave={() => save.mutate()}
+      onCancel={() => navigate({ to: "/admin/services" })}
+    >
       <ServiceForm form={form} setForm={setForm} />
-
-      <div className="flex items-center justify-end gap-3 pt-4 border-t">
-        <Button variant="outline" onClick={() => navigate({ to: "/admin/services" })}>
-          Cancel
-        </Button>
-        <Button onClick={() => save.mutate()} disabled={save.isPending || !form.title.trim()}>
-          {save.isPending ? (
-            <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-          ) : (
-            <Save className="h-4 w-4 mr-1" />
-          )}
-          Save changes
-        </Button>
-      </div>
-    </div>
+    </PageEditorShell>
   );
 }

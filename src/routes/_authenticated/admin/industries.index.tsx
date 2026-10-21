@@ -5,6 +5,7 @@ import { Plus, Pencil, Trash2, Loader2, Building2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { adminListIndustries, adminDeleteIndustry } from "@/lib/industries.functions";
 import { toast } from "sonner";
+import { PageList } from "@/components/admin/PageList";
 
 export const Route = createFileRoute("/_authenticated/admin/industries/")({
   component: IndustriesList,
@@ -40,7 +41,7 @@ function IndustriesList() {
           </p>
         </div>
         <Button onClick={() => navigate({ to: "/admin/industries/new" })}>
-          <Plus className="h-4 w-4 mr-1" /> New industry
+          <Plus className="h-4 w-4 mr-1" /> Add industry page
         </Button>
       </header>
 
@@ -54,49 +55,14 @@ function IndustriesList() {
           <p className="text-muted-foreground">No industries yet. Add your first one.</p>
         </div>
       ) : (
-        <div className="rounded-2xl border border-border bg-card overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
-              <tr>
-                <th className="text-left p-4">Name</th>
-                <th className="text-left p-4">Description</th>
-                <th className="w-32"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {industries.map((i) => (
-                <tr key={i.id} className="border-t border-border">
-                  <td className="p-4">
-                    <div className="font-medium text-navy">{i.name}</div>
-                    <div className="text-xs text-muted-foreground">/{i.slug}</div>
-                  </td>
-                  <td className="p-4 text-sm text-muted-foreground line-clamp-1 max-w-md">
-                    {i.description}
-                  </td>
-                  <td className="p-4 flex gap-1 justify-end">
-                    <Link
-                      to="/admin/industries/$id"
-                      params={{ id: i.id }}
-                      className="h-8 w-8 rounded-md hover:bg-accent flex items-center justify-center"
-                      title="Edit"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Link>
-                    <button
-                      onClick={() => {
-                        if (confirm(`Delete "${i.name}"? This cannot be undone.`)) del.mutate(i.id);
-                      }}
-                      className="h-8 w-8 rounded-md hover:bg-destructive/10 text-destructive flex items-center justify-center"
-                      title="Delete"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <PageList
+          rows={industries.map((x: any) => ({ id: x.id, name: x.name, slug: x.slug, description: x.description, image_url: x.image_url, content_html: x.content_html }))}
+          basePath="/industries"
+          editTo="/admin/industries/$id"
+          onDelete={(r) => {
+            if (confirm(`Delete "${r.name}"? This removes the page from the website and cannot be undone.`)) del.mutate(r.id);
+          }}
+        />
       )}
     </div>
   );

@@ -1,10 +1,10 @@
-import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
-import { ArrowLeft, Save, Loader2, ExternalLink } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { IndustryForm } from "./industries.new";
+import { Loader2 } from "lucide-react";
+import { PageEditorShell } from "@/components/admin/PageEditorShell";
+import { IndustryForm, emptyIndustry, industryChecklist, industryPayload, type IndustryFormState } from "./industries.new";
 import { adminGetIndustry, adminUpdateIndustry } from "@/lib/industries.functions";
 import { toast } from "sonner";
 
@@ -24,15 +24,8 @@ function EditIndustry() {
     queryFn: () => getFn({ data: { id } }),
   });
 
-  const [form, setForm] = useState({
-    name: "",
-    slug: "",
-    description: "",
-    content_html: "",
-    image_url: null as string | null,
-    image_alt: "",
-    sort_order: 0,
-  });
+  const [form, setForm] = useState<IndustryFormState>(emptyIndustry);
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     if (data) {
@@ -45,76 +38,43 @@ function EditIndustry() {
         image_alt: (data as any).image_alt ?? "",
         sort_order: data.sort_order,
       });
+      setReady(true);
     }
   }, [data]);
 
   const save = useMutation({
-    mutationFn: () =>
-      updateFn({
-        data: {
-          id,
-          name: form.name,
-          slug: form.slug,
-          description: form.description,
-          content_html: form.content_html,
-          image_url: form.image_url,
-          image_alt: form.image_alt || form.name,
-          sort_order: form.sort_order,
-        },
-      }),
+    mutationFn: () => updateFn({ data: { id, ...industryPayload(form) } }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["admin", "industries"] });
       qc.invalidateQueries({ queryKey: ["admin", "industries", id] });
-      toast.success("Industry saved");
+      toast.success("Changes saved — the live page is updated");
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Save failed"),
   });
 
-  if (isLoading) {
+  if (isLoading || !ready) {
     return (
-      <div className="p-12 flex items-center justify-center">
+      <div className="flex items-center justify-center p-12">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   return (
-    <div className="p-8 max-w-3xl space-y-6">
-      <div className="flex items-center justify-between">
-        <Link
-          to="/admin/industries"
-          className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
-        >
-          <ArrowLeft className="h-4 w-4" /> Back to industries
-        </Link>
-        {form.slug && (
-          <a
-            href={`/industries/${form.slug}`}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
-          >
-            View live <ExternalLink className="h-3 w-3" />
-          </a>
-        )}
-      </div>
-      <h1 className="font-display text-3xl font-bold text-navy">Edit industry</h1>
-
+    <PageEditorShell
+      backTo="/admin/industries"
+      backLabel="Back to industries"
+      heading="Edit industry page"
+      subheading={form.name}
+      viewHref={form.slug ? `/industries/${form.slug}` : undefined}
+      checklist={industryChecklist(form)}
+      saving={save.isPending}
+      canSave={!!form.name.trim()}
+      saveLabel="Save changes"
+      onSave={() => save.mutate()}
+      onCancel={() => navigate({ to: "/admin/industries" })}
+    >
       <IndustryForm form={form} setForm={setForm} />
-
-      <div className="flex items-center justify-end gap-3 pt-4 border-t">
-        <Button variant="outline" onClick={() => navigate({ to: "/admin/industries" })}>
-          Cancel
-        </Button>
-        <Button onClick={() => save.mutate()} disabled={save.isPending || !form.name.trim()}>
-          {save.isPending ? (
-            <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-          ) : (
-            <Save className="h-4 w-4 mr-1" />
-          )}
-          Save changes
-        </Button>
-      </div>
-    </div>
+    </PageEditorShell>
   );
 }

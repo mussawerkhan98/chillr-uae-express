@@ -5,6 +5,7 @@ import { Plus, Pencil, Trash2, Loader2, Wrench } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { adminListServices, adminDeleteService } from "@/lib/services.functions";
 import { toast } from "sonner";
+import { PageList } from "@/components/admin/PageList";
 
 export const Route = createFileRoute("/_authenticated/admin/services/")({
   component: ServicesList,
@@ -40,7 +41,7 @@ function ServicesList() {
           </p>
         </div>
         <Button onClick={() => navigate({ to: "/admin/services/new" })}>
-          <Plus className="h-4 w-4 mr-1" /> New service
+          <Plus className="h-4 w-4 mr-1" /> Add service page
         </Button>
       </header>
 
@@ -54,47 +55,14 @@ function ServicesList() {
           <p className="text-muted-foreground">No services yet. Add your first one.</p>
         </div>
       ) : (
-        <div className="rounded-2xl border border-border bg-card overflow-hidden">
-          <table className="w-full">
-            <thead className="bg-muted/40 text-xs uppercase tracking-wider text-muted-foreground">
-              <tr>
-                <th className="text-left p-4">Title</th>
-                <th className="text-left p-4">Description</th>
-                <th className="w-32"></th>
-              </tr>
-            </thead>
-            <tbody>
-              {services.map((s) => (
-                <tr key={s.id} className="border-t border-border">
-                  <td className="p-4 font-medium text-navy">{s.title}</td>
-                  <td className="p-4 text-sm text-muted-foreground line-clamp-1 max-w-md">
-                    {s.description}
-                  </td>
-                  <td className="p-4 flex gap-1 justify-end">
-                    <Link
-                      to="/admin/services/$id"
-                      params={{ id: s.id }}
-                      className="h-8 w-8 rounded-md hover:bg-accent flex items-center justify-center"
-                      title="Edit"
-                    >
-                      <Pencil className="h-4 w-4" />
-                    </Link>
-                    <button
-                      onClick={() => {
-                        if (confirm(`Delete "${s.title}"? This cannot be undone.`))
-                          del.mutate(s.id);
-                      }}
-                      className="h-8 w-8 rounded-md hover:bg-destructive/10 text-destructive flex items-center justify-center"
-                      title="Delete"
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <PageList
+          rows={services.map((x: any) => ({ id: x.id, name: x.title, slug: x.slug, description: x.description, image_url: x.image_url, content_html: x.content_html }))}
+          basePath="/services"
+          editTo="/admin/services/$id"
+          onDelete={(r) => {
+            if (confirm(`Delete "${r.name}"? This removes the page from the website and cannot be undone.`)) del.mutate(r.id);
+          }}
+        />
       )}
     </div>
   );
