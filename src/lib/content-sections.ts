@@ -71,19 +71,45 @@ export function parseContent(rawHtml: string | null | undefined): ParsedContent 
     return "";
   });
 
-  // Split on H3s, keeping each H3's attributes (the page builder marks FAQ/Areas
-  // sections with data-block so they work whatever the heading says).
-  // Most pages use H3 for sections. Pages written with H2 sections (and H3 sub-headings)
-  // are supported too: then H2 = section and H3 = card/question inside it.
+  // Sections are split on the page's main heading level: H2 if the page uses H2,
+  // otherwise H3 (the page builder), otherwise H4 (pages written with only H4 headings).
+  // The page builder marks FAQ/Areas H3s with data-block so they work whatever the heading says.
   html = html.replace(/<h1([^>]*)>([\s\S]*?)<\/h1>/gi, "<h2$1>$2</h2>");
-  const level = /<h2[\s>]/i.test(html) ? 2 : 3;
-  const parts = html.split(level === 2 ? /<h2([^>]*)>/i : /<h3([^>]*)>/i);
-  const chunks = [parts[0] ?? ""];
-  const hints: string[] = [""];
-  for (let i = 1; i < parts.length; i += 2) {
-    hints.push(parts[i].match(/data-block="(\w+)"/i)?.[1] ?? "");
-    chunks.push(parts[i + 1] ?? "");
+  const has = (t: string) => new RegExp(`<${t}[\\s>]`, "i").test(html);
+  const h4Count = (html.match(/<h4[\s>]/gi) || []).length;
+  const level = has("h2") ? 2 : has("h3") ? 3 : h4Count >= 2 ? 4 : 3;
+  if (level === 4 && heading === null) {
+    html = html.replace(/^\s*<h4[^>]*>([\s\S]*?)<\/h4>/i, (_all, h) => {
+      heading = strip(h);
+      return "";
+    });
   }
+  const splitAt = (src: string, tag: string) => {
+    const parts = src.split(new RegExp(`<${tag}([^>]*)>`, "i"));
+    const out = [{ title: "", hint: "", body: parts[0] ?? "", subCards: false }];
+    for (let i = 1; i < parts.length; i += 2) {
+      const [t, ...rest] = (parts[i + 1] ?? "").split(new RegExp(`</${tag}>`, "i"));
+      out.push({ title: strip(t), hint: parts[i].match(/data-block="(\w+)"/i)?.[1] ?? "", body: rest.join("").trim(), subCards: false });
+    }
+    return out;
+  };
+  const top = splitAt(html, `h${level}`);
+  // With H2 sections, H3s inside either become cards (H3 + text only) or their own sections.
+  const raw: { title: string; hint: string; body: string; subCards: boolean }[] = [];
+  for (const c of top.slice(1)) {
+    if (level !== 2 || !/<h3[\s>]/i.test(c.body)) {
+      raw.push(c);
+      continue;
+    }
+    const subs = splitAt(c.body, "h3");
+    if (subs.length >= 3 && !/<(ul|ol|table)[\s>]/i.test(c.body)) {
+      raw.push({ ...c, subCards: true });
+      continue;
+    }
+    if (strip(subs[0].body)) raw.push({ ...c, body: subs[0].body });
+    for (const sub of subs.slice(1)) raw.push(sub);
+  }
+  const chunks = [top[0].body];
   let intro = chunks[0] ?? "";
   let tagline: string | null = null;
   const tag = intro.match(/^\s*<p[^>]*>\s*<strong>([\s\S]*?)<\/strong>\s*<\/p>/i);
@@ -92,12 +118,8 @@ export function parseContent(rawHtml: string | null | undefined): ParsedContent 
     intro = intro.slice(tag[0].length);
   }
 
-  const sections: ContentSection[] = chunks.slice(1).map((chunk, ci) => {
-    const hint = hints[ci + 1];
-    const [rawTitle, ...rest] = chunk.split(level === 2 ? /<\/h2>/i : /<\/h3>/i);
-    const title = strip(rawTitle);
-    let body = rest.join("").trim();
-    if (level === 2) body = body.replace(/<(\/?)h3([^>]*)>/gi, "<$1h4$2>");
+  const sections: ContentSection[] = raw.filter((r) => r.subCards || strip(r.body) || r.title).map((r) => {
+    const { hint, title, body } = r;
 
     if (hint === "faq" || /faq|frequently asked|questions/i.test(title)) {
       const items = parseFaq(body);
@@ -110,15 +132,14 @@ export function parseContent(rawHtml: string | null | undefined): ParsedContent 
       while ((m = re.exec(body))) if (m[1].startsWith("/locations")) links.push({ href: m[1], label: strip(m[2]) });
       if (links.length >= (hint === "areas" ? 1 : 2)) return { kind: "areas", title, text: strip(body), links };
     }
-    // H2 section made of several H4 (originally H3) sub-headings -> cards.
-    const subs = body.split(/<h4[^>]*>/i);
-    if (level === 2 && subs.length >= 3 && !/<(ul|ol|table)[\s>]/i.test(body)) {
-      const items = subs.slice(1).map((part) => {
-        const [h, ...txt] = part.split(/<\/h4>/i);
-        const text = txt.join("").replace(/<\/p>\s*<p[^>]*>/gi, " ").replace(/<\/?p[^>]*>/gi, "").trim();
-        return `<strong>${h.trim()}</strong> ${text}`.trim();
+    // H2 section made of several H3 sub-headings with short text -> cards.
+    if (r.subCards) {
+      const subs = splitAt(body, "h3");
+      const items = subs.slice(1).map((sub) => {
+        const text = sub.body.replace(/<\/p>\s*<p[^>]*>/gi, " ").replace(/<\/?p[^>]*>/gi, "").trim();
+        return `<strong>${sub.title.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</strong> ${text}`.trim();
       });
-      return { kind: "cards", title, lead: subs[0].trim(), items, after: "" };
+      return { kind: "cards", title, lead: subs[0].body.trim(), items, after: "" };
     }
     const list = body.match(/<(ul|ol)[^>]*>[\s\S]*?<\/\1>/i);
     if (list) {
