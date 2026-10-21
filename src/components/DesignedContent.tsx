@@ -1,25 +1,47 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowRight, CheckCircle2, ChevronDown, MapPin } from "lucide-react";
+import { ArrowRight, Check, MapPin, Plus, Snowflake } from "lucide-react";
 import { parseContent, type ContentSection } from "@/lib/content-sections";
 import { BRAND } from "@/lib/page-brand";
 import { WaGlyph } from "@/components/WaGlyph";
 
-/** Shared prose styling for free-text blocks inside the designed layout. */
+/**
+ * IQRAR "light & icy" rendering of service/industry page content.
+ * Same content format as the admin page builder; only the look differs.
+ */
 export const PROSE =
-  "text-[16px] leading-7 text-foreground/85 [&_p]:mb-4 [&_p:last-child]:mb-0 [&_p:empty]:hidden " +
-  "[&_a]:text-primary [&_a]:font-medium [&_a]:underline [&_a]:underline-offset-4 [&_a]:decoration-primary/40 hover:[&_a]:decoration-primary " +
-  "[&_strong]:text-navy [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ul]:space-y-1.5 " +
+  "text-[16px] leading-7 text-foreground/80 [&_p]:mb-4 [&_p:last-child]:mb-0 [&_p:empty]:hidden " +
+  "[&_a]:text-primary [&_a]:font-medium [&_a]:underline [&_a]:underline-offset-4 [&_a]:decoration-secondary/50 hover:[&_a]:decoration-primary " +
+  "[&_strong]:text-navy [&_strong]:font-semibold [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:mb-4 [&_ul]:space-y-1.5 [&_ul]:marker:text-secondary " +
   "[&_ol]:list-decimal [&_ol]:pl-6 [&_ol]:mb-4 [&_ol]:space-y-1.5 [&_h4]:font-semibold [&_h4]:text-navy [&_h4]:mt-5 [&_h4]:mb-2 " +
-  "[&_img]:rounded-2xl [&_img]:my-6 [&_img]:w-full [&_blockquote]:border-l-4 [&_blockquote]:border-primary/40 [&_blockquote]:pl-4 [&_blockquote]:italic " +
-  "[&_table]:w-full [&_table]:my-4 [&_table]:text-sm [&_th]:text-left [&_th]:font-semibold [&_th]:text-navy [&_th]:border-b [&_th]:border-border [&_th]:p-2 [&_td]:border-b [&_td]:border-border [&_td]:p-2";
+  "[&_img]:rounded-2xl [&_img]:my-6 [&_img]:w-full [&_blockquote]:border-l-4 [&_blockquote]:border-secondary [&_blockquote]:pl-4 [&_blockquote]:italic " +
+  "[&_table]:w-full [&_table]:my-4 [&_table]:text-sm [&_th]:bg-accent [&_th]:text-left [&_th]:font-semibold [&_th]:text-navy [&_th]:p-2.5 [&_td]:border-b [&_td]:border-sky-100 [&_td]:p-2.5";
 
-function SectionTitle({ children, index }: { children: string; index: number }) {
+export const FROST = "bg-white/80 backdrop-blur ring-1 ring-sky-100 shadow-[0_14px_40px_-24px_rgba(0,87,217,0.45)]";
+
+const KICKER: Record<ContentSection["kind"], string> = {
+  cards: "Key points",
+  steps: "Step by step",
+  faq: "Good to know",
+  areas: "Coverage",
+  prose: "Details",
+};
+
+const slug = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
+export const sectionId = (title: string, i: number) => `sec-${i + 1}-${slug(title) || "section"}`;
+
+/** Section list for the "On this page" menu. */
+export function contentToc(html: string | null | undefined) {
+  return parseContent(html).sections.map((s, i) => ({ id: sectionId(s.title, i), title: s.title }));
+}
+
+function Heading({ title, kind }: { title: string; kind: ContentSection["kind"] }) {
   return (
-    <div className="flex items-center gap-3">
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl gradient-brand text-sm font-bold text-white shadow-elegant">
-        {String(index).padStart(2, "0")}
-      </span>
-      <h2 className="font-display text-2xl sm:text-[28px] font-bold text-navy leading-tight">{children}</h2>
+    <div className="relative">
+      <div className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-primary">
+        <Snowflake className="h-3.5 w-3.5 text-secondary" /> {KICKER[kind]}
+      </div>
+      {title && <h2 className="mt-2 font-display text-2xl font-bold leading-tight text-navy sm:text-[30px]">{title}</h2>}
+      <div className="mt-3 h-1 w-14 rounded-full gradient-brand" />
     </div>
   );
 }
@@ -29,14 +51,13 @@ function Html({ html, className = "" }: { html: string; className?: string }) {
   return <div className={`${PROSE} ${className}`} dangerouslySetInnerHTML={{ __html: html }} />;
 }
 
-/** A card item: if it is just a link, render the whole card as a link with an arrow. */
 function CardItem({ html }: { html: string }) {
   const onlyLink = html.trim().match(/^<a[^>]*href="([^"]+)"[^>]*>([\s\S]*?)<\/a>$/i);
   if (onlyLink && onlyLink[1].startsWith("/")) {
     return (
       <a
         href={onlyLink[1]}
-        className="group flex h-full items-center justify-between gap-3 rounded-2xl border border-border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-elegant"
+        className={`group flex h-full items-center justify-between gap-3 rounded-2xl p-4 pl-5 transition-all hover:-translate-y-0.5 hover:ring-secondary ${FROST}`}
       >
         <span className="font-semibold text-navy group-hover:text-primary" dangerouslySetInnerHTML={{ __html: onlyLink[2] }} />
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-accent text-primary transition-colors group-hover:bg-primary group-hover:text-white">
@@ -45,206 +66,187 @@ function CardItem({ html }: { html: string }) {
       </a>
     );
   }
-  // "<strong>Title</strong> text" -> title line + text below it.
   const titled = html.trim().match(/^<strong>([\s\S]*?)<\/strong>\s*([\s\S]*)$/i);
-  if (titled && titled[2].replace(/<[^>]+>/g, "").trim()) {
-    const title = titled[1].trim().replace(/:\s*$/, "");
-    const text = titled[2].replace(/^[:\-–—]\s*/, "");
-    return (
-      <div className="flex h-full gap-3 rounded-2xl border border-border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant">
-        <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-        <div>
-          <div className="font-semibold leading-6 text-navy" dangerouslySetInnerHTML={{ __html: title }} />
-          <div className={`${PROSE} mt-1 !text-[14.5px] !leading-6 !text-muted-foreground`} dangerouslySetInnerHTML={{ __html: text }} />
-        </div>
-      </div>
-    );
-  }
+  const hasText = !!titled && !!titled[2].replace(/<[^>]+>/g, "").trim();
   return (
-    <div className="flex h-full gap-3 rounded-2xl border border-border bg-card p-5 shadow-card transition-all hover:-translate-y-0.5 hover:shadow-elegant">
-      <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
-      <div className={`${PROSE} !text-[15px] !leading-6 text-navy/90`} dangerouslySetInnerHTML={{ __html: html }} />
+    <div className={`relative h-full overflow-hidden rounded-2xl p-5 transition-all hover:-translate-y-0.5 ${FROST}`}>
+      <div className="absolute inset-x-0 top-0 h-1 gradient-brand opacity-60" aria-hidden />
+      <span className="flex h-9 w-9 items-center justify-center rounded-full bg-accent text-primary ring-1 ring-sky-100">
+        <Snowflake className="h-4 w-4" />
+      </span>
+      {hasText && titled ? (
+        <>
+          <div className="mt-3 font-display font-semibold leading-6 text-navy" dangerouslySetInnerHTML={{ __html: titled[1].trim().replace(/:\s*$/, "") }} />
+          <div
+            className={`${PROSE} mt-1 !text-[14.5px] !leading-6 !text-muted-foreground`}
+            dangerouslySetInnerHTML={{ __html: titled[2].replace(/^[:\-–—]\s*/, "") }}
+          />
+        </>
+      ) : (
+        <div className={`${PROSE} mt-3 !text-[15px] !leading-6 !text-navy/90`} dangerouslySetInnerHTML={{ __html: html }} />
+      )}
     </div>
   );
 }
 
-function SectionBlock({ section, index }: { section: ContentSection; index: number }) {
+function SectionBlock({ section }: { section: ContentSection }) {
   switch (section.kind) {
     case "cards":
       return (
-        <div>
-          <SectionTitle index={index}>{section.title}</SectionTitle>
-          {section.lead && <Html html={section.lead} className="mt-4" />}
+        <>
+          <Heading title={section.title} kind="cards" />
+          {section.lead && <Html html={section.lead} className="mt-5" />}
           <div className={`mt-6 grid gap-4 sm:grid-cols-2 ${section.items.length > 4 ? "xl:grid-cols-3" : ""}`}>
             {section.items.map((it, i) => (
               <CardItem key={i} html={it} />
             ))}
           </div>
           {section.after && <Html html={section.after} className="mt-6" />}
-        </div>
+        </>
       );
     case "steps":
       return (
-        <div>
-          <SectionTitle index={index}>{section.title}</SectionTitle>
-          {section.lead && <Html html={section.lead} className="mt-4" />}
-          <ol className="mt-6 grid gap-4 sm:grid-cols-2">
+        <>
+          <Heading title={section.title} kind="steps" />
+          {section.lead && <Html html={section.lead} className="mt-5" />}
+          <ol className="relative mt-7 space-y-5 before:absolute before:bottom-8 before:left-[19px] before:top-8 before:w-0.5 before:bg-gradient-to-b before:from-primary before:to-secondary/30">
             {section.items.map((it, i) => (
-              <li key={i} className="relative rounded-2xl border border-border bg-card p-5 pl-16 shadow-card">
-                <span className="absolute left-5 top-5 flex h-8 w-8 items-center justify-center rounded-full bg-navy text-sm font-bold text-white">
+              <li key={i} className="relative flex gap-5">
+                <span className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full gradient-brand font-display text-sm font-bold text-white shadow-elegant ring-4 ring-white">
                   {i + 1}
                 </span>
-                <div className={`${PROSE} !text-[15px] !leading-6`} dangerouslySetInnerHTML={{ __html: it }} />
+                <div className={`flex-1 rounded-2xl p-4 ${FROST}`}>
+                  <div className={`${PROSE} !text-[15px] !leading-6`} dangerouslySetInnerHTML={{ __html: it }} />
+                </div>
               </li>
             ))}
           </ol>
           {section.after && <Html html={section.after} className="mt-6" />}
-        </div>
+        </>
       );
     case "faq":
       return (
-        <div>
-          <SectionTitle index={index}>{section.title}</SectionTitle>
-          <div className="mt-6 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card shadow-card">
+        <>
+          <Heading title={section.title} kind="faq" />
+          <div className="mt-6 space-y-3">
             {section.items.map((f, i) => (
-              <details key={i} className="group" open={i === 0}>
-                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 font-semibold text-navy hover:bg-accent/50 [&::-webkit-details-marker]:hidden">
+              <details key={i} className={`group rounded-2xl ${FROST}`} open={i === 0}>
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 p-5 font-semibold text-navy [&::-webkit-details-marker]:hidden">
                   {f.q}
-                  <ChevronDown className="h-5 w-5 shrink-0 text-primary transition-transform group-open:rotate-180" />
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-accent text-primary transition-transform group-open:rotate-45">
+                    <Plus className="h-4 w-4" />
+                  </span>
                 </summary>
                 <Html html={f.a} className="px-5 pb-5 !text-[15px]" />
               </details>
             ))}
           </div>
-        </div>
+        </>
       );
     case "areas":
       return (
-        <div className="rounded-3xl bg-navy p-6 sm:p-8 text-white">
-          <div className="flex items-center gap-3">
-            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-white/10">
-              <MapPin className="h-5 w-5 text-secondary" />
-            </span>
-            <h2 className="font-display text-2xl font-bold">{section.title}</h2>
-          </div>
-          <div className="mt-5 flex flex-wrap gap-2.5">
+        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-accent via-white to-accent p-6 ring-1 ring-sky-100 sm:p-8">
+          <Snowflake className="absolute -right-6 -top-6 h-40 w-40 text-secondary/10" aria-hidden />
+          <Heading title={section.title} kind="areas" />
+          <div className="relative mt-6 flex flex-wrap gap-2.5">
             {section.links.map((l) => (
               <a
                 key={l.href}
                 href={l.href}
-                className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-4 py-2 text-sm font-semibold ring-1 ring-white/15 transition-colors hover:bg-primary hover:ring-primary"
+                className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-semibold text-navy ring-1 ring-sky-200 transition-colors hover:bg-primary hover:text-white hover:ring-primary"
               >
-                <MapPin className="h-3.5 w-3.5" /> {l.label}
+                <MapPin className="h-3.5 w-3.5 text-secondary" /> {l.label}
               </a>
             ))}
           </div>
-          <p className="mt-5 text-sm text-white/70">{BRAND.areasNote}</p>
+          <p className="relative mt-5 text-sm text-muted-foreground">{BRAND.areasNote}</p>
         </div>
       );
     default:
       return (
-        <div>
-          {section.title && <SectionTitle index={index}>{section.title}</SectionTitle>}
-          <div className="mt-5 rounded-2xl border border-border bg-card p-6 shadow-card">
+        <>
+          {section.title && <Heading title={section.title} kind="prose" />}
+          <div className={`mt-5 rounded-2xl p-6 ${FROST}`}>
             <Html html={section.html} />
           </div>
-        </div>
+        </>
       );
   }
 }
 
-/** Renders admin rich-text content as designed sections (cards, steps, FAQ accordion, areas). */
+/** Renders admin content as light, frosted sections. Section ids match contentToc(). */
 export function DesignedContent({ html, pageTitle }: { html: string | null | undefined; pageTitle?: string }) {
   const { heading, tagline, intro, sections } = parseContent(html);
   const showHeading = heading && heading.toLowerCase() !== (pageTitle ?? "").trim().toLowerCase();
-  let n = 0;
   return (
-    <div className="space-y-14">
+    <div className="space-y-16">
       {(tagline || intro || showHeading) && (
-        <div className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-white to-accent p-6 sm:p-8 shadow-card">
-          <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-primary/5" aria-hidden />
+        <div>
           {tagline && (
-            <div className="relative inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold uppercase tracking-widest text-primary">
-              {tagline}
+            <div className="inline-flex items-center gap-2 rounded-full bg-accent px-3.5 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] text-primary ring-1 ring-sky-200">
+              <Snowflake className="h-3.5 w-3.5" /> {tagline}
             </div>
           )}
-          {showHeading && (
-            <h2 className="relative mt-4 font-display text-2xl sm:text-[28px] font-bold leading-tight text-navy">{heading}</h2>
+          {showHeading && <h2 className="mt-4 font-display text-2xl font-bold leading-tight text-navy sm:text-[30px]">{heading}</h2>}
+          {intro && (
+            <div className="mt-5 border-l-4 border-secondary pl-5 sm:pl-6">
+              <Html html={intro} className="!text-[17.5px] !leading-8 !text-navy/80" />
+            </div>
           )}
-          <Html html={intro} className={`relative ${tagline || showHeading ? "mt-4" : ""} !text-[17px] !leading-8`} />
         </div>
       )}
       {sections.map((s, i) => (
-        <SectionBlock key={i} section={s} index={s.kind === "areas" ? 0 : ++n} />
+        <section key={i} id={sectionId(s.title, i)} className="scroll-mt-28">
+          <SectionBlock section={s} />
+        </section>
       ))}
     </div>
   );
 }
 
-/** Sticky sidebar: quick contact + related links. */
+/** Compact frosted contact card. */
 export function QuoteSidebar({
   phone,
   whatsappHref,
   title,
-  links,
-  linksTitle,
 }: {
   phone: string;
   whatsappHref: string;
   title: string;
-  links: { href: string; label: string; active?: boolean }[];
-  linksTitle: string;
+  links?: { href: string; label: string; active?: boolean }[];
+  linksTitle?: string;
 }) {
   const phoneHref = `tel:${phone.replace(/[^\d+]/g, "")}`;
   return (
-    <aside className="space-y-6 lg:sticky lg:top-28">
-      <div className="overflow-hidden rounded-3xl bg-navy text-white shadow-elegant">
-        <div className="gradient-brand px-6 py-5">
-          <div className="text-xs font-bold uppercase tracking-widest text-white/80">Free quote</div>
-          <div className="mt-1 font-display text-xl font-bold leading-snug">{title}</div>
-        </div>
-        <div className="space-y-3 p-6">
-          <a href={phoneHref} className="flex items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-bold text-navy hover:bg-accent">
-            Call {phone}
-          </a>
-          <a
-            href={whatsappHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 text-sm font-bold text-white hover:brightness-110"
-          >
-            <WaGlyph className="h-5 w-5" /> WhatsApp us
-          </a>
-          <Link to="/contact" className="flex items-center justify-center gap-2 rounded-xl border border-white/25 px-4 py-3 text-sm font-semibold hover:bg-white/10">
-            Request a quote <ArrowRight className="h-4 w-4" />
-          </Link>
-          <ul className="pt-2 space-y-1.5 text-xs text-white/70">
-            {BRAND.highlights.map((h) => (
-              <li key={h} className="flex items-center gap-2"><CheckCircle2 className="h-3.5 w-3.5 text-secondary" /> {h}</li>
-            ))}
-          </ul>
-        </div>
+    <div className={`overflow-hidden rounded-3xl ${FROST}`}>
+      <div className="relative bg-gradient-to-br from-accent to-white px-5 pb-4 pt-5">
+        <Snowflake className="absolute right-3 top-3 h-10 w-10 text-secondary/20" aria-hidden />
+        <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-primary">Free quote</div>
+        <div className="mt-1 pr-8 font-display text-lg font-bold leading-snug text-navy">{title}</div>
       </div>
-      {links.length > 0 && (
-        <div className="rounded-3xl border border-border bg-card p-5 shadow-card">
-          <div className="px-1 pb-3 text-xs font-bold uppercase tracking-widest text-muted-foreground">{linksTitle}</div>
-          <ul className="space-y-1">
-            {links.map((l) => (
-              <li key={l.href}>
-                <a
-                  href={l.href}
-                  className={`flex items-center justify-between gap-2 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors ${
-                    l.active ? "bg-primary text-white" : "text-navy hover:bg-accent hover:text-primary"
-                  }`}
-                >
-                  <span className="line-clamp-1">{l.label}</span>
-                  <ArrowRight className="h-3.5 w-3.5 shrink-0" />
-                </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </aside>
+      <div className="space-y-2.5 p-5 pt-3">
+        <Link to="/contact" className="flex items-center justify-center gap-2 rounded-xl gradient-brand px-4 py-3 text-sm font-semibold text-white shadow-elegant hover-lift">
+          Get a quote <ArrowRight className="h-4 w-4" />
+        </Link>
+        <a
+          href={whatsappHref}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 rounded-xl bg-[#25D366]/10 px-4 py-3 text-sm font-semibold text-[#128C7E] ring-1 ring-[#25D366]/30 hover:bg-[#25D366]/20"
+        >
+          <WaGlyph className="h-4 w-4" /> WhatsApp
+        </a>
+        <a href={phoneHref} className="flex items-center justify-center rounded-xl px-4 py-2.5 text-sm font-semibold text-navy ring-1 ring-sky-200 hover:bg-accent">
+          {phone}
+        </a>
+        <ul className="space-y-1.5 pt-2 text-xs text-muted-foreground">
+          {BRAND.highlights.map((h) => (
+            <li key={h} className="flex items-center gap-2">
+              <Check className="h-3.5 w-3.5 text-secondary" /> {h}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
   );
 }
