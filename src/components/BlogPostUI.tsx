@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check, Link2, ListOrdered } from "lucide-react";
 import type { TocItem } from "@/lib/blog-article";
 
@@ -37,17 +37,31 @@ export function ReadingProgress({ targetId }: { targetId: string }) {
 function useActiveHeading(ids: string[]) {
   const [active, setActive] = useState(ids[0] ?? "");
   useEffect(() => {
-    if (!ids.length || !("IntersectionObserver" in window)) return;
-    const els = ids.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
-    const io = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) setActive(visible[0].target.id);
-      },
-      { rootMargin: "-90px 0px -65% 0px", threshold: 0 },
-    );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+    if (!ids.length) return;
+    let raf = 0;
+    // The current section is the last heading that has scrolled above the reading line.
+    const update = () => {
+      let current = ids[0];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top < 150) current = id;
+        else break;
+      }
+      setActive(current);
+    };
+    const on = () => {
+      cancelAnimationFrame(raf);
+      raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", on, { passive: true });
+    window.addEventListener("resize", on);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("scroll", on);
+      window.removeEventListener("resize", on);
+    };
   }, [ids.join("|")]);
   return active;
 }
@@ -55,19 +69,29 @@ function useActiveHeading(ids: string[]) {
 /** "On this page" list. Desktop: sticky sidebar with the current section highlighted. */
 export function TocNav({ items }: { items: TocItem[] }) {
   const active = useActiveHeading(items.map((i) => i.id));
+  const listRef = useRef<HTMLOListElement>(null);
+  useEffect(() => {
+    const list = listRef.current;
+    const link = list?.querySelector<HTMLElement>(`a[href="#${CSS.escape(active)}"]`);
+    if (!list || !link) return;
+    const top = link.offsetTop; // the list is position:relative, so this is relative to it
+    if (top < list.scrollTop || top + link.offsetHeight > list.scrollTop + list.clientHeight) {
+      list.scrollTo({ top: Math.max(0, top - list.clientHeight / 3), behavior: "smooth" });
+    }
+  }, [active]);
   if (items.length < 2) return null;
   return (
     <nav aria-label="On this page" className="rounded-2xl border border-border bg-card p-5 shadow-card">
       <p className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-primary">
         <ListOrdered className="h-3.5 w-3.5" /> On this page
       </p>
-      <ol className="mt-3 max-h-[52vh] space-y-0.5 overflow-y-auto border-l-2 border-border pr-1">
+      <ol ref={listRef} className="relative mt-3 max-h-[52vh] space-y-0.5 overflow-y-auto border-l-2 border-border pr-1">
         {items.map((t, i) => (
           <li key={t.id}>
             <a
               href={`#${t.id}`}
               className={`-ml-0.5 flex gap-2 border-l-2 py-1.5 pl-3 text-[13px] leading-snug transition-colors ${
-                active === t.id ? "border-primary font-semibold text-primary" : "border-transparent text-muted-foreground hover:text-navy"
+                active === t.id ? "border-primary bg-primary/5 font-semibold text-primary" : "border-transparent text-muted-foreground hover:text-navy"
               }`}
             >
               <span className="tabular-nums opacity-60">{String(i + 1).padStart(2, "0")}</span>
