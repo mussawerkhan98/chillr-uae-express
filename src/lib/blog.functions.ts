@@ -28,7 +28,7 @@ export const getPublishedPostBySlug = createServerFn({ method: "GET" })
     const sb = getPublicSupabase();
     const { data: row, error } = await sb
       .from("blog_posts")
-      .select("id, slug, title, excerpt, cover_image_url, cover_image_alt, content_html, meta_title, meta_description, published_at")
+      .select("id, slug, title, excerpt, cover_image_url, cover_image_alt, content_html, meta_title, meta_description, published_at, updated_at")
       .eq("slug", data.slug)
       .eq("published", true)
       .maybeSingle();
