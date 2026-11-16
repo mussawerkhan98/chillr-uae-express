@@ -2,8 +2,9 @@
  * Google Analytics 4 (gtag.js) helpers.
  *
  * Tracked events (mark these as Key events in GA4 → Admin → Events):
- *  - click_call       any tel: link (header, floating button, footer, pages)
- *  - click_whatsapp   any wa.me / api.whatsapp.com link
+ *  - call_click       any tel: link (header, floating button, footer, pages)
+ *  - whatsapp_click   any wa.me / api.whatsapp.com link
+ *  - email_click      any mailto: link
  *  - generate_lead    contact / quote form submitted successfully
  *
  * Admin and auth pages are never tracked.
@@ -29,6 +30,8 @@ export function isTrackedPath(pathname: string): boolean {
 /** Inject gtag.js once, on the client only. */
 export function loadAnalytics(): void {
   if (loaded || typeof window === "undefined") return;
+  // Only the live site is tracked: Lovable / Vercel previews and localhost are skipped.
+  if (!/^(www\.)?iqrarchillervanrental\.ae$/.test(window.location.hostname)) return;
   loaded = true;
 
   window.dataLayer = window.dataLayer || [];
@@ -71,7 +74,7 @@ function linkLocation(el: Element): string {
 }
 
 /**
- * One delegated listener catches every call / WhatsApp link on the site,
+ * One delegated listener catches every call / WhatsApp / email link on the site,
  * including ones added later in admin content, without editing each button.
  */
 export function attachClickTracking(): () => void {
@@ -83,9 +86,11 @@ export function attachClickTracking(): () => void {
     const common = { link_url: href, link_text: label, link_location: linkLocation(a) };
 
     if (href.startsWith("tel:")) {
-      trackEvent("click_call", common);
+      trackEvent("call_click", common);
     } else if (/(^https?:\/\/)?(wa\.me|api\.whatsapp\.com|web\.whatsapp\.com)\//i.test(href)) {
-      trackEvent("click_whatsapp", { ...common, link_url: href.split("?")[0] });
+      trackEvent("whatsapp_click", { ...common, link_url: href.split("?")[0] });
+    } else if (href.toLowerCase().startsWith("mailto:")) {
+      trackEvent("email_click", { ...common, link_url: href.split("?")[0] });
     }
   };
   document.addEventListener("click", onClick, { capture: true });
